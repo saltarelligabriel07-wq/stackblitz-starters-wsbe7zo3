@@ -3,201 +3,492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Manager - Auto Save</title>
+    <title>Life Manager - PRO</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root { --bg: #121214; --card: #1e1e24; --text: #fff; --accent: #6c5ce7; --success: #00b894; --danger: #d63031; }
+        /* --- STILI CSS --- */
+        :root { 
+            --bg: #121214; --card: #1e1e24; --text: #fff; --subtext: #a0a0a0;
+            --accent: #6c5ce7; --success: #00b894; --danger: #d63031; --warning: #fdcb6e; 
+            --border: #333;
+        }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-bottom: 80px; }
-        .container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        h2 { margin-top: 0; color: #ccc; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        input, select { background: #2d3436; border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* Cards */
+        .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h2 { margin-top: 0; color: var(--subtext); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Inputs & Buttons */
+        input, select { background: #2d3436; border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: inherit; }
         button { cursor: pointer; border: none; padding: 10px; border-radius: 6px; font-weight: bold; transition: 0.2s; }
         button:active { transform: scale(0.98); }
+        .btn-green { background: var(--success); color: #000; }
+        .btn-red { background: var(--danger); color: #fff; }
+        .btn-dark { background: #333; color: #fff; }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-small { padding: 5px 10px; font-size: 0.8rem; }
+        
         .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+
+        /* Wallet Header */
+        .wallet-display { font-size: 2.5rem; font-weight: 800; color: var(--success); font-family: 'Fira Code', monospace; margin: 5px 0; }
+        .target-bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .target-bar-fill { height: 100%; background: var(--warning); width: 0%; transition: width 0.5s; }
+
+        /* Savings Cards */
+        .savings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+        .saving-item { background: #25252b; padding: 10px; border-radius: 8px; border: 1px solid #333; }
+
+        /* Tables */
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         td, th { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
-        .wallet-display { font-size: 2.5rem; font-weight: 800; color: var(--success); font-family: 'Fira Code', monospace; margin: 10px 0; }
-        
-        /* STATUS BAR PER IL DEBUG */
-        .status-bar {
-            position: fixed; top: 0; left: 0; width: 100%; 
-            background: #222; border-bottom: 1px solid #444; 
-            padding: 5px 20px; font-size: 0.8rem; display: flex; 
-            justify-content: space-between; align-items: center; z-index: 1000;
-            box-sizing: border-box;
-        }
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        th { color: var(--subtext); font-weight: 400; }
+        .amount-pos { color: var(--success); font-weight: bold; }
+        .amount-neg { color: var(--danger); font-weight: bold; }
+
+        /* Utility */
+        .text-right { text-align: right; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
-<body style="padding-top: 50px;"> <div class="status-bar">
-    <div id="statusText"><span class="status-dot" style="background: gray;"></span> Controllo memoria...</div>
-    <button onclick="forceSave()" style="padding: 2px 8px; font-size: 0.7rem; background: #444; color: white;">Forza Salvataggio</button>
-</div>
+<body>
 
 <div class="container">
 
     <div class="card" style="border-left: 5px solid var(--success);">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div><span style="color:#aaa;">SALDO</span><div class="wallet-display" id="displayWallet">€0.00</div></div>
-            <div style="text-align: right;">
-                <input type="number" id="manualWallet" placeholder="Modifica..." style="width: 100px; text-align: right;">
-                <button onclick="updateWalletManual()" style="background: #333; color: white;">Salva</button>
+        <div class="flex-between">
+            <div>
+                <span style="color:var(--subtext);">SALDO DISPONIBILE</span>
+                <div class="wallet-display" id="displayWallet">€0.00</div>
+            </div>
+            <div class="text-right">
+                <small style="color:var(--subtext);">Obiettivo Liquidità</small>
+                <div style="font-family:'Fira Code'; font-weight:bold; color:var(--warning);" id="displayLiquidityTarget">€0.00</div>
+                <button class="btn-dark btn-small" onclick="setLiquidityTarget()">Modifica Target</button>
             </div>
         </div>
-        <div style="height: 200px; margin-top: 20px;"><canvas id="monthlyChart"></canvas></div>
+        <div class="target-bar-bg">
+            <div class="target-bar-fill" id="liquidityBar"></div>
+        </div>
+        <div style="font-size: 0.8rem; color: #666; margin-top: 5px; text-align: right;" id="liquidityPerc">0% del target</div>
     </div>
 
     <div class="card">
-        <h2>💰 Aggiungi Movimento</h2>
+        <h2>🏦 Obiettivi di Risparmio <button class="btn-dark btn-small" onclick="addSavingsGoal()">+ Nuovo Obiettivo</button></h2>
+        <p style="font-size: 0.8rem; color: #888; margin-top: -10px;">Attenzione: Aggiungere soldi qui li sottrae dal Saldo Disponibile.</p>
+        <div class="savings-grid" id="savingsList">
+            </div>
+    </div>
+
+    <div class="card">
+        <h2>💰 Nuova Transazione</h2>
         <div class="row">
-            <input type="date" id="tDate">
-            <select id="tCat">
-                <option value="Cibo">🍕 Cibo</option>
-                <option value="Lavoro">💸 Lavoro (Entrata)</option>
-                <option value="Svago">🎉 Svago</option>
-                <option value="Casa">🏠 Casa</option>
-                <option value="Altro">📦 Altro</option>
-            </select>
+            <input type="date" id="tDate" class="col">
+            <div class="col" style="display: flex; gap: 5px;">
+                <select id="tCat" style="flex:1; margin-bottom: 10px;">
+                    </select>
+                <button class="btn-dark" onclick="addCategory()" style="width: 40px; height: 42px;">+</button>
+            </div>
         </div>
         <div class="row">
-            <input type="text" id="tDesc" placeholder="Descrizione" style="flex: 2;">
-            <input type="number" id="tAmount" placeholder="€" style="flex: 1;">
+            <input type="text" id="tDesc" placeholder="Descrizione (es. Spesa)" style="flex: 2;">
+            <input type="number" id="tAmount" placeholder="€ Importo" style="flex: 1;">
         </div>
         <div class="row">
-            <button onclick="addTransaction('income')" style="flex:1; background: var(--success); color: black;">+ ENTRATA</button>
-            <button onclick="addTransaction('expense')" style="flex:1; background: var(--danger); color: white;">- SPESA</button>
+            <button onclick="addTrans('income')" class="col btn-green">+ ENTRATA</button>
+            <button onclick="addTrans('expense')" class="col btn-red">- SPESA</button>
         </div>
     </div>
 
     <div class="card">
-        <h2>📝 Storico</h2>
-        <table id="transTable"></table>
+        <h2>📊 Analisi Finanziaria</h2>
+        <div class="row" style="height: 250px;">
+            <div class="col" style="position: relative;">
+                <h4 style="text-align:center; margin:0; color:#888; font-size:0.8rem;">Ripartizione Spese (Mese)</h4>
+                <canvas id="chartPie"></canvas>
+            </div>
+            <div class="col" style="position: relative;">
+                <h4 style="text-align:center; margin:0; color:#888; font-size:0.8rem;">Andamento Annuale</h4>
+                <canvas id="chartLine"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📝 Registro Movimenti</h2>
+        <div style="max-height: 300px; overflow-y: auto;">
+            <table id="transTable"></table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🎓 Registro Voti <span id="gradeAvg" style="color:var(--accent);">Media: -</span></h2>
+        <div class="row">
+            <input type="text" id="gSubject" placeholder="Materia (es. Matematica)" style="flex: 2;">
+            <input type="number" id="gGrade" placeholder="Voto" style="flex: 1;">
+            <button onclick="addGrade()" class="btn-dark">+</button>
+        </div>
+        <table id="gradeTable"></table>
+    </div>
+
+    <div class="card">
+        <h2>🧠 Skills & Progressi</h2>
+        <div class="row">
+            <input type="text" id="sName" placeholder="Skill (es. Lettura)" class="col">
+            <input type="number" id="sTarget" placeholder="Target" style="width: 80px;">
+            <button onclick="addSkill()" class="btn-dark">+</button>
+        </div>
+        <div id="skillsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+
+    <div class="card" style="border-top: 4px solid var(--accent); text-align: center;">
+        <h2>🍅 Focus Session</h2>
+        <input type="text" id="focusGoal" placeholder="Obiettivo della sessione? (es. Studiare cap. 3)" style="text-align: center; margin-bottom: 15px;">
+        <div id="timerDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: bold;">25:00</div>
+        <div class="row" style="justify-content: center;">
+            <button onclick="startTimer()" class="btn-accent" style="width: 120px;">START</button>
+            <button onclick="resetTimer()" class="btn-dark">RESET</button>
+        </div>
     </div>
 
 </div>
 
 <script>
-    const DB_NAME = 'LifeManager_Fixed_V3'; // Nuovo nome per evitare conflitti vecchi
-    let data = { wallet: 0.00, transactions: [] };
-    let myChart = null;
+    // --- 1. CONFIGURAZIONE DATABASE ---
+    const DB_NAME = 'LifeManager_Pro_V5'; 
+    
+    // Struttura Dati Iniziale
+    let data = {
+        wallet: 0.00,
+        liquidityTarget: 1000.00,
+        categories: ['Cibo', 'Trasporti', 'Svago', 'Lavoro', 'Casa', 'Altro'],
+        transactions: [],
+        savings: [], // { name: 'Auto', current: 0, target: 2000 }
+        skills: [],
+        grades: []   // { subject: 'Math', grade: 28, date: '...' }
+    };
 
-    // --- SISTEMA DI SALVATAGGIO ---
+    let charts = { pie: null, line: null };
+
+    // --- 2. SISTEMA DI SALVATAGGIO ---
     function saveData() {
-        try {
-            localStorage.setItem(DB_NAME, JSON.stringify(data));
-            showStatus(true); // Mostra verde
-            updateUI();
-        } catch (e) {
-            console.error(e);
-            showStatus(false); // Mostra rosso
-            alert("ATTENZIONE: Il browser sta bloccando il salvataggio! I dati andranno persi.");
-        }
+        localStorage.setItem(DB_NAME, JSON.stringify(data));
+        updateUI();
     }
 
     function loadData() {
-        try {
-            const saved = localStorage.getItem(DB_NAME);
-            if (saved) {
-                data = JSON.parse(saved);
-                console.log("Dati caricati:", data);
-            } else {
-                console.log("Nessun dato precedente trovato. Inizio da zero.");
-            }
-            document.getElementById('tDate').valueAsDate = new Date();
-            updateUI();
-            showStatus(true);
-        } catch (e) {
-            console.error("Errore nel caricamento:", e);
-            showStatus(false);
+        const saved = localStorage.getItem(DB_NAME);
+        if (saved) {
+            let parsed = JSON.parse(saved);
+            // Merge per assicurarsi che i nuovi campi (es. grades) esistano anche nei vecchi salvataggi
+            data = { ...data, ...parsed };
         }
+        document.getElementById('tDate').valueAsDate = new Date();
+        updateUI();
     }
 
-    // --- INDICATORE DI STATO ---
-    function showStatus(isWorking) {
-        const el = document.getElementById('statusText');
-        if(isWorking) {
-            el.innerHTML = '<span class="status-dot" style="background: #00b894;"></span> Memoria Attiva (Salvato)';
-        } else {
-            el.innerHTML = '<span class="status-dot" style="background: #d63031;"></span> ERRORE: Memoria non funzionante';
-        }
-    }
-    
-    function forceSave() {
-        saveData();
-        alert("Tentativo di salvataggio eseguito.");
-    }
-
-    // --- LOGICA UI ---
+    // --- 3. CORE LOGIC (UI & RENDERING) ---
     function updateUI() {
-        document.getElementById('displayWallet').innerText = '€' + parseFloat(data.wallet).toFixed(2);
+        // A. Wallet & Liquidity
+        const w = parseFloat(data.wallet);
+        const t = parseFloat(data.liquidityTarget);
+        document.getElementById('displayWallet').innerText = '€' + w.toFixed(2);
+        document.getElementById('displayLiquidityTarget').innerText = 'Target: €' + t.toFixed(2);
         
-        // Tabella
+        let perc = (t > 0) ? (w / t) * 100 : 0;
+        perc = Math.min(Math.max(perc, 0), 100); // Clamp 0-100
+        document.getElementById('liquidityBar').style.width = perc + '%';
+        document.getElementById('liquidityBar').style.backgroundColor = perc >= 100 ? '#00b894' : '#fdcb6e';
+        document.getElementById('liquidityPerc').innerText = perc.toFixed(1) + '% del target';
+
+        // B. Categorie (Dropdown)
+        const catSelect = document.getElementById('tCat');
+        const currentVal = catSelect.value;
+        catSelect.innerHTML = '';
+        data.categories.forEach(c => {
+            catSelect.innerHTML += `<option value="${c}">${c}</option>`;
+        });
+        if(data.categories.includes(currentVal)) catSelect.value = currentVal;
+
+        // C. Risparmi (Logic complessa)
+        renderSavings();
+
+        // D. Transazioni
+        renderTransactions();
+
+        // E. Grafici
+        renderCharts();
+
+        // F. Skills
+        renderSkills();
+
+        // G. Voti
+        renderGrades();
+    }
+
+    // --- 4. GESTIONE TRANSAZIONI & CATEGORIE ---
+    function addCategory() {
+        const newCat = prompt("Nome nuova categoria:");
+        if (newCat && !data.categories.includes(newCat)) {
+            data.categories.push(newCat);
+            saveData();
+        }
+    }
+
+    function addTrans(type) {
+        const desc = document.getElementById('tDesc').value;
+        const amount = parseFloat(document.getElementById('tAmount').value);
+        const cat = document.getElementById('tCat').value;
+        const date = document.getElementById('tDate').value;
+
+        if (desc && !isNaN(amount) && amount > 0) {
+            data.transactions.push({ desc, amount, cat, type, date });
+            
+            // Aggiorna Saldo
+            if (type === 'income') data.wallet += amount;
+            else data.wallet -= amount;
+
+            document.getElementById('tDesc').value = '';
+            document.getElementById('tAmount').value = '';
+            saveData();
+        } else {
+            alert("Inserisci descrizione e importo valido!");
+        }
+    }
+
+    function deleteTrans(index) {
+        if(confirm("Eliminare transazione? Il saldo verrà ricalcolato.")) {
+            // Indice invertito perché la lista è visualizzata al contrario
+            const realIndex = data.transactions.length - 1 - index;
+            const t = data.transactions[realIndex];
+            
+            // Storna saldo
+            if(t.type === 'income') data.wallet -= t.amount;
+            else data.wallet += t.amount;
+
+            data.transactions.splice(realIndex, 1);
+            saveData();
+        }
+    }
+
+    function renderTransactions() {
         const table = document.getElementById('transTable');
         table.innerHTML = '';
-        data.transactions.slice().reverse().forEach((t, index) => {
-            const realIndex = data.transactions.length - 1 - index;
-            const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+        data.transactions.slice().reverse().forEach((t, i) => {
+            const cssClass = t.type === 'income' ? 'amount-pos' : 'amount-neg';
             const sign = t.type === 'income' ? '+' : '-';
             table.innerHTML += `
                 <tr>
-                    <td>${t.date}</td>
-                    <td><b>${t.desc}</b> <small>(${t.cat})</small></td>
-                    <td style="color:${color}; text-align:right;">${sign}€${t.amount}</td>
-                    <td style="text-align:right;"><button onclick="deleteTrans(${realIndex})" style="color:#666; background:none;">x</button></td>
-                </tr>`;
+                    <td><small>${t.date}</small></td>
+                    <td><b>${t.desc}</b> <br><small style="color:#888">${t.cat}</small></td>
+                    <td class="${cssClass} text-right">${sign}€${t.amount.toFixed(2)}</td>
+                    <td class="text-right"><button onclick="deleteTrans(${i})" style="background:none; color:#666;">x</button></td>
+                </tr>
+            `;
         });
-        updateChart();
     }
 
-    function updateChart() {
-        const ctx = document.getElementById('monthlyChart').getContext('2d');
-        let cats = {};
+    // --- 5. GESTIONE RISPARMI (Collegano al Saldo) ---
+    function setLiquidityTarget() {
+        const val = prompt("Nuovo obiettivo di liquidità:", data.liquidityTarget);
+        if(val && !isNaN(val)) { data.liquidityTarget = parseFloat(val); saveData(); }
+    }
+
+    function addSavingsGoal() {
+        const name = prompt("Nome Obiettivo (es. Auto Nuova):");
+        const target = prompt("Target (es. 5000):");
+        if(name && target) {
+            data.savings.push({ name, current: 0, target: parseFloat(target) });
+            saveData();
+        }
+    }
+
+    function updateSavings(index, amount) {
+        // amount positivo = deposito (toglie dal wallet)
+        // amount negativo = prelievo (aggiunge al wallet)
+        
+        if (amount > 0 && data.wallet < amount) {
+            alert("Non hai abbastanza liquidità nel saldo principale!");
+            return;
+        }
+        if (amount < 0 && data.savings[index].current < Math.abs(amount)) {
+            alert("Non ci sono abbastanza fondi in questo salvadanaio!");
+            return;
+        }
+
+        data.savings[index].current += amount;
+        data.wallet -= amount; // Inverte la logica: se metto nel salvadanaio, tolgo dal wallet
+        saveData();
+    }
+
+    function deleteSavings(index) {
+        if(confirm("Eliminare obiettivo? I fondi torneranno nel saldo.")) {
+            data.wallet += data.savings[index].current;
+            data.savings.splice(index, 1);
+            saveData();
+        }
+    }
+
+    function renderSavings() {
+        const list = document.getElementById('savingsList');
+        list.innerHTML = '';
+        data.savings.forEach((s, i) => {
+            const perc = Math.min((s.current / s.target) * 100, 100);
+            list.innerHTML += `
+                <div class="saving-item">
+                    <div class="flex-between">
+                        <strong>${s.name}</strong>
+                        <button onclick="deleteSavings(${i})" style="color:#d63031; background:none;">x</button>
+                    </div>
+                    <div style="font-size:1.2rem; margin:5px 0;">€${s.current.toFixed(2)} <small style="color:#666">/ ${s.target}</small></div>
+                    <div class="target-bar-bg" style="height:6px;"><div class="target-bar-fill" style="width:${perc}%; background:var(--accent);"></div></div>
+                    <div class="row" style="margin-top:10px;">
+                        <button class="col btn-dark" onclick="askSavings(${i}, true)">+ Versa</button>
+                        <button class="col btn-dark" onclick="askSavings(${i}, false)">- Preleva</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function askSavings(index, isDeposit) {
+        const val = parseFloat(prompt(isDeposit ? "Quanto vuoi versare?" : "Quanto vuoi prelevare?"));
+        if(!isNaN(val) && val > 0) {
+            updateSavings(index, isDeposit ? val : -val);
+        }
+    }
+
+    // --- 6. GRAFICI AVANZATI ---
+    function renderCharts() {
+        // Grafico 1: Torta Spese (Mese Corrente)
+        const currentMonth = new Date().getMonth();
+        const cats = {};
         data.transactions.forEach(t => {
-            if (t.type === 'expense') cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+            if (t.type === 'expense' && new Date(t.date).getMonth() === currentMonth) {
+                cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+            }
         });
 
-        if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, {
+        if (charts.pie) charts.pie.destroy();
+        charts.pie = new Chart(document.getElementById('chartPie'), {
             type: 'doughnut',
             data: {
                 labels: Object.keys(cats),
                 datasets: [{ data: Object.values(cats), backgroundColor: ['#fdcb6e', '#00b894', '#6c5ce7', '#d63031', '#74b9ff'] }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        // Grafico 2: Linea Annuale (Entrate vs Uscite)
+        const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+        const incomes = Array(12).fill(0);
+        const expenses = Array(12).fill(0);
+        
+        data.transactions.forEach(t => {
+            const m = new Date(t.date).getMonth();
+            if(t.type === 'income') incomes[m] += t.amount;
+            else expenses[m] += t.amount;
+        });
+
+        if (charts.line) charts.line.destroy();
+        charts.line = new Chart(document.getElementById('chartLine'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    { label: 'Entrate', data: incomes, borderColor: '#00b894', tension: 0.3 },
+                    { label: 'Uscite', data: expenses, borderColor: '#d63031', tension: 0.3 }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false } } }
         });
     }
 
-    // --- LOGICA DATI ---
-    function updateWalletManual() {
-        const val = parseFloat(document.getElementById('manualWallet').value);
-        if(!isNaN(val)) { data.wallet = val; saveData(); document.getElementById('manualWallet').value=''; }
-    }
-    function addTransaction(type) {
-        const desc = document.getElementById('tDesc').value;
-        const amount = parseFloat(document.getElementById('tAmount').value);
-        const cat = document.getElementById('tCat').value;
-        const date = document.getElementById('tDate').value;
-        if(desc && !isNaN(amount)) {
-            data.transactions.push({ desc, amount, cat, type, date });
-            type === 'income' ? data.wallet += amount : data.wallet -= amount;
-            saveData();
-            document.getElementById('tDesc').value = ''; document.getElementById('tAmount').value = '';
-        }
-    }
-    function deleteTrans(index) {
-        if(confirm("Eliminare?")) {
-            const t = data.transactions[index];
-            t.type === 'income' ? data.wallet -= t.amount : data.wallet += t.amount;
-            data.transactions.splice(index, 1);
-            saveData();
+    // --- 7. SKILLS & VOTI ---
+    function addSkill() {
+        const name = document.getElementById('sName').value;
+        const target = parseFloat(document.getElementById('sTarget').value);
+        if(name && target) { 
+            data.skills.push({ name, target, progress: 0 }); 
+            saveData(); 
+            document.getElementById('sName').value=''; 
+            document.getElementById('sTarget').value=''; 
         }
     }
 
+    function renderSkills() {
+        const div = document.getElementById('skillsList');
+        div.innerHTML = '';
+        data.skills.forEach((s, i) => {
+            const perc = (s.progress / s.target) * 100;
+            div.innerHTML += `
+                <div style="background:#25252b; padding:10px; border-radius:8px;">
+                    <div class="flex-between"><span>${s.name}</span> <span>${s.progress}/${s.target}</span></div>
+                    <div class="target-bar-bg"><div class="target-bar-fill" style="width:${perc}%; background:var(--accent)"></div></div>
+                    <div class="text-right" style="margin-top:5px;">
+                        <button onclick="modSkill(${i}, 1)" class="btn-dark btn-small">+1</button>
+                        <button onclick="delSkill(${i})" style="color:#d63031; background:none;">Elimina</button>
+                    </div>
+                </div>`;
+        });
+    }
+    function modSkill(i, v) { data.skills[i].progress += v; saveData(); }
+    function delSkill(i) { data.skills.splice(i, 1); saveData(); }
+
+    // VOTI
+    function addGrade() {
+        const sub = document.getElementById('gSubject').value;
+        const gr = parseFloat(document.getElementById('gGrade').value);
+        if(sub && !isNaN(gr)) {
+            data.grades.push({ subject: sub, grade: gr });
+            saveData();
+            document.getElementById('gSubject').value = '';
+            document.getElementById('gGrade').value = '';
+        }
+    }
+
+    function deleteGrade(index) {
+        data.grades.splice(index, 1);
+        saveData();
+    }
+
+    function renderGrades() {
+        const tbl = document.getElementById('gradeTable');
+        tbl.innerHTML = '';
+        let sum = 0;
+        data.grades.forEach((g, i) => {
+            sum += g.grade;
+            tbl.innerHTML += `<tr><td>${g.subject}</td><td><b>${g.grade}</b></td><td class="text-right"><button onclick="deleteGrade(${i})" style="color:#666; background:none;">x</button></td></tr>`;
+        });
+        const avg = data.grades.length ? (sum / data.grades.length).toFixed(1) : '-';
+        document.getElementById('gradeAvg').innerText = 'Media: ' + avg;
+    }
+
+    // --- 8. FOCUS TIMER ---
+    let timerInt = null, timeLeft = 1500;
+    function startTimer() {
+        if(timerInt) return;
+        timerInt = setInterval(() => {
+            timeLeft--;
+            const m = Math.floor(timeLeft/60).toString().padStart(2,'0');
+            const s = (timeLeft%60).toString().padStart(2,'0');
+            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+            if(timeLeft <= 0) { 
+                clearInterval(timerInt); 
+                alert("Sessione terminata: " + document.getElementById('focusGoal').value); 
+                resetTimer(); 
+            }
+        }, 1000);
+    }
+    function resetTimer() { clearInterval(timerInt); timerInt=null; timeLeft=1500; document.getElementById('timerDisplay').innerText="25:00"; }
+
     // AVVIO
     window.onload = loadData;
+
 </script>
 </body>
 </html>
