@@ -3,1226 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIA Manager - Full Report</title>
+    <title>Life Manager - Auto Save</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-	/* Titoli delle Sezioni Grandi */
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 40px 0 20px 0;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #333;
-}
-
-.section-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* Menu di Navigazione Rapida */
-.nav-bar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-    background: #1e1e24;
-    padding: 10px;
-    border-radius: 12px;
-    position: sticky; /* Rimane in alto quando scorri! */
-    top: 10px;
-    z-index: 100;
-    border: 1px solid #333;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-
-.nav-link {
-    flex: 1;
-    text-align: center;
-    background: transparent;
-    color: #aaa;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-}
-
-.nav-link:hover {
-    background: #333;
-    color: white;
-}
-
-/* Colori specifici per i bottoni */
-.nav-link.finance:hover { background: rgba(0, 184, 148, 0.2); color: #00b894; }
-.nav-link.school:hover { background: rgba(108, 92, 231, 0.2); color: #6c5ce7; }
-
-	/* --- CALCOLATRICE FLUTTUANTE --- */
-.calc-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9990; /* Sopra a tutto, ma sotto i modali */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-}
-
-/* Il Tasto Rotondo per aprire/chiudere */
-.calc-toggle-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--accent); /* Usa il colore principale del tuo tema */
-    color: white;
-    font-size: 1.8rem;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s;
-}
-.calc-toggle-btn:hover { transform: scale(1.1); }
-
-/* Il Corpo della Calcolatrice (Nascosto all'inizio) */
-.calculator-body {
-    display: none; /* Nascosto di default */
-    background: rgba(30, 30, 36, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid #444;
-    padding: 15px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    width: 260px;
-    animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Display */
-.calc-display {
-    width: 100%;
-    height: 50px;
-    background: #111;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.5rem;
-    text-align: right;
-    padding: 10px;
-    margin-bottom: 15px;
-    box-sizing: border-box; /* Importante per non sbordare */
-    font-family: monospace;
-}
-
-/* Griglia Tasti */
-.calc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-/* Stile Tasti */
-.calc-btn {
-    padding: 15px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.1s;
-    color: white;
-    background: #2d3436;
-}
-.calc-btn:active { transform: scale(0.95); }
-
-/* Colori specifici */
-.btn-op { background: #e17055; } /* Operatori (Arancione) */
-.btn-eq { background: #00b894; grid-column: span 2; } /* Uguale (Verde) */
-.btn-ac { background: #d63031; color: white; } /* Clear (Rosso) */
-
-        /* --- STILI PRO (SIA DESIGN) --- */
-        :root { 
-            --bg-color: #121214; 
-            --card-bg: #1e1e24; 
-            --text-primary: #ffffff; 
-            --text-secondary: #a0a0b0;
-            --accent: #6c5ce7; /* Viola Business */
-            --success: #00b894; /* Verde Deliveroo */
-            --danger: #d63031; 
-            --warning: #fdcb6e;
-            --input-bg: #2d3436;
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-primary); 
-            margin: 0; 
-            padding: 40px 20px; 
-            overflow-y: scroll; /* Abilita scroll */
-        }
-
-        .container { 
-            width: 100%; 
-            max-width: 900px; /* Larghezza ottimale per lettura */
-            margin: 0 auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 30px; /* Spazio tra le sezioni */
-            padding-bottom: 100px;
-        }
-
-        /* CARD STYLE GENERALE */
-        .card { 
-            background-color: var(--card-bg); 
-            border-radius: 12px; 
-            padding: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-            border: 1px solid #333;
-        }
-
-        h2 { 
-            font-size: 1.2rem; 
-            font-weight: 800; 
-            margin: 0 0 20px 0; 
-            color: var(--text-secondary); 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-
-        /* --- 1. HEADER & WALLET --- */
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, #2d3436, #1e1e24);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid var(--accent);
-        }
-        .wallet-group { text-align: right; }
-        .wallet-label { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 5px; }
-        .wallet-input { 
-            background: transparent; 
-            border: none; 
-            color: var(--success); 
-            font-family: 'Fira Code', monospace; 
-            font-size: 2rem; 
-            font-weight: bold; 
-            text-align: right; 
-            width: 250px; 
-            outline: none;
-            border-bottom: 1px dashed #444; /* Indica che è modificabile */
-        }
-        .wallet-input:focus { border-bottom: 1px solid var(--success); }
-
-        /* --- 2. INPUT AREA --- */
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 2fr 1fr;
-            gap: 15px;
-            align-items: end;
-        }
-        label { font-size: 0.75rem; color: #888; margin-bottom: 8px; display: block; }
-        input, select { 
-            width: 100%; 
-            padding: 12px; 
-            background: var(--input-bg); 
-            border: 1px solid #444; 
-            color: white; 
-            border-radius: 8px; 
-            font-size: 1rem;
+        :root { --bg: #121214; --card: #1e1e24; --text: #fff; --accent: #6c5ce7; --success: #00b894; --danger: #d63031; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-bottom: 80px; }
+        .container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h2 { margin-top: 0; color: #ccc; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        input, select { background: #2d3436; border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        button { cursor: pointer; border: none; padding: 10px; border-radius: 6px; font-weight: bold; transition: 0.2s; }
+        button:active { transform: scale(0.98); }
+        .row { display: flex; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        td, th { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
+        .wallet-display { font-size: 2.5rem; font-weight: 800; color: var(--success); font-family: 'Fira Code', monospace; margin: 10px 0; }
+        
+        /* STATUS BAR PER IL DEBUG */
+        .status-bar {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: #222; border-bottom: 1px solid #444; 
+            padding: 5px 20px; font-size: 0.8rem; display: flex; 
+            justify-content: space-between; align-items: center; z-index: 1000;
             box-sizing: border-box;
         }
-        .btn-action { padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; }
-        .btn-action:active { transform: scale(0.98); }
-        .bg-inc { background: var(--success); color: #000; }
-        .bg-exp { background: var(--danger); color: #fff; }
-
-        /* --- 3. GOALS --- */
-        .goal-row {
-            display: flex;
-            align-items: center;
-            background: #25252b;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        .goal-info { width: 150px; font-weight: bold; font-size: 0.9rem; }
-        .goal-bar-container { flex-grow: 1; height: 12px; background: #111; border-radius: 6px; margin: 0 15px; overflow: hidden; }
-        .goal-fill { height: 100%; transition: width 0.5s; background: linear-gradient(90deg, var(--accent), #a29bfe); }
-        .goal-nums { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #aaa; width: 120px; text-align: right; }
-        .goal-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 10px; font-size: 0.8rem; }
-
-        /* --- 4. DATA VISUALIZATION --- */
-        .charts-container {
-            display: grid;
-            grid-template-columns: 1fr 2fr; /* Torta piccola, Barre grande */
-            gap: 20px;
-        }
-        .chart-box {
-            background: #25252b;
-            padding: 15px;
-            border-radius: 8px;
-            height: 300px; /* Altezza fissa per i grafici */
-        }
-
-        /* --- 5. TABLE --- */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
-        th { text-align: left; color: #666; padding: 10px; border-bottom: 1px solid #333; font-size: 0.8rem; text-transform: uppercase; }
-        td { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; }
-        tr:hover { background-color: #2a2a30; }
-        .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-        .tag-inc { background: rgba(0, 184, 148, 0.15); color: var(--success); }
-        .tag-exp { background: rgba(214, 48, 49, 0.15); color: var(--danger); }
-        
-        .filters { display: flex; gap: 10px; margin-bottom: 15px; }
-
-        /* --- FOOTER --- */
-        .footer-tools { display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; justify-content: center; }
-        .btn-tool { background: transparent; border: 1px solid #555; color: #888; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-        .btn-tool:hover { border-color: var(--accent); color: var(--accent); }
-
-        @media (max-width: 768px) {
-            .input-grid { grid-template-columns: 1fr; }
-            .charts-container { grid-template-columns: 1fr; height: auto; }
-            .wallet-input { font-size: 1.5rem; width: 100%; text-align: left; }
-            .header-section { flex-direction: column; align-items: flex-start; gap: 15px; }
-        }
-		
-		/* --- STILE DEL MODAL (FINESTRA) --- */
-.modal-overlay {
-    display: none; /* Nascosto di default */
-    position: fixed; /* Fisso sullo schermo */
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Sfondo scuro */
-    z-index: 9999; /* Sopra a tutto */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-box {
-    background: #1e1e24;
-    padding: 20px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    border: 1px solid #444;
-    color: white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    max-height: 90vh; /* Per non uscire dallo schermo se è piccolo */
-    overflow-y: auto; /* Scroll se serve */
-}
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
     </style>
 </head>
-<body>
+<body style="padding-top: 50px;"> <div class="status-bar">
+    <div id="statusText"><span class="status-dot" style="background: gray;"></span> Controllo memoria...</div>
+    <button onclick="forceSave()" style="padding: 2px 8px; font-size: 0.7rem; background: #444; color: white;">Forza Salvataggio</button>
+</div>
 
 <div class="container">
 
-    <div class="header-section">
-        <div>
-            <h1 style="margin:0; font-size:1.5rem;">Dashboard Finanziaria</h1>
-            <span style="color:#666; font-size:0.9rem;">Gestione Economica Personale</span>
-        </div>
-        <div class="wallet-group">
-            <label class="wallet-label">SALDO DISPONIBILE (Modificabile)</label>
-            <span>€</span>
-            <input type="number" id="walletInput" class="wallet-input" value="0.00" onchange="manualWalletUpdate()">
-			<div style="margin-top:15px; padding-top:15px; border-top:1px solid #333;">
-    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#aaa; margin-bottom:5px;">
-        <span>🎯 Obiettivo Liquidità</span>
-        <span id="liquidityText" style="cursor:pointer; text-decoration:underline;" onclick="setLiquidityTarget()">Imposta Target</span>
-    </div>
-    
-    <div style="background:#111; height:8px; border-radius:4px; overflow:hidden;">
-        <div id="liquidityBar" style="width:0%; height:100%; background:linear-gradient(90deg, #fdcb6e, #00b894); transition: width 0.5s;"></div>
-    </div>
-    <div style="text-align:right; font-size:0.75rem; color:#666; margin-top:2px;" id="liquidityPerc">0%</div>
-</div>
-        </div>
-    </div>
-
-
-
-    <div class="card">
-	<div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h2 style="margin:0;">Nuova Transazione</h2>
-            
-            <button onclick="openModal()" 
-                    style="background:none; border:1px solid var(--accent); color:var(--accent); 
-                           padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75rem; font-weight:bold;">
-                🔁 Modelli / Fisse
-            </button>
-        </div>
-        <div class="input-grid">
-            <div>
-                <label>Data</label>
-                <input type="date" id="dateInput">
-            </div>
-            <div>
-    <label>Categoria</label>
-    <div style="position: relative; width: 100%; height: 45px;">
-        <select id="catSelect" style="width: 100%; height: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1e1e24; color: white; appearance: none;">
-            <option value="🛵 Lavoro">🛵 Lavoro (Deliveroo)</option>
-            <option value="👕 Vinted">👕 Vinted</option>
-            <option value="🍕 Cibo">🍕 Cibo</option>
-            <option value="🎁 Regali">🎁 Regali</option>
-            <option value="⛽ Benzina">⛽ Benzina</option>
-            <option value="🎉 Svago">🎉 Svago</option>
-            <option value="🚗 Trasporti">🚗 Trasporti</option>
-            <option value="📦 Altro">📦 Altro</option>
-        </select>
-        <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;">▼</div>
-    </div>
-</div>
-    
-    <select id="catSelect" 
-            style="width: 100%; height: 100%; padding: 10px; padding-right: 60px; 
-                   border-radius: 8px; border: 1px solid #444; background: #1e1e24; color: white; 
-                   appearance: none; -webkit-appearance: none; /* Toglie stile nativo */">
-        </select>
-    
-    <div style="position: absolute; right: 60px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none; font-size: 0.8rem;">▼</div>
-
-    <button onclick="manageCategories()" 
-            style="position: absolute; right: 0; top: 0; bottom: 0; width: 50px; 
-                   background: #2d3436; border: 1px solid #444; border-left: none; 
-                   border-top-right-radius: 8px; border-bottom-right-radius: 8px; 
-                   cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">
-        ⚙️
-    </button>
-
-</div>
-                </select>
-            </div>
-            <div>
-                <label>Descrizione</label>
-                <input type="text" id="descInput" placeholder="Dettaglio...">
-            </div>
-            <div>
-                <label>Importo</label>
-                <input type="number" id="amountInput" placeholder="0.00">
+    <div class="card" style="border-left: 5px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span style="color:#aaa;">SALDO</span><div class="wallet-display" id="displayWallet">€0.00</div></div>
+            <div style="text-align: right;">
+                <input type="number" id="manualWallet" placeholder="Modifica..." style="width: 100px; text-align: right;">
+                <button onclick="updateWalletManual()" style="background: #333; color: white;">Salva</button>
             </div>
         </div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-action bg-inc" style="flex:1" onclick="addTransaction('income')">AGGIUNGI ENTRATA</button>
-            <button class="btn-action bg-exp" style="flex:1" onclick="addTransaction('expense')">AGGIUNGI USCITA</button>
-        </div>
+        <div style="height: 200px; margin-top: 20px;"><canvas id="monthlyChart"></canvas></div>
     </div>
 
     <div class="card">
-        <h2>🎯 Obiettivi di Risparmio <button class="btn-tool" style="font-size:0.7rem; padding:4px 8px;" onclick="createGoal()">+ Nuovo</button></h2>
-        <div id="goalsContainer">
-            </div>
-    </div>
-
-    <div class="card">
-        <div class="filters">
-            <h2 style="margin:0; width:100%;">Analisi Finanziaria</h2>
-            <input type="month" id="monthFilter" style="width:auto; background:#111;" onchange="renderCharts()">
-        </div>
-        
-        <div class="charts-container">
-            <div class="chart-box">
-                <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.8rem;">RIPARTIZIONE SPESE (Mese)</div>
-                <canvas id="monthlyChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.8rem;">ANDAMENTO ANNUALE (Entrate vs Uscite)</div>
-                <canvas id="annualChart"></canvas>
-            </div>
-        </div>
-        <div id="statsRow" style="display:flex; justify-content:space-around; margin-top:20px; text-align:center; border-top:1px solid #333; padding-top:15px;">
-            <div>
-                <div style="font-size:0.8rem; color:#888;">ENTRATE MESE</div>
-                <div id="monthIncVal" style="color:var(--success); font-weight:bold; font-size:1.2rem;">€0</div>
-            </div>
-            <div>
-                <div style="font-size:0.8rem; color:#888;">USCITE MESE</div>
-                <div id="monthExpVal" style="color:var(--danger); font-weight:bold; font-size:1.2rem;">€0</div>
-            </div>
-            <div>
-                <div style="font-size:0.8rem; color:#888;">RISPARMIO MESE</div>
-                <div id="monthNetVal" style="color:white; font-weight:bold; font-size:1.2rem;">€0</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>📝 Registro Movimenti</h2>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th width="15%">Data</th>
-                        <th width="20%">Categoria</th>
-                        <th width="40%">Descrizione</th>
-                        <th width="15%">Importo</th>
-                        <th width="10%">Azioni</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-<div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h2 style="margin:0;">🍅 Focus Session</h2>
-        <div id="timerStatus" style="font-size:0.8rem; color:#666; font-weight:bold; letter-spacing:1px;">PRONTO</div>
-    </div>
-
-    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-        
-        <div style="flex:1; min-width:200px; text-align:center; background:#2d3436; padding:20px; border-radius:12px; border:1px solid #444;">
-            <div id="focusDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 15px;">
-                25:00
-            </div>
-            
-            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:15px;">
-                <button onclick="adjustTime(-5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">-</button>
-                <input type="number" id="focusDuration" value="25" onchange="manualTimeSet()" 
-                       style="width:100px; text-align:center; background:none; border:none; color:white; font-size:1.2rem; font-weight:bold;">
-                <span style="color:#666;">min</span>
-                <button onclick="adjustTime(+5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">+</button>
-            </div>
-
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <button id="btnStartFocus" onclick="startFocus()" 
-                        style="background:var(--accent); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    ▶ START
-                </button>
-                <button id="btnPauseFocus" onclick="pauseFocus()" style="display:none; background:var(--warning); color:black; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    ⏸ PAUSA
-                </button>
-                <button onclick="resetFocus()" style="background:#444; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">↺</button>
-            </div>
-        </div>
-
-        <div style="flex:1.5; min-width:250px;">
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="newFocusTask" placeholder="Scrivi obiettivo e premi Invio..." 
-                       onkeypress="if(event.key === 'Enter') addFocusTask()"
-                       style="flex:1; padding:10px; border-radius:6px; border:1px solid #555; background:#1e1e24; color:white;">
-                <button onclick="addFocusTask()" style="background:#444; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
-            </div>
-
-            <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;">
-                </div>
-            
-            <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#888;">
-                <span id="tasksCount">0 obiettivi</span>
-                <button onclick="clearFocusList()" style="background:none; border:none; color:#d63031; cursor:pointer; font-size:0.75rem;">Pulisci tutto</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-<div class="card" style="margin-top: 20px;">
-    <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px;">🧠 Skills & Obiettivi</h2>
-    
-    <div style="background:#2d3436; padding:10px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
-        <div style="font-size:0.8rem; color:#aaa; margin-bottom:5px;">Nuovo Obiettivo</div>
-        
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <input type="text" id="skillName" placeholder="Nome (es. Libro, Corsa)" 
-                   style="flex: 2; min-width:120px; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #1e1e24; color: white;">
-            
-            <input type="number" id="skillTarget" placeholder="Obiettivo (es. 300)" 
-                   style="flex: 1; min-width:80px; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #1e1e24; color: white;">
-            
-            <input type="text" id="skillUnit" placeholder="Unit (es. km)" 
-                   style="flex: 1; min-width:60px; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #1e1e24; color: white;">
-            
-            <button onclick="addSkill()" 
-                    style="width: 50px; background: var(--success); border: none; border-radius: 6px; color: white; font-size: 1.5rem; cursor: pointer; font-weight: bold;">+</button>
-        </div>
-    </div>
-
-    <div id="skillsList" style="display: flex; flex-direction: column; gap: 15px;">
-        </div>
-</div>
-
-<div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h2 style="margin:0;">🎓 Registro Voti</h2>
-            <div style="font-size:0.8rem; background:#111; padding:5px 10px; border-radius:6px; border:1px solid #444;">
-                <span style="color:#888;">Media Totale:</span> 
-                <span id="globalGpa" style="color:white; font-weight:bold; font-size:1rem;">0.0</span>
-            </div>
-        </div>
-
-        <div style="background:#2d3436; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 0.5fr; gap: 10px; align-items: end;">
-                
-                <div>
-                    <label>Materia</label>
-                    <input type="text" id="subjectInput" list="subjectListSuggestions" placeholder="Es. Storia">
-                    <datalist id="subjectListSuggestions">
-                        </datalist>
-                </div>
-
-                <div>
-                    <label>Voto</label>
-                    <input type="number" id="gradeInput" step="0.25" placeholder="Es. 8.5">
-                </div>
-
-                <div>
-                    <label>Periodo</label>
-                    <select id="termSelect">
-                        <option value="1">1° Quad</option>
-                        <option value="2">2° Quad</option>
-                    </select>
-                </div>
-
-                <button onclick="addGrade()" style="height: 42px; background: var(--accent); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">+</button>
-            </div>
-        </div>
-
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.75rem; color:#aaa;">MEDIA 1° Q.</div>
-                <div id="gpaQ1" style="font-size:1.2rem; font-weight:bold; color:var(--warning);">0.0</div>
-            </div>
-            <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.75rem; color:#aaa;">MEDIA 2° Q.</div>
-                <div id="gpaQ2" style="font-size:1.2rem; font-weight:bold; color:var(--success);">0.0</div>
-            </div>
-        </div>
-
-        <div id="schoolList" style="display: flex; flex-direction: column; gap: 10px;">
-            </div>
-    </div>
-
-    <div class="footer-tools">
-        <button class="btn-tool" onclick="exportCSV()">📄 Scarica Excel (.CSV)</button>
-        <button class="btn-tool" onclick="downloadJSON()">💾 Backup Dati</button>
-        <input type="file" id="fileUpload" style="display:none" onchange="uploadJSON(this)">
-        <button class="btn-tool" onclick="document.getElementById('fileUpload').click()">📂 Ripristina Backup</button>
-        <button class="btn-tool" style="border-color:var(--danger); color:var(--danger)" onclick="hardReset()">⚠️ Reset</button>
-    </div>
-
-</div>
-
-<div id="recurringModal" class="modal-overlay">
-    <div class="modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">
-            <h3 style="margin:0;">🔁 Gestione Ricorrenti</h3>
-            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
-        </div>
-
-        <div id="recList" style="margin-bottom:20px; max-height:200px; overflow-y:auto; border:1px solid #333; padding:5px; border-radius:5px; background:#111;">
-            </div>
-
-        <div style="background:#2d3436; padding:15px; border-radius:8px;">
-            <div style="font-weight:bold; margin-bottom:10px; color:var(--accent);">+ NUOVO MODELLO</div>
-            
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <label style="flex:1; background:#111; padding:8px; border-radius:5px; text-align:center; border:1px solid #444;">
-                    <input type="radio" name="newRecType" value="expense" checked> 🔴 Uscita
-                </label>
-                <label style="flex:1; background:#111; padding:8px; border-radius:5px; text-align:center; border:1px solid #444;">
-                    <input type="radio" name="newRecType" value="income"> 🟢 Entrata
-                </label>
-            </div>
-
-            <input type="text" id="newRecName" placeholder="Nome (es. Affitto, Mancia)" style="width:100%; padding:8px; margin-bottom:8px; box-sizing:border-box;">
-            
-            <select id="newRecCat" style="width:100%; padding:8px; margin-bottom:8px; box-sizing:border-box;">
-                <option value="🛵 Lavoro (Deliveroo)">🛵 Lavoro (Deliveroo)</option>
-					<option value="👕Vinted">👕Vinted</option>
-                    <option value="🍕 Cibo">🍕 Cibo</option>
-                    <option value="🎁 Regali">🎁 Regali</option>
-                    <option value="⛽ Benzina">⛽ Benzina</option>
-                    <option value="🎉 Svago">🎉 Svago</option>
-                    <option value="🚗 Trasporti">🚗 Trasporti</option>
-                    <option value="💸 Invest/Risp">💸 Invest/Risp</option>
-					<option value="📦 Altro">📦 Altro</option>
+        <h2>💰 Aggiungi Movimento</h2>
+        <div class="row">
+            <input type="date" id="tDate">
+            <select id="tCat">
+                <option value="Cibo">🍕 Cibo</option>
+                <option value="Lavoro">💸 Lavoro (Entrata)</option>
+                <option value="Svago">🎉 Svago</option>
+                <option value="Casa">🏠 Casa</option>
+                <option value="Altro">📦 Altro</option>
             </select>
-
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="newRecAmount" placeholder="€ Importo" style="flex:1; padding:8px;">
-                <button onclick="addRecModel()" style="flex:1; background:var(--success); border:none; border-radius:5px; font-weight:bold;">SALVA</button>
-            </div>
         </div>
-    </div>
-</div>
-
-<div class="calc-widget">
-    
-    <div id="calcBody" class="calculator-body">
-        <input type="text" id="calcDisplay" class="calc-display" readonly placeholder="0">
-        
-        <div class="calc-grid">
-            <button class="calc-btn btn-ac" onclick="calcClear()">AC</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('/')">÷</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('*')">×</button>
-            <button class="calc-btn" onclick="calcDelete()">⌫</button>
-
-            <button class="calc-btn" onclick="calcAppend('7')">7</button>
-            <button class="calc-btn" onclick="calcAppend('8')">8</button>
-            <button class="calc-btn" onclick="calcAppend('9')">9</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('-')">-</button>
-
-            <button class="calc-btn" onclick="calcAppend('4')">4</button>
-            <button class="calc-btn" onclick="calcAppend('5')">5</button>
-            <button class="calc-btn" onclick="calcAppend('6')">6</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('+')">+</button>
-
-            <button class="calc-btn" onclick="calcAppend('1')">1</button>
-            <button class="calc-btn" onclick="calcAppend('2')">2</button>
-            <button class="calc-btn" onclick="calcAppend('3')">3</button>
-            <button class="calc-btn" onclick="calcAppend('0')">0</button>
-            <button class="calc-btn" onclick="calcAppend('.')">.</button>
-            <button class="calc-btn btn-eq" onclick="calcCalculate()">=</button>
+        <div class="row">
+            <input type="text" id="tDesc" placeholder="Descrizione" style="flex: 2;">
+            <input type="number" id="tAmount" placeholder="€" style="flex: 1;">
+        </div>
+        <div class="row">
+            <button onclick="addTransaction('income')" style="flex:1; background: var(--success); color: black;">+ ENTRATA</button>
+            <button onclick="addTransaction('expense')" style="flex:1; background: var(--danger); color: white;">- SPESA</button>
         </div>
     </div>
 
-    <button class="calc-toggle-btn" onclick="toggleCalculator()" title="Apri Calcolatrice">
-        🧮
-    </button>
+    <div class="card">
+        <h2>📝 Storico</h2>
+        <table id="transTable"></table>
+    </div>
+
 </div>
+
 <script>
-   <script>
-    // --- DATABASE & INIZIALIZZAZIONE ---
-    const DB_KEY = 'SIA_Finance_Final';
-    
-    let appData = {
-        wallet: 0,
-        liquidityTarget: 1000,
-        transactions: [],
-        school: [], 
-        skills: [],
-        focusTasks: [],
-        recurring: [] 
-    };
+    const DB_NAME = 'LifeManager_Fixed_V3'; // Nuovo nome per evitare conflitti vecchi
+    let data = { wallet: 0.00, transactions: [] };
+    let myChart = null;
 
-    // --- SALVATAGGIO ---
+    // --- SISTEMA DI SALVATAGGIO ---
     function saveData() {
-        localStorage.setItem(DB_KEY, JSON.stringify(appData));
-        refreshUI();
+        try {
+            localStorage.setItem(DB_NAME, JSON.stringify(data));
+            showStatus(true); // Mostra verde
+            updateUI();
+        } catch (e) {
+            console.error(e);
+            showStatus(false); // Mostra rosso
+            alert("ATTENZIONE: Il browser sta bloccando il salvataggio! I dati andranno persi.");
+        }
     }
 
     function loadData() {
-        const saved = localStorage.getItem(DB_KEY);
-        if (saved) {
-            appData = JSON.parse(saved);
-        }
-        // Inizializza array se mancano (per evitare errori)
-        if (!appData.transactions) appData.transactions = [];
-        if (!appData.school) appData.school = [];
-        if (!appData.skills) appData.skills = [];
-        if (!appData.focusTasks) appData.focusTasks = [];
-        if (!appData.recurring) appData.recurring = [];
-        
-        refreshUI();
-    }
-
-    // --- AGGIORNAMENTO GRAFICA (HUB CENTRALE) ---
-    function refreshUI() {
-        // 1. Wallet
-        document.getElementById('walletInput').value = parseFloat(appData.wallet).toFixed(2);
-        
-        // 2. Liquidità Bar
-        const perc = appData.liquidityTarget > 0 ? (appData.wallet / appData.liquidityTarget) * 100 : 0;
-        document.getElementById('liquidityBar').style.width = Math.min(perc, 100) + "%";
-        document.getElementById('liquidityPerc').innerText = Math.round(perc) + "% del target (€" + appData.liquidityTarget + ")";
-
-        // 3. Tabelle e Liste
-        renderTable();
-        renderSkills();
-        renderSchool();
-        renderFocusTasks();
-        renderCharts();
-    }
-
-    // ================= SEZIONE FINANZE =================
-
-    function manualWalletUpdate() {
-        const val = parseFloat(document.getElementById('walletInput').value);
-        if (!isNaN(val)) {
-            appData.wallet = val;
-            saveData();
-        }
-    }
-
-    function setLiquidityTarget() {
-        const t = prompt("Qual è il tuo obiettivo di liquidità? (es. 2000)", appData.liquidityTarget);
-        if(t) {
-            appData.liquidityTarget = parseFloat(t);
-            saveData();
-        }
-    }
-
-    function addTransaction(type) {
-        const date = document.getElementById('dateInput').value || new Date().toISOString().split('T')[0];
-        const cat = document.getElementById('catSelect').value;
-        const desc = document.getElementById('descInput').value;
-        const amount = parseFloat(document.getElementById('amountInput').value);
-
-        if (desc && amount) {
-            appData.transactions.push({ id: Date.now(), date, cat, desc, amount, type });
-            
-            // Aggiorna Wallet
-            if (type === 'income') appData.wallet += amount;
-            else appData.wallet -= amount;
-
-            // Pulisci
-            document.getElementById('descInput').value = '';
-            document.getElementById('amountInput').value = '';
-            
-            saveData();
-        } else {
-            alert("Inserisci Descrizione e Importo!");
-        }
-    }
-
-    function deleteTransaction(id) {
-        if(confirm("Eliminare questa transazione? Il saldo verrà aggiornato.")) {
-            const index = appData.transactions.findIndex(t => t.id === id);
-            if (index > -1) {
-                const t = appData.transactions[index];
-                // Storno soldi
-                if(t.type === 'income') appData.wallet -= t.amount;
-                else appData.wallet += t.amount;
-                
-                appData.transactions.splice(index, 1);
-                saveData();
+        try {
+            const saved = localStorage.getItem(DB_NAME);
+            if (saved) {
+                data = JSON.parse(saved);
+                console.log("Dati caricati:", data);
+            } else {
+                console.log("Nessun dato precedente trovato. Inizio da zero.");
             }
+            document.getElementById('tDate').valueAsDate = new Date();
+            updateUI();
+            showStatus(true);
+        } catch (e) {
+            console.error("Errore nel caricamento:", e);
+            showStatus(false);
         }
     }
 
-    function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        
-        // Ordina per data (più recente in alto)
-        const sorted = appData.transactions.sort((a,b) => new Date(b.date) - new Date(a.date));
+    // --- INDICATORE DI STATO ---
+    function showStatus(isWorking) {
+        const el = document.getElementById('statusText');
+        if(isWorking) {
+            el.innerHTML = '<span class="status-dot" style="background: #00b894;"></span> Memoria Attiva (Salvato)';
+        } else {
+            el.innerHTML = '<span class="status-dot" style="background: #d63031;"></span> ERRORE: Memoria non funzionante';
+        }
+    }
+    
+    function forceSave() {
+        saveData();
+        alert("Tentativo di salvataggio eseguito.");
+    }
 
-        sorted.forEach(t => {
+    // --- LOGICA UI ---
+    function updateUI() {
+        document.getElementById('displayWallet').innerText = '€' + parseFloat(data.wallet).toFixed(2);
+        
+        // Tabella
+        const table = document.getElementById('transTable');
+        table.innerHTML = '';
+        data.transactions.slice().reverse().forEach((t, index) => {
+            const realIndex = data.transactions.length - 1 - index;
             const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
             const sign = t.type === 'income' ? '+' : '-';
-            const tagClass = t.type === 'income' ? 'tag-inc' : 'tag-exp';
-
-            const row = `
+            table.innerHTML += `
                 <tr>
                     <td>${t.date}</td>
-                    <td><span class="tag ${tagClass}">${t.cat}</span></td>
-                    <td>${t.desc}</td>
-                    <td style="color:${color}; font-weight:bold;">${sign}€${t.amount.toFixed(2)}</td>
-                    <td><button onclick="deleteTransaction(${t.id})" style="color:#666; background:none; border:none; cursor:pointer;">✕</button></td>
-                </tr>
-            `;
-            tbody.innerHTML += row;
+                    <td><b>${t.desc}</b> <small>(${t.cat})</small></td>
+                    <td style="color:${color}; text-align:right;">${sign}€${t.amount}</td>
+                    <td style="text-align:right;"><button onclick="deleteTrans(${realIndex})" style="color:#666; background:none;">x</button></td>
+                </tr>`;
         });
+        updateChart();
     }
 
-    // ================= GRAFICI (Chart.js) =================
-    let myMonthlyChart, myAnnualChart;
-
-    function renderCharts() {
-        const ctxM = document.getElementById('monthlyChart');
-        const ctxA = document.getElementById('annualChart');
-        if(!ctxM || !ctxA) return;
-
-        // Filtro mese corrente (o selezionato)
-        const filterVal = document.getElementById('monthFilter').value; // yyyy-mm
-        const now = new Date();
-        const currentMonth = filterVal ? filterVal : `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-
-        // Calcoli Mese
-        let monthInc = 0, monthExp = 0;
-        let catTotals = {};
-
-        appData.transactions.forEach(t => {
-            if(t.date.startsWith(currentMonth)) {
-                if(t.type === 'income') monthInc += t.amount;
-                else {
-                    monthExp += t.amount;
-                    catTotals[t.cat] = (catTotals[t.cat] || 0) + t.amount;
-                }
-            }
+    function updateChart() {
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        let cats = {};
+        data.transactions.forEach(t => {
+            if (t.type === 'expense') cats[t.cat] = (cats[t.cat] || 0) + t.amount;
         });
 
-        // Aggiorna Testi
-        document.getElementById('monthIncVal').innerText = `€${monthInc.toFixed(2)}`;
-        document.getElementById('monthExpVal').innerText = `€${monthExp.toFixed(2)}`;
-        const net = monthInc - monthExp;
-        document.getElementById('monthNetVal').innerText = `€${net.toFixed(2)}`;
-        document.getElementById('monthNetVal').style.color = net >= 0 ? 'var(--success)' : 'var(--danger)';
-
-        // GRAFICO 1: Torta Spese
-        if(myMonthlyChart) myMonthlyChart.destroy();
-        myMonthlyChart = new Chart(ctxM, {
+        if (myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: Object.keys(catTotals),
-                datasets: [{
-                    data: Object.values(catTotals),
-                    backgroundColor: ['#6c5ce7', '#00b894', '#d63031', '#fdcb6e', '#0984e3', '#e17055'],
-                    borderWidth: 0
-                }]
+                labels: Object.keys(cats),
+                datasets: [{ data: Object.values(cats), backgroundColor: ['#fdcb6e', '#00b894', '#6c5ce7', '#d63031', '#74b9ff'] }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
-
-        // GRAFICO 2: Barre Annuali (Semplificato)
-        // (Qui si potrebbe fare una logica complessa per raggruppare per mese, metto dati statici per demo visuale se vuoto)
-        if(myAnnualChart) myAnnualChart.destroy();
-        myAnnualChart = new Chart(ctxA, {
-            type: 'bar',
-            data: {
-                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu'],
-                datasets: [
-                    { label: 'Entrate', data: [monthInc, 0, 0, 0, 0, 0], backgroundColor: '#00b894' }, // Demo: usa dati reali
-                    { label: 'Uscite', data: [monthExp, 0, 0, 0, 0, 0], backgroundColor: '#d63031' }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: '#333' } }, x: { grid: { display: false } } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
         });
     }
 
-    // ================= SEZIONE SCUOLA =================
-    function addGrade() {
-        const subj = document.getElementById('subjectInput').value;
-        const val = parseFloat(document.getElementById('gradeInput').value);
-        const term = document.getElementById('termSelect').value;
-
-        if(subj && !isNaN(val)) {
-            appData.school.push({ id: Date.now(), subject: subj, grade: val, term: term });
+    // --- LOGICA DATI ---
+    function updateWalletManual() {
+        const val = parseFloat(document.getElementById('manualWallet').value);
+        if(!isNaN(val)) { data.wallet = val; saveData(); document.getElementById('manualWallet').value=''; }
+    }
+    function addTransaction(type) {
+        const desc = document.getElementById('tDesc').value;
+        const amount = parseFloat(document.getElementById('tAmount').value);
+        const cat = document.getElementById('tCat').value;
+        const date = document.getElementById('tDate').value;
+        if(desc && !isNaN(amount)) {
+            data.transactions.push({ desc, amount, cat, type, date });
+            type === 'income' ? data.wallet += amount : data.wallet -= amount;
             saveData();
-            document.getElementById('subjectInput').value = '';
-            document.getElementById('gradeInput').value = '';
+            document.getElementById('tDesc').value = ''; document.getElementById('tAmount').value = '';
         }
     }
-
-    function deleteGrade(id) {
-        const idx = appData.school.findIndex(x => x.id === id);
-        if(idx > -1) { appData.school.splice(idx, 1); saveData(); }
-    }
-
-    function renderSchool() {
-        const list = document.getElementById('schoolList');
-        list.innerHTML = '';
-        
-        let sum1 = 0, count1 = 0;
-        let sum2 = 0, count2 = 0;
-
-        appData.school.forEach(g => {
-            if(g.term == '1') { sum1 += g.grade; count1++; }
-            else { sum2 += g.grade; count2++; }
-
-            list.innerHTML += `
-                <div style="display:flex; justify-content:space-between; background:#222; padding:10px; border-radius:6px; border-left: 3px solid ${g.grade >= 6 ? 'var(--success)' : 'var(--danger)'}">
-                    <span><b>${g.subject}</b> (Q${g.term})</span>
-                    <span>
-                        <b>${g.grade}</b>
-                        <button onclick="deleteGrade(${g.id})" style="margin-left:10px; border:none; background:none; color:#555; cursor:pointer;">x</button>
-                    </span>
-                </div>
-            `;
-        });
-
-        const avg1 = count1 ? (sum1/count1).toFixed(2) : "0.0";
-        const avg2 = count2 ? (sum2/count2).toFixed(2) : "0.0";
-        const totalAvg = (count1+count2) ? ((sum1+sum2)/(count1+count2)).toFixed(2) : "0.0";
-
-        document.getElementById('gpaQ1').innerText = avg1;
-        document.getElementById('gpaQ2').innerText = avg2;
-        document.getElementById('globalGpa').innerText = totalAvg;
-    }
-
-    // ================= SEZIONE SKILLS =================
-    function addSkill() {
-        const name = document.getElementById('skillName').value;
-        const target = parseFloat(document.getElementById('skillTarget').value);
-        const unit = document.getElementById('skillUnit').value;
-        
-        if(name && target) {
-            appData.skills.push({ id: Date.now(), name, target, current: 0, unit });
-            saveData();
-            document.getElementById('skillName').value = '';
-            document.getElementById('skillTarget').value = '';
-        }
-    }
-
-    function updateSkill(id, delta) {
-        const s = appData.skills.find(x => x.id === id);
-        if(s) {
-            s.current += delta;
-            if(s.current < 0) s.current = 0;
-            saveData();
-        }
-    }
-    
-    function deleteSkill(id) {
-        const idx = appData.skills.findIndex(x => x.id === id);
-        if(idx > -1) { appData.skills.splice(idx, 1); saveData(); }
-    }
-
-    function renderSkills() {
-        const container = document.getElementById('skillsList');
-        container.innerHTML = '';
-
-        appData.skills.forEach(s => {
-            const perc = Math.min((s.current / s.target) * 100, 100);
-            container.innerHTML += `
-                <div class="card" style="padding:15px; margin-bottom:10px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                        <strong>${s.name}</strong>
-                        <span style="color:#aaa; font-size:0.9rem;">${s.current} / ${s.target} ${s.unit}</span>
-                    </div>
-                    <div style="background:#111; height:10px; border-radius:5px; overflow:hidden; margin-bottom:10px;">
-                        <div style="width:${perc}%; height:100%; background:var(--accent); transition:width 0.3s;"></div>
-                    </div>
-                    <div style="display:flex; gap:10px; justify-content:flex-end;">
-                        <button onclick="updateSkill(${s.id}, 1)" style="padding:5px 10px; background:#333; color:white; border:none; border-radius:4px;">+1</button>
-                        <button onclick="updateSkill(${s.id}, 5)" style="padding:5px 10px; background:#333; color:white; border:none; border-radius:4px;">+5</button>
-                        <button onclick="deleteSkill(${s.id})" style="padding:5px 10px; background:none; color:#d63031; border:none;">Elimina</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // ================= FOCUS TIMER (POMODORO) =================
-    let timerInterval = null;
-    let secondsLeft = 25 * 60;
-    let isPaused = false;
-
-    function updateTimerDisplay() {
-        const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
-        const s = (secondsLeft % 60).toString().padStart(2, '0');
-        document.getElementById('focusDisplay').innerText = `${m}:${s}`;
-        document.title = `${m}:${s} - Focus`;
-    }
-
-    function startFocus() {
-        if(timerInterval) return; // Già in corso
-        document.getElementById('timerStatus').innerText = "🔥 FOCUS MODE ATTIVA";
-        document.getElementById('timerStatus').style.color = "var(--success)";
-        document.getElementById('btnStartFocus').style.display = 'none';
-        document.getElementById('btnPauseFocus').style.display = 'inline-block';
-
-        timerInterval = setInterval(() => {
-            if(secondsLeft > 0) {
-                secondsLeft--;
-                updateTimerDisplay();
-            } else {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                alert("⏰ Tempo Scaduto! Prenditi una pausa.");
-                resetFocus();
-            }
-        }, 1000);
-    }
-
-    function pauseFocus() {
-        if(timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            document.getElementById('timerStatus').innerText = "⏸ IN PAUSA";
-            document.getElementById('timerStatus').style.color = "var(--warning)";
-            document.getElementById('btnStartFocus').innerText = "▶ RIPRENDI";
-            document.getElementById('btnStartFocus').style.display = 'inline-block';
-            document.getElementById('btnPauseFocus').style.display = 'none';
-        }
-    }
-
-    function resetFocus() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        manualTimeSet();
-        document.getElementById('timerStatus').innerText = "PRONTO";
-        document.getElementById('timerStatus').style.color = "#666";
-        document.getElementById('btnStartFocus').innerText = "▶ START";
-        document.getElementById('btnStartFocus').style.display = 'inline-block';
-        document.getElementById('btnPauseFocus').style.display = 'none';
-    }
-
-    function manualTimeSet() {
-        const mins = document.getElementById('focusDuration').value;
-        secondsLeft = mins * 60;
-        updateTimerDisplay();
-    }
-    
-    function adjustTime(val) {
-        let cur = parseInt(document.getElementById('focusDuration').value);
-        cur += val;
-        if(cur < 1) cur = 1;
-        document.getElementById('focusDuration').value = cur;
-        manualTimeSet();
-    }
-
-    // --- Task Focus ---
-    function addFocusTask() {
-        const txt = document.getElementById('newFocusTask').value;
-        if(txt) {
-            appData.focusTasks.push({ text: txt, done: false });
-            saveData();
-            document.getElementById('newFocusTask').value = '';
-        }
-    }
-    
-    function toggleFocusTask(idx) {
-        appData.focusTasks[idx].done = !appData.focusTasks[idx].done;
-        saveData();
-    }
-
-    function clearFocusList() {
-        if(confirm("Pulire lista obiettivi?")) {
-            appData.focusTasks = [];
+    function deleteTrans(index) {
+        if(confirm("Eliminare?")) {
+            const t = data.transactions[index];
+            t.type === 'income' ? data.wallet -= t.amount : data.wallet += t.amount;
+            data.transactions.splice(index, 1);
             saveData();
         }
     }
 
-    function renderFocusTasks() {
-        const list = document.getElementById('focusTodoList');
-        list.innerHTML = '';
-        appData.focusTasks.forEach((t, i) => {
-            list.innerHTML += `
-                <div style="display:flex; align-items:center; gap:10px; background:#222; padding:8px; border-radius:4px;">
-                    <input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleFocusTask(${i})">
-                    <span style="${t.done ? 'text-decoration:line-through; color:#666' : 'color:white'}">${t.text}</span>
-                </div>
-            `;
-        });
-        document.getElementById('tasksCount').innerText = `${appData.focusTasks.length} obiettivi`;
-    }
-
-    // ================= CALCOLATRICE =================
-    function toggleCalculator() {
-        const body = document.getElementById('calcBody');
-        body.style.display = (body.style.display === 'block') ? 'none' : 'block';
-    }
-    
-    function calcAppend(val) {
-        const display = document.getElementById('calcDisplay');
-        display.value += val;
-    }
-    
-    function calcClear() { document.getElementById('calcDisplay').value = ''; }
-    
-    function calcDelete() { 
-        const d = document.getElementById('calcDisplay');
-        d.value = d.value.slice(0, -1);
-    }
-
-    function calcCalculate() {
-        const display = document.getElementById('calcDisplay');
-        try {
-            // Usa Function invece di eval per sicurezza leggermente migliore, o eval semplice per uso locale
-            display.value = eval(display.value); 
-        } catch {
-            display.value = 'Error';
-            setTimeout(calcClear, 1000);
-        }
-    }
-
-    // ================= MODAL & MODELLI =================
-    function openModal() {
-        document.getElementById('recurringModal').style.display = 'flex';
-        renderRecModels();
-    }
-    function closeModal() { document.getElementById('recurringModal').style.display = 'none'; }
-    
-    function addRecModel() {
-        const name = document.getElementById('newRecName').value;
-        const amount = parseFloat(document.getElementById('newRecAmount').value);
-        const cat = document.getElementById('newRecCat').value;
-        // Prendi il valore del radio button selezionato
-        const type = document.querySelector('input[name="newRecType"]:checked').value;
-
-        if(name && amount) {
-            appData.recurring.push({ name, amount, cat, type });
-            saveData();
-            document.getElementById('newRecName').value = '';
-            document.getElementById('newRecAmount').value = '';
-        }
-    }
-
-    function useRecModel(index) {
-        const m = appData.recurring[index];
-        // Compila il form principale
-        document.getElementById('descInput').value = m.name;
-        document.getElementById('amountInput').value = m.amount;
-        document.getElementById('catSelect').value = m.cat;
-        
-        closeModal();
-        addTransaction(m.type); // Aggiunge direttamente
-        alert("Transazione aggiunta!");
-    }
-
-    function deleteRecModel(index) {
-        appData.recurring.splice(index, 1);
-        saveData();
-    }
-
-    function renderRecModels() {
-        const list = document.getElementById('recList');
-        list.innerHTML = '';
-        appData.recurring.forEach((m, i) => {
-            list.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #333;">
-                    <div>
-                        <div style="font-weight:bold;">${m.name}</div>
-                        <div style="font-size:0.8rem; color:#888;">${m.cat}</div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="color:${m.type==='income' ? 'var(--success)' : 'var(--danger)'}">€${m.amount}</span>
-                        <button onclick="useRecModel(${i})" style="background:var(--accent); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">Usa</button>
-                        <button onclick="deleteRecModel(${i})" style="color:#d63031; background:none; border:none; cursor:pointer;">x</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // ================= EXPORT / IMPORT =================
-    function downloadJSON() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-        const anchor = document.createElement('a');
-        anchor.setAttribute("href", dataStr);
-        anchor.setAttribute("download", "backup_finance.json");
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-    }
-
-    function hardReset() {
-        if(confirm("⚠️ SEI SICURO? Cancellerai tutti i dati per sempre!")) {
-            localStorage.removeItem(DB_KEY);
-            location.reload();
-        }
-    }
-
-    // ================= AVVIO APP =================
-    window.onload = function() {
-        loadData();
-    };
-
+    // AVVIO
+    window.onload = loadData;
 </script>
-</body>
-</html>
-</script>
-
 </body>
 </html>
