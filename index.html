@@ -3,80 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Finanza & Focus</title>
+    <title>Dashboard Finanza & Focus Completa</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
         
-        /* Griglia Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        /* Header e Saldo */
+        header { margin-bottom: 30px; }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
 
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { margin-top: 0; font-size: 1.2rem; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        /* Griglia Riepilogo (Saldo, Entrate, Uscite) */
+        .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+        .card-stat { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .stat-title { font-size: 0.9rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; margin-top: 10px; }
+        .income { color: #27ae60; }
+        .expense { color: #c0392b; }
+        .balance { color: #2980b9; }
 
-        /* Obiettivi Risparmio */
-        .goal-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        input { padding: 8px; border: 1px solid #ddd; border-radius: 6px; width: 100%; }
-        button { cursor: pointer; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; transition: 0.2s; }
-        .btn-add { background-color: #27ae60; color: white; }
-        .btn-delete { background-color: #e74c3c; color: white; padding: 4px 10px; font-size: 0.8rem; margin-left: 10px;}
+        /* Griglia Principale */
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .full-width { grid-column: span 2; }
+
+        h2 { border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; margin-top: 0; color: #34495e; font-size: 1.2rem; }
+
+        /* Obiettivi */
+        .goal-input { display: flex; gap: 10px; margin-bottom: 15px; }
+        input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 100%; }
+        button { border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: #27ae60; color: white; }
+        .btn-del { background: #e74c3c; color: white; margin-left: 10px; padding: 5px 10px; font-size: 0.8rem;}
         
         ul { list-style: none; padding: 0; }
-        li { background: #f9f9f9; border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        li { background: #f8f9fa; margin-bottom: 8px; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Tomato Timer */
-        .timer-display { font-size: 3rem; font-weight: bold; text-align: center; margin: 20px 0; color: #e74c3c; }
-        .timer-controls { display: flex; justify-content: center; gap: 10px; }
-        .btn-start { background-color: #2980b9; color: white; }
-        .btn-stop { background-color: #95a5a6; color: white; }
+        /* Timer */
+        .timer-box { text-align: center; }
+        .time-display { font-size: 3.5rem; font-weight: bold; color: #333; margin: 15px 0; }
+        .btn-start { background: #3498db; color: white; width: 45%; }
+        .btn-stop { background: #95a5a6; color: white; width: 45%; }
 
-        /* Statistiche */
-        .stats-box { margin-top: 15px; display: flex; justify-content: space-around; background: #eef2f3; padding: 10px; border-radius: 8px; }
-        .stat-item { text-align: center; }
-        .stat-value { font-weight: bold; color: #2980b9; font-size: 1.1rem; }
+        /* Medie Q1 Q2 */
+        .quarter-stats { display: flex; justify-content: space-around; margin-top: 20px; background: #ecf0f1; padding: 15px; border-radius: 8px; }
+        .q-stat strong { display: block; font-size: 1.2rem; color: #2c3e50; }
+
+        @media (max-width: 768px) {
+            .summary-grid, .main-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📊 La Tua Dashboard Personale</h1>
+    <header>
+        <h1>📊 Dashboard Personale</h1>
+    </header>
 
-    <div class="dashboard-grid">
+    <div class="summary-grid">
+        <div class="card-stat">
+            <div class="stat-title">Entrate Mensili</div>
+            <div class="stat-value income">+ €2,450.00</div>
+        </div>
+        <div class="card-stat">
+            <div class="stat-title">Uscite Mensili</div>
+            <div class="stat-value expense">- €1,120.00</div>
+        </div>
+        <div class="card-stat">
+            <div class="stat-title">Saldo Attuale</div>
+            <div class="stat-value balance">€ 12,350.00</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
         
         <div class="card">
-            <h2>💰 Obiettivi di Risparmio</h2>
-            <div class="goal-input-group">
-                <input type="text" id="goalName" placeholder="Es. Vacanza...">
-                <input type="number" id="goalAmount" placeholder="€ Target">
-                <button class="btn-add" onclick="addGoal()">Aggiungi</button>
+            <h2>🎯 Obiettivi di Risparmio</h2>
+            <div class="goal-input">
+                <input type="text" id="goalText" placeholder="Obiettivo...">
+                <input type="number" id="goalTarget" placeholder="€ Target">
+                <button class="btn-add" onclick="addGoal()">+</button>
             </div>
             <ul id="goalList">
                 </ul>
         </div>
 
-        <div class="card">
-            <h2>🍅 Tomato Focus Timer</h2>
-            <div class="timer-display" id="timer">25:00</div>
-            <div class="timer-controls">
+        <div class="card timer-box">
+            <h2>🍅 Focus Timer</h2>
+            <div class="time-display" id="timer">25:00</div>
+            <div>
                 <button class="btn-start" onclick="startTimer()">Avvia</button>
-                <button class="btn-stop" onclick="stopTimer()">Ferma / Blocca</button>
+                <button class="btn-stop" onclick="stopTimer()">Ferma / Resetta</button>
             </div>
         </div>
 
-        <div class="card" style="grid-column: span 2;"> <h2>📈 Andamento Annuale (Entrate vs Uscite)</h2>
-            <canvas id="financeChart" height="100"></canvas>
+        <div class="card full-width">
+            <h2>📈 Andamento Annuale (Gen - Dic)</h2>
+            <div style="height: 300px;">
+                <canvas id="financeChart"></canvas>
+            </div>
             
-            <div class="stats-box">
-                <div class="stat-item">
-                    <div>Media Q1 (Gen-Mar)</div>
-                    <div class="stat-value" id="q1Avg">€ 0</div>
-                </div>
-                <div class="stat-item">
-                    <div>Media Q2 (Apr-Giu)</div>
-                    <div class="stat-value" id="q2Avg">€ 0</div>
-                </div>
+            <div class="quarter-stats">
+                <div class="q-stat">Media Q1 (Gen-Mar)<br><strong id="q1Val">€ 0.00</strong></div>
+                <div class="q-stat">Media Q2 (Apr-Giu)<br><strong id="q2Val">€ 0.00</strong></div>
             </div>
         </div>
 
@@ -84,116 +115,120 @@
 </div>
 
 <script>
-    /* --- LOGICA OBIETTIVI RISPARMIO --- */
-    let goals = [
-        { name: "Fondo Emergenza", target: 1000 },
-        { name: "Nuovo PC", target: 1500 }
+    /* --- GESTIONE OBIETTIVI CON SALVATAGGIO --- */
+    
+    // 1. Carica dal LocalStorage (memoria del browser) o usa i default se è la prima volta
+    let savedGoals = localStorage.getItem('myDashboardGoals');
+    let goals = savedGoals ? JSON.parse(savedGoals) : [
+        {name: "Fondo Emergenza", amount: 5000},
+        {name: "Vacanze Estive", amount: 1500}
     ];
+
+    // Funzione per salvare i dati ogni volta che cambiano
+    function saveToStorage() {
+        localStorage.setItem('myDashboardGoals', JSON.stringify(goals));
+    }
 
     function renderGoals() {
         const list = document.getElementById('goalList');
-        list.innerHTML = ''; // Pulisce la lista
+        list.innerHTML = "";
         goals.forEach((goal, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span><strong>${goal.name}</strong>: €${goal.target}</span>
-                <button class="btn-delete" onclick="deleteGoal(${index})">Elimina</button>
+            list.innerHTML += `
+                <li>
+                    <span>${goal.name} (Target: €${goal.amount})</span>
+                    <button class="btn-del" onclick="deleteGoal(${index})">X</button>
+                </li>
             `;
-            list.appendChild(li);
         });
     }
 
     function addGoal() {
-        const name = document.getElementById('goalName').value;
-        const amount = document.getElementById('goalAmount').value;
+        const name = document.getElementById('goalText').value;
+        const amount = document.getElementById('goalTarget').value;
         if(name && amount) {
-            goals.push({ name: name, target: amount });
+            goals.push({name, amount});
+            saveToStorage(); // SALVA
             renderGoals();
-            document.getElementById('goalName').value = '';
-            document.getElementById('goalAmount').value = '';
-        } else {
-            alert("Inserisci nome e importo!");
+            document.getElementById('goalText').value = "";
+            document.getElementById('goalTarget').value = "";
         }
     }
 
-    // FUNZIONE PER ELIMINARE OBIETTIVO
+    // Funzione per eliminare (Nuova richiesta)
     function deleteGoal(index) {
-        if(confirm("Vuoi davvero eliminare questo obiettivo?")) {
-            goals.splice(index, 1); // Rimuove l'elemento all'indice specificato
-            renderGoals(); // Ridisegna la lista
+        if(confirm("Vuoi eliminare questo obiettivo?")) {
+            goals.splice(index, 1);
+            saveToStorage(); // SALVA
+            renderGoals();
         }
     }
 
-    /* --- LOGICA TOMATO TIMER --- */
-    let timerInterval;
-    let timeLeft = 25 * 60; // 25 minuti in secondi
+    renderGoals();
 
-    function updateDisplay() {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
+    /* --- GESTIONE TIMER --- */
+    let timer;
+    let timeLeft = 1500; // 25 minuti
+
+    function updateTimerDisplay() {
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
         document.getElementById('timer').innerText = 
-            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
 
     function startTimer() {
-        if(timerInterval) return; // Evita di avviare più timer contemporaneamente
-        timerInterval = setInterval(() => {
-            if(timeLeft > 0) {
-                timeLeft--;
-                updateDisplay();
-            } else {
-                alert("Tempo scaduto! Fai una pausa.");
-                stopTimer();
-            }
-        }, 1000);
+        if(!timer) {
+            timer = setInterval(() => {
+                if(timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    stopTimer();
+                    alert("Tempo scaduto!");
+                }
+            }, 1000);
+        }
     }
 
     function stopTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        timeLeft = 25 * 60; // Resetta a 25 minuti
-        updateDisplay();
+        clearInterval(timer);
+        timer = null;
+        timeLeft = 1500; // Resetta a 25 min
+        updateTimerDisplay();
     }
 
-    /* --- LOGICA GRAFICO E STATISTICHE --- */
-    // Dati simulati
-    const monthlyData = [1200, 1500, 1100, 1800, 1600, 1400, 1300, 1900, 2100, 1700, 2000, 2200];
-
+    /* --- GRAFICO A COLONNE E MEDIE --- */
     const ctx = document.getElementById('financeChart').getContext('2d');
+    
+    // Dati simulati
+    const dataValues = [1200, 1350, 1100, 1600, 1550, 1400, 1300, 900, 1700, 1800, 2000, 2200];
+
+    // Calcolo Medie Q1 e Q2
+    const q1Avg = (dataValues[0] + dataValues[1] + dataValues[2]) / 3;
+    const q2Avg = (dataValues[3] + dataValues[4] + dataValues[5]) / 3;
+
+    document.getElementById('q1Val').innerText = "€ " + q1Avg.toFixed(2);
+    document.getElementById('q2Val').innerText = "€ " + q2Avg.toFixed(2);
+
     new Chart(ctx, {
-        type: 'bar', // MODIFICA: 'bar' crea il grafico a colonne
+        type: 'bar', // Impostato a BARRE (COLONNE)
         data: {
             labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
             datasets: [{
-                label: 'Risparmio Netto (€)',
-                data: monthlyData,
-                backgroundColor: 'rgba(52, 152, 219, 0.6)',
-                borderColor: 'rgba(52, 152, 219, 1)',
-                borderWidth: 1
+                label: 'Risparmio Netto',
+                data: dataValues,
+                backgroundColor: '#3498db',
+                borderRadius: 4
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: { beginAtZero: true }
             }
         }
     });
-
-    // CALCOLO MEDIE Q1 e Q2
-    function calculateAverages() {
-        // Q1 = Gen (0), Feb (1), Mar (2)
-        const q1 = (monthlyData[0] + monthlyData[1] + monthlyData[2]) / 3;
-        // Q2 = Apr (3), Mag (4), Giu (5)
-        const q2 = (monthlyData[3] + monthlyData[4] + monthlyData[5]) / 3;
-
-        document.getElementById('q1Avg').innerText = `€ ${q1.toFixed(2)}`;
-        document.getElementById('q2Avg').innerText = `€ ${q2.toFixed(2)}`;
-    }
-
-    // Inizializzazione
-    renderGoals();
-    calculateAverages();
-
 </script>
 
 </body>
