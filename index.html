@@ -378,17 +378,21 @@
                 <input type="date" id="dateInput">
             </div>
             <div>
-                <label>Categoria</label>
-                <select id="catSelect">
-                    <option value="🛵 Lavoro (Deliveroo)">🛵 Lavoro (Deliveroo)</option>
-					<option value="👕Vinted">👕Vinted</option>
-                    <option value="🍕 Cibo">🍕 Cibo</option>
-                    <option value="🎁 Regali">🎁 Regali</option>
-                    <option value="⛽ Benzina">⛽ Benzina</option>
-                    <option value="🎉 Svago">🎉 Svago</option>
-                    <option value="🚗 Trasporti">🚗 Trasporti</option>
-                    <option value="💸 Invest/Risp">💸 Invest/Risp</option>
-					<div style="position: relative; width: 100%; margin-bottom: 15px; height: 45px;">
+    <label>Categoria</label>
+    <div style="position: relative; width: 100%; height: 45px;">
+        <select id="catSelect" style="width: 100%; height: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1e1e24; color: white; appearance: none;">
+            <option value="🛵 Lavoro">🛵 Lavoro (Deliveroo)</option>
+            <option value="👕 Vinted">👕 Vinted</option>
+            <option value="🍕 Cibo">🍕 Cibo</option>
+            <option value="🎁 Regali">🎁 Regali</option>
+            <option value="⛽ Benzina">⛽ Benzina</option>
+            <option value="🎉 Svago">🎉 Svago</option>
+            <option value="🚗 Trasporti">🚗 Trasporti</option>
+            <option value="📦 Altro">📦 Altro</option>
+        </select>
+        <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;">▼</div>
+    </div>
+</div>
     
     <select id="catSelect" 
             style="width: 100%; height: 100%; padding: 10px; padding-right: 60px; 
@@ -697,70 +701,61 @@
     </button>
 </div>
 <script>
-    // --- GESTIONE DATI ---
-    const DB_KEY = 'SIA_Finance_v9';
+   <script>
+    // --- DATABASE & INIZIALIZZAZIONE ---
+    const DB_KEY = 'SIA_Finance_Final';
     
-    // Struttura dati iniziale
-    // Aggiungo school: [] direttamente qui per i nuovi utenti
-    let appData = JSON.parse(localStorage.getItem(DB_KEY)) || {
+    let appData = {
         wallet: 0,
+        liquidityTarget: 1000,
         transactions: [],
-        school: [], // <--- Aggiunto qui per sicurezza
-        goals: [
-            { id: 1, name: "Tasse Uni", target: 2000, current: 500 },
-            { id: 2, name: "Motorino", target: 1200, current: 200 }
-        ]
+        school: [], 
+        skills: [],
+        focusTasks: [],
+        recurring: [] 
     };
 
-    let chartInstances = { monthly: null, annual: null };
-
-    // --- CORE LOGIC ---
+    // --- SALVATAGGIO ---
     function saveData() {
         localStorage.setItem(DB_KEY, JSON.stringify(appData));
         refreshUI();
     }
 
-    // --- QUESTA È L'UNICA FUNZIONE REFRESHUI CHE DEVI AVERE ---
-    function refreshUI() {
-        // 1. Controllo di sicurezza (Ripara i dati se manca la scuola)
-        if (!appData.school) {
-            appData.school = [];
+    function loadData() {
+        const saved = localStorage.getItem(DB_KEY);
+        if (saved) {
+            appData = JSON.parse(saved);
         }
-
-        // 2. Aggiornamento Wallet
-        if (document.getElementById('walletInput')) {
-            document.getElementById('walletInput').value = parseFloat(appData.wallet).toFixed(2);
-        }
-
-        // 3. Render di tutte le sezioni
-        // (Uso typeof per evitare errori se non hai ancora copiato le altre funzioni)
-        if (typeof renderGoals === 'function') renderGoals();
-        if (typeof renderTable === 'function') renderTable();
-        if (typeof renderCharts === 'function') renderCharts();
-        if (typeof renderSkills === 'function') renderSkills();
+        // Inizializza array se mancano (per evitare errori)
+        if (!appData.transactions) appData.transactions = [];
+        if (!appData.school) appData.school = [];
+        if (!appData.skills) appData.skills = [];
+        if (!appData.focusTasks) appData.focusTasks = [];
+        if (!appData.recurring) appData.recurring = [];
         
-        // 4. SCUOLA (Fondamentale)
-        renderSchool(); 
+        refreshUI();
     }
 
-    // --- INIT (Avvio dell'App) ---
-    // Queste righe partono appena apri la pagina
-    
-    // Se hai queste funzioni nel tuo codice, lasciale qui:
-    if (typeof renderCategoryOptions === 'function') renderCategoryOptions();
-    if (typeof renderLiquidity === 'function') renderLiquidity(); 
+    // --- AGGIORNAMENTO GRAFICA (HUB CENTRALE) ---
+    function refreshUI() {
+        // 1. Wallet
+        document.getElementById('walletInput').value = parseFloat(appData.wallet).toFixed(2);
+        
+        // 2. Liquidità Bar
+        const perc = appData.liquidityTarget > 0 ? (appData.wallet / appData.liquidityTarget) * 100 : 0;
+        document.getElementById('liquidityBar').style.width = Math.min(perc, 100) + "%";
+        document.getElementById('liquidityPerc').innerText = Math.round(perc) + "% del target (€" + appData.liquidityTarget + ")";
 
-    // Imposta le date
-    const dateInput = document.getElementById('dateInput');
-    if (dateInput) dateInput.valueAsDate = new Date();
-    
-    const monthFilter = document.getElementById('monthFilter');
-    if (monthFilter) monthFilter.value = new Date().toISOString().slice(0, 7);
+        // 3. Tabelle e Liste
+        renderTable();
+        renderSkills();
+        renderSchool();
+        renderFocusTasks();
+        renderCharts();
+    }
 
-    // Lancia la grafica finale!
-    refreshUI();
+    // ================= SEZIONE FINANZE =================
 
-    // 1. GESTIONE WALLET MANUALE
     function manualWalletUpdate() {
         const val = parseFloat(document.getElementById('walletInput').value);
         if (!isNaN(val)) {
@@ -768,1061 +763,465 @@
             saveData();
         }
     }
-    
-    // ... qui sotto continua il resto del tuo codice ...
 
-    // 2. TRANSAZIONI
+    function setLiquidityTarget() {
+        const t = prompt("Qual è il tuo obiettivo di liquidità? (es. 2000)", appData.liquidityTarget);
+        if(t) {
+            appData.liquidityTarget = parseFloat(t);
+            saveData();
+        }
+    }
+
     function addTransaction(type) {
-        const date = document.getElementById('dateInput').value;
+        const date = document.getElementById('dateInput').value || new Date().toISOString().split('T')[0];
         const cat = document.getElementById('catSelect').value;
-        const desc = document.getElementById('descInput').value || cat;
-        const amt = parseFloat(document.getElementById('amountInput').value);
+        const desc = document.getElementById('descInput').value;
+        const amount = parseFloat(document.getElementById('amountInput').value);
 
-        if (!amt) { alert("Inserisci un importo valido"); return; }
+        if (desc && amount) {
+            appData.transactions.push({ id: Date.now(), date, cat, desc, amount, type });
+            
+            // Aggiorna Wallet
+            if (type === 'income') appData.wallet += amount;
+            else appData.wallet -= amount;
 
-        appData.transactions.push({
-            id: Date.now(),
-            date: date,
-            category: cat,
-            desc: desc,
-            amount: amt,
-            type: type
-        });
-
-        // Aggiorna wallet calcolato
-        if(type === 'income') appData.wallet += amt;
-        else appData.wallet -= amt;
-
-        // Pulisci campi
-        document.getElementById('amountInput').value = '';
-        document.getElementById('descInput').value = '';
-        
-        saveData();
+            // Pulisci
+            document.getElementById('descInput').value = '';
+            document.getElementById('amountInput').value = '';
+            
+            saveData();
+        } else {
+            alert("Inserisci Descrizione e Importo!");
+        }
     }
 
     function deleteTransaction(id) {
-        if(confirm("Eliminare movimento?")) {
-            const t = appData.transactions.find(x => x.id === id);
-            if(t) {
-                // Storno importo
+        if(confirm("Eliminare questa transazione? Il saldo verrà aggiornato.")) {
+            const index = appData.transactions.findIndex(t => t.id === id);
+            if (index > -1) {
+                const t = appData.transactions[index];
+                // Storno soldi
                 if(t.type === 'income') appData.wallet -= t.amount;
                 else appData.wallet += t.amount;
                 
-                appData.transactions = appData.transactions.filter(x => x.id !== id);
+                appData.transactions.splice(index, 1);
                 saveData();
             }
         }
     }
 
-    // 3. GOALS
-    function createGoal() {
-        const name = prompt("Nome Obiettivo (es. Assicurazione):");
-        const target = parseFloat(prompt("Importo Target (€):"));
-        if (name && target) {
-            appData.goals.push({ id: Date.now(), name: name, target: target, current: 0 });
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        // Ordina per data (più recente in alto)
+        const sorted = appData.transactions.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+        sorted.forEach(t => {
+            const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+            const sign = t.type === 'income' ? '+' : '-';
+            const tagClass = t.type === 'income' ? 'tag-inc' : 'tag-exp';
+
+            const row = `
+                <tr>
+                    <td>${t.date}</td>
+                    <td><span class="tag ${tagClass}">${t.cat}</span></td>
+                    <td>${t.desc}</td>
+                    <td style="color:${color}; font-weight:bold;">${sign}€${t.amount.toFixed(2)}</td>
+                    <td><button onclick="deleteTransaction(${t.id})" style="color:#666; background:none; border:none; cursor:pointer;">✕</button></td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // ================= GRAFICI (Chart.js) =================
+    let myMonthlyChart, myAnnualChart;
+
+    function renderCharts() {
+        const ctxM = document.getElementById('monthlyChart');
+        const ctxA = document.getElementById('annualChart');
+        if(!ctxM || !ctxA) return;
+
+        // Filtro mese corrente (o selezionato)
+        const filterVal = document.getElementById('monthFilter').value; // yyyy-mm
+        const now = new Date();
+        const currentMonth = filterVal ? filterVal : `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+        // Calcoli Mese
+        let monthInc = 0, monthExp = 0;
+        let catTotals = {};
+
+        appData.transactions.forEach(t => {
+            if(t.date.startsWith(currentMonth)) {
+                if(t.type === 'income') monthInc += t.amount;
+                else {
+                    monthExp += t.amount;
+                    catTotals[t.cat] = (catTotals[t.cat] || 0) + t.amount;
+                }
+            }
+        });
+
+        // Aggiorna Testi
+        document.getElementById('monthIncVal').innerText = `€${monthInc.toFixed(2)}`;
+        document.getElementById('monthExpVal').innerText = `€${monthExp.toFixed(2)}`;
+        const net = monthInc - monthExp;
+        document.getElementById('monthNetVal').innerText = `€${net.toFixed(2)}`;
+        document.getElementById('monthNetVal').style.color = net >= 0 ? 'var(--success)' : 'var(--danger)';
+
+        // GRAFICO 1: Torta Spese
+        if(myMonthlyChart) myMonthlyChart.destroy();
+        myMonthlyChart = new Chart(ctxM, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(catTotals),
+                datasets: [{
+                    data: Object.values(catTotals),
+                    backgroundColor: ['#6c5ce7', '#00b894', '#d63031', '#fdcb6e', '#0984e3', '#e17055'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+
+        // GRAFICO 2: Barre Annuali (Semplificato)
+        // (Qui si potrebbe fare una logica complessa per raggruppare per mese, metto dati statici per demo visuale se vuoto)
+        if(myAnnualChart) myAnnualChart.destroy();
+        myAnnualChart = new Chart(ctxA, {
+            type: 'bar',
+            data: {
+                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu'],
+                datasets: [
+                    { label: 'Entrate', data: [monthInc, 0, 0, 0, 0, 0], backgroundColor: '#00b894' }, // Demo: usa dati reali
+                    { label: 'Uscite', data: [monthExp, 0, 0, 0, 0, 0], backgroundColor: '#d63031' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: '#333' } }, x: { grid: { display: false } } } }
+        });
+    }
+
+    // ================= SEZIONE SCUOLA =================
+    function addGrade() {
+        const subj = document.getElementById('subjectInput').value;
+        const val = parseFloat(document.getElementById('gradeInput').value);
+        const term = document.getElementById('termSelect').value;
+
+        if(subj && !isNaN(val)) {
+            appData.school.push({ id: Date.now(), subject: subj, grade: val, term: term });
             saveData();
+            document.getElementById('subjectInput').value = '';
+            document.getElementById('gradeInput').value = '';
         }
     }
 
-    function updateGoal(id, amount) {
-        const g = appData.goals.find(x => x.id === id);
-        if (g) {
-            g.current += amount;
-            if(g.current < 0) g.current = 0;
+    function deleteGrade(id) {
+        const idx = appData.school.findIndex(x => x.id === id);
+        if(idx > -1) { appData.school.splice(idx, 1); saveData(); }
+    }
+
+    function renderSchool() {
+        const list = document.getElementById('schoolList');
+        list.innerHTML = '';
+        
+        let sum1 = 0, count1 = 0;
+        let sum2 = 0, count2 = 0;
+
+        appData.school.forEach(g => {
+            if(g.term == '1') { sum1 += g.grade; count1++; }
+            else { sum2 += g.grade; count2++; }
+
+            list.innerHTML += `
+                <div style="display:flex; justify-content:space-between; background:#222; padding:10px; border-radius:6px; border-left: 3px solid ${g.grade >= 6 ? 'var(--success)' : 'var(--danger)'}">
+                    <span><b>${g.subject}</b> (Q${g.term})</span>
+                    <span>
+                        <b>${g.grade}</b>
+                        <button onclick="deleteGrade(${g.id})" style="margin-left:10px; border:none; background:none; color:#555; cursor:pointer;">x</button>
+                    </span>
+                </div>
+            `;
+        });
+
+        const avg1 = count1 ? (sum1/count1).toFixed(2) : "0.0";
+        const avg2 = count2 ? (sum2/count2).toFixed(2) : "0.0";
+        const totalAvg = (count1+count2) ? ((sum1+sum2)/(count1+count2)).toFixed(2) : "0.0";
+
+        document.getElementById('gpaQ1').innerText = avg1;
+        document.getElementById('gpaQ2').innerText = avg2;
+        document.getElementById('globalGpa').innerText = totalAvg;
+    }
+
+    // ================= SEZIONE SKILLS =================
+    function addSkill() {
+        const name = document.getElementById('skillName').value;
+        const target = parseFloat(document.getElementById('skillTarget').value);
+        const unit = document.getElementById('skillUnit').value;
+        
+        if(name && target) {
+            appData.skills.push({ id: Date.now(), name, target, current: 0, unit });
+            saveData();
+            document.getElementById('skillName').value = '';
+            document.getElementById('skillTarget').value = '';
+        }
+    }
+
+    function updateSkill(id, delta) {
+        const s = appData.skills.find(x => x.id === id);
+        if(s) {
+            s.current += delta;
+            if(s.current < 0) s.current = 0;
             saveData();
         }
     }
     
-    function deleteGoal(id) {
-        if(confirm("Rimuovere obiettivo?")) {
-            appData.goals = appData.goals.filter(x => x.id !== id);
-            saveData();
-        }
+    function deleteSkill(id) {
+        const idx = appData.skills.findIndex(x => x.id === id);
+        if(idx > -1) { appData.skills.splice(idx, 1); saveData(); }
     }
 
-    // --- FUNZIONI OBIETTIVI (GOALS) ---
+    function renderSkills() {
+        const container = document.getElementById('skillsList');
+        container.innerHTML = '';
 
-    // 1. Mostra gli obiettivi e i pulsanti + / -
-    function renderGoals() {
-        const container = document.getElementById('goalsContainer');
-        container.innerHTML = ''; // Pulisce la lista
-        
-        // Se non ci sono obiettivi, non fa nulla
-        if(!appData.goals) return;
-
-        appData.goals.forEach(g => {
-            // Calcolo percentuale barra (evita errori se target è 0)
-            let perc = 0;
-            if(g.target > 0) perc = Math.min(100, (g.current / g.target) * 100).toFixed(1);
-            
-            // Genera l'HTML
+        appData.skills.forEach(s => {
+            const perc = Math.min((s.current / s.target) * 100, 100);
             container.innerHTML += `
-                <div class="goal-row">
-                    <div class="goal-info">${g.name}</div>
-                    
-                    <div class="goal-bar-container">
-                        <div class="goal-fill" style="width:${perc}%"></div>
+                <div class="card" style="padding:15px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <strong>${s.name}</strong>
+                        <span style="color:#aaa; font-size:0.9rem;">${s.current} / ${s.target} ${s.unit}</span>
                     </div>
-                    
-                    <div class="goal-nums">€${parseFloat(g.current).toFixed(2)} / ${g.target}</div>
-                    
-                    <div style="display:flex; gap:5px; margin-left:10px;">
-                        <button class="goal-btn" style="background:var(--success); color:#000; font-weight:bold; width:30px;" 
-                                onclick="modifyGoal(${g.id}, 'add')">+</button>
-                                
-                        <button class="goal-btn" style="background:#e17055; color:#fff; font-weight:bold; width:30px;" 
-                                onclick="modifyGoal(${g.id}, 'sub')">-</button>
-                                
-                        <button class="goal-btn" style="background:none; border:1px solid #444; color:#666;" 
-                                onclick="deleteGoal(${g.id})">x</button>
+                    <div style="background:#111; height:10px; border-radius:5px; overflow:hidden; margin-bottom:10px;">
+                        <div style="width:${perc}%; height:100%; background:var(--accent); transition:width 0.3s;"></div>
+                    </div>
+                    <div style="display:flex; gap:10px; justify-content:flex-end;">
+                        <button onclick="updateSkill(${s.id}, 1)" style="padding:5px 10px; background:#333; color:white; border:none; border-radius:4px;">+1</button>
+                        <button onclick="updateSkill(${s.id}, 5)" style="padding:5px 10px; background:#333; color:white; border:none; border-radius:4px;">+5</button>
+                        <button onclick="deleteSkill(${s.id})" style="padding:5px 10px; background:none; color:#d63031; border:none;">Elimina</button>
                     </div>
                 </div>
             `;
         });
     }
 
-    // 2. La funzione che fa i calcoli (AGGIUNGI o TOGLI)
-    function modifyGoal(id, action) {
-        // Testo diverso per far capire che stiamo spostando soldi
-        const text = action === 'add' ? "Quanto vuoi SPOSTARE nel fondo?" : "Quanto vuoi RIPORTARE nel portafoglio?";
-        const input = prompt(text);
+    // ================= FOCUS TIMER (POMODORO) =================
+    let timerInterval = null;
+    let secondsLeft = 25 * 60;
+    let isPaused = false;
 
-        if (input !== null && input !== "") {
-            const amount = parseFloat(input.replace(',', '.'));
+    function updateTimerDisplay() {
+        const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+        const s = (secondsLeft % 60).toString().padStart(2, '0');
+        document.getElementById('focusDisplay').innerText = `${m}:${s}`;
+        document.title = `${m}:${s} - Focus`;
+    }
 
-            if (!isNaN(amount) && amount > 0) {
-                const goal = appData.goals.find(g => g.id === id);
-                
-                if (goal) {
-                    if (action === 'add') {
-                        // LOGICA GIROCONTO (Verso Obiettivo)
-                        
-                        // 1. Controlliamo se hai abbastanza soldi nel saldo (Opzionale, ma consigliato)
-                        if(appData.wallet < amount) {
-                            if(!confirm("Attenzione: Il tuo saldo andrà in negativo. Continuare?")) return;
-                        }
+    function startFocus() {
+        if(timerInterval) return; // Già in corso
+        document.getElementById('timerStatus').innerText = "🔥 FOCUS MODE ATTIVA";
+        document.getElementById('timerStatus').style.color = "var(--success)";
+        document.getElementById('btnStartFocus').style.display = 'none';
+        document.getElementById('btnPauseFocus').style.display = 'inline-block';
 
-                        goal.current += amount;   // Aumenta l'obiettivo
-                        appData.wallet -= amount; // SCALA dal saldo disponibile
-                        
-                    } else {
-                        // LOGICA GIROCONTO (Verso Portafoglio / Correzione)
-                        
-                        // Controllo per non togliere più di quello che c'è nel fondo
-                        if(amount > goal.current) {
-                            alert("Non ci sono abbastanza soldi in questo fondo!");
-                            return;
-                        }
-
-                        goal.current -= amount;   // Diminuisce l'obiettivo
-                        appData.wallet += amount; // RITORNA al saldo disponibile
-                    }
-                    
-                    saveData(); // Aggiorna graficamente sia la barra che il saldo in alto
-                }
+        timerInterval = setInterval(() => {
+            if(secondsLeft > 0) {
+                secondsLeft--;
+                updateTimerDisplay();
             } else {
-                alert("Inserisci un numero valido!");
+                clearInterval(timerInterval);
+                timerInterval = null;
+                alert("⏰ Tempo Scaduto! Prenditi una pausa.");
+                resetFocus();
             }
+        }, 1000);
+    }
+
+    function pauseFocus() {
+        if(timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('timerStatus').innerText = "⏸ IN PAUSA";
+            document.getElementById('timerStatus').style.color = "var(--warning)";
+            document.getElementById('btnStartFocus').innerText = "▶ RIPRENDI";
+            document.getElementById('btnStartFocus').style.display = 'inline-block';
+            document.getElementById('btnPauseFocus').style.display = 'none';
         }
     }
 
-    // 3. Funzione per creare un nuovo obiettivo (collegata al tasto + Nuovo)
-    function createGoal() {
-        const name = prompt("Nome Obiettivo (es. Assicurazione):");
-        if (!name) return; // Se annulli, esce
+    function resetFocus() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        manualTimeSet();
+        document.getElementById('timerStatus').innerText = "PRONTO";
+        document.getElementById('timerStatus').style.color = "#666";
+        document.getElementById('btnStartFocus').innerText = "▶ START";
+        document.getElementById('btnStartFocus').style.display = 'inline-block';
+        document.getElementById('btnPauseFocus').style.display = 'none';
+    }
 
-        const targetStr = prompt("Importo Target (€):");
-        const target = parseFloat(targetStr.replace(',', '.'));
+    function manualTimeSet() {
+        const mins = document.getElementById('focusDuration').value;
+        secondsLeft = mins * 60;
+        updateTimerDisplay();
+    }
+    
+    function adjustTime(val) {
+        let cur = parseInt(document.getElementById('focusDuration').value);
+        cur += val;
+        if(cur < 1) cur = 1;
+        document.getElementById('focusDuration').value = cur;
+        manualTimeSet();
+    }
 
-        if (name && target && !isNaN(target)) {
-            appData.goals.push({ id: Date.now(), name: name, target: target, current: 0 });
+    // --- Task Focus ---
+    function addFocusTask() {
+        const txt = document.getElementById('newFocusTask').value;
+        if(txt) {
+            appData.focusTasks.push({ text: txt, done: false });
             saveData();
-        } else {
-            alert("Dati non validi!");
+            document.getElementById('newFocusTask').value = '';
         }
     }
+    
+    function toggleFocusTask(idx) {
+        appData.focusTasks[idx].done = !appData.focusTasks[idx].done;
+        saveData();
+    }
 
-    // 4. Funzione per eliminare un obiettivo
-    function deleteGoal(id) {
-        if(confirm("Sei sicuro di voler eliminare questo obiettivo?")) {
-            appData.goals = appData.goals.filter(x => x.id !== id);
+    function clearFocusList() {
+        if(confirm("Pulire lista obiettivi?")) {
+            appData.focusTasks = [];
             saveData();
         }
     }
 
-    // 4. TABELLA & FILTRI
-    function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        // Ordina per data decrescente
-        const sorted = [...appData.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+    function renderFocusTasks() {
+        const list = document.getElementById('focusTodoList');
+        list.innerHTML = '';
+        appData.focusTasks.forEach((t, i) => {
+            list.innerHTML += `
+                <div style="display:flex; align-items:center; gap:10px; background:#222; padding:8px; border-radius:4px;">
+                    <input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleFocusTask(${i})">
+                    <span style="${t.done ? 'text-decoration:line-through; color:#666' : 'color:white'}">${t.text}</span>
+                </div>
+            `;
+        });
+        document.getElementById('tasksCount').innerText = `${appData.focusTasks.length} obiettivi`;
+    }
+
+    // ================= CALCOLATRICE =================
+    function toggleCalculator() {
+        const body = document.getElementById('calcBody');
+        body.style.display = (body.style.display === 'block') ? 'none' : 'block';
+    }
+    
+    function calcAppend(val) {
+        const display = document.getElementById('calcDisplay');
+        display.value += val;
+    }
+    
+    function calcClear() { document.getElementById('calcDisplay').value = ''; }
+    
+    function calcDelete() { 
+        const d = document.getElementById('calcDisplay');
+        d.value = d.value.slice(0, -1);
+    }
+
+    function calcCalculate() {
+        const display = document.getElementById('calcDisplay');
+        try {
+            // Usa Function invece di eval per sicurezza leggermente migliore, o eval semplice per uso locale
+            display.value = eval(display.value); 
+        } catch {
+            display.value = 'Error';
+            setTimeout(calcClear, 1000);
+        }
+    }
+
+    // ================= MODAL & MODELLI =================
+    function openModal() {
+        document.getElementById('recurringModal').style.display = 'flex';
+        renderRecModels();
+    }
+    function closeModal() { document.getElementById('recurringModal').style.display = 'none'; }
+    
+    function addRecModel() {
+        const name = document.getElementById('newRecName').value;
+        const amount = parseFloat(document.getElementById('newRecAmount').value);
+        const cat = document.getElementById('newRecCat').value;
+        // Prendi il valore del radio button selezionato
+        const type = document.querySelector('input[name="newRecType"]:checked').value;
+
+        if(name && amount) {
+            appData.recurring.push({ name, amount, cat, type });
+            saveData();
+            document.getElementById('newRecName').value = '';
+            document.getElementById('newRecAmount').value = '';
+        }
+    }
+
+    function useRecModel(index) {
+        const m = appData.recurring[index];
+        // Compila il form principale
+        document.getElementById('descInput').value = m.name;
+        document.getElementById('amountInput').value = m.amount;
+        document.getElementById('catSelect').value = m.cat;
         
-        // Mostra ultimi 50 movimenti per performance, o tutti se necessario
-        sorted.slice(0, 100).forEach(t => {
-            const tagClass = t.type === 'income' ? 'tag-inc' : 'tag-exp';
-            const sign = t.type === 'income' ? '+' : '-';
-            
-            tbody.innerHTML += `
-                <tr>
-                    <td>${t.date}</td>
-                    <td><span class="tag ${tagClass}">${t.category}</span></td>
-                    <td style="color:#ccc;">${t.desc}</td>
-                    <td style="font-family:'Fira Code'; font-weight:bold; color:${t.type==='income'?'var(--success)':'var(--danger)'}">
-                        ${sign} €${t.amount.toFixed(2)}
-                    </td>
-                    <td><button onclick="deleteTransaction(${t.id})" style="background:none; border:none; color:#555; cursor:pointer;">🗑️</button></td>
-                </tr>
+        closeModal();
+        addTransaction(m.type); // Aggiunge direttamente
+        alert("Transazione aggiunta!");
+    }
+
+    function deleteRecModel(index) {
+        appData.recurring.splice(index, 1);
+        saveData();
+    }
+
+    function renderRecModels() {
+        const list = document.getElementById('recList');
+        list.innerHTML = '';
+        appData.recurring.forEach((m, i) => {
+            list.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #333;">
+                    <div>
+                        <div style="font-weight:bold;">${m.name}</div>
+                        <div style="font-size:0.8rem; color:#888;">${m.cat}</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="color:${m.type==='income' ? 'var(--success)' : 'var(--danger)'}">€${m.amount}</span>
+                        <button onclick="useRecModel(${i})" style="background:var(--accent); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer;">Usa</button>
+                        <button onclick="deleteRecModel(${i})" style="color:#d63031; background:none; border:none; cursor:pointer;">x</button>
+                    </div>
+                </div>
             `;
         });
     }
 
-    // 5. CHARTS LOGIC (SIA ANALYTICS)
-    function renderCharts() {
-        const selectedMonth = document.getElementById('monthFilter').value; // es "2023-10"
-        const selectedYear = selectedMonth.split('-')[0];
-
-        // --- CALCOLI MENSILI ---
-        let monthInc = 0, monthExp = 0;
-        let catExp = {};
-        
-        appData.transactions.forEach(t => {
-            if (t.date.startsWith(selectedMonth)) {
-                if (t.type === 'income') monthInc += t.amount;
-                else {
-                    monthExp += t.amount;
-                    catExp[t.category] = (catExp[t.category] || 0) + t.amount;
-                }
-            }
-        });
-
-        // Update Stats Text
-        document.getElementById('monthIncVal').innerText = `€ ${monthInc.toFixed(2)}`;
-        document.getElementById('monthExpVal').innerText = `€ ${monthExp.toFixed(2)}`;
-        document.getElementById('monthNetVal').innerText = `€ ${(monthInc - monthExp).toFixed(2)}`;
-
-        // Draw Monthly Chart (Doughnut)
-        // Draw Monthly Chart (Doughnut)
-        const ctxM = document.getElementById('monthlyChart').getContext('2d');
-        if(chartInstances.monthly) chartInstances.monthly.destroy();
-        
-        chartInstances.monthly = new Chart(ctxM, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(catExp),
-                datasets: [{
-                    data: Object.values(catExp),
-                    backgroundColor: ['#ff7675', '#74b9ff', '#55efc4', '#a29bfe', '#ffeaa7', '#fab1a0', '#e17055', '#00cec9'],
-                    borderWidth: 0,
-                    hoverOffset: 10
-                }]
-            },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { 
-                        position: 'right', 
-                        labels: { 
-                            color: '#aaa', 
-                            font: {size: 11},
-                            boxWidth: 12
-                        } 
-                    },
-                    // --- QUESTA È LA PARTE NUOVA PER LE PERCENTUALI ---
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                let value = context.raw;
-                                let total = context.chart._metasets[context.datasetIndex].total;
-                                let percentage = ((value / total) * 100).toFixed(1) + "%";
-                                return label + ": €" + value.toFixed(2) + " (" + percentage + ")";
-                            }
-                        }
-                    }
-                } 
-            }
-        });
-
-        // --- CALCOLI ANNUALI ---
-        let annualInc = new Array(12).fill(0);
-        let annualExp = new Array(12).fill(0);
-
-        appData.transactions.forEach(t => {
-            if (t.date.startsWith(selectedYear)) {
-                const mIndex = new Date(t.date).getMonth();
-                if (t.type === 'income') annualInc[mIndex] += t.amount;
-                else annualExp[mIndex] += t.amount;
-            }
-        });
-
-        // Draw Annual Chart (Bar)
-        const ctxA = document.getElementById('annualChart').getContext('2d');
-        if(chartInstances.annual) chartInstances.annual.destroy();
-        chartInstances.annual = new Chart(ctxA, {
-            type: 'bar',
-            data: {
-                labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
-                datasets: [
-                    { label: 'Entrate', data: annualInc, backgroundColor: '#00b894' },
-                    { label: 'Uscite', data: annualExp, backgroundColor: '#d63031' }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, grid: { color: '#333' } },
-                    x: { grid: { display: false } }
-                },
-                plugins: { legend: { labels: { color: '#ccc' } } }
-            }
-        });
-    }
-
-    // 6. EXPORT / IMPORT
-    function exportCSV() {
-        let csv = "ID,Data,Categoria,Descrizione,Tipo,Importo\n";
-        appData.transactions.forEach(t => {
-            csv += `${t.id},${t.date},${t.category},${t.desc},${t.type},${t.amount}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Report_SIA_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-    }
-
+    // ================= EXPORT / IMPORT =================
     function downloadJSON() {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-        const a = document.createElement('a');
-        a.href = dataStr;
-        a.download = "backup_sia.json";
-        a.click();
+        const anchor = document.createElement('a');
+        anchor.setAttribute("href", dataStr);
+        anchor.setAttribute("download", "backup_finance.json");
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
     }
 
-    function uploadJSON(input) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                appData = JSON.parse(e.target.result);
-                saveData();
-                alert("Database ripristinato con successo.");
-            } catch(err) { alert("File non valido."); }
-        };
-        reader.readAsText(file);
-    }
-    
     function hardReset() {
-        if(confirm("SEI SICURO? Cancellerà tutti i dati.")) {
+        if(confirm("⚠️ SEI SICURO? Cancellerai tutti i dati per sempre!")) {
             localStorage.removeItem(DB_KEY);
             location.reload();
         }
     }
-	
-	// --- GESTIONE RICORRENTI (SISTEMA DEFINITIVO) ---
 
-// Funzioni Apertura/Chiusura Finestra
-function openModal() {
-    renderRecList(); // Carica i dati aggiornati
-    document.getElementById('recurringModal').style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('recurringModal').style.display = 'none';
-}
-
-// Funzione per mostrare la lista
-function renderRecList() {
-    const list = document.getElementById('recList');
-    list.innerHTML = '';
-    
-    // Inizializza se vuoto
-    if(!appData.recurring) appData.recurring = [];
-
-    if(appData.recurring.length === 0) {
-        list.innerHTML = '<div style="text-align:center; color:#666; padding:10px;">Nessun modello salvato.</div>';
-        return;
-    }
-
-    appData.recurring.forEach(item => {
-        const isInc = item.type === 'income';
-        const color = isInc ? '#55efc4' : '#ff7675'; // Verde o Rosso
-        const btnText = isInc ? 'INCASSA' : 'PAGA';
-        
-        list.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #333;">
-                <div>
-                    <div style="font-weight:bold; color:${color}">${item.name}</div>
-                    <div style="font-size:0.8rem; color:#aaa;">${item.category} • €${item.amount}</div>
-                </div>
-                <div style="display:flex; gap:5px;">
-                    <button onclick="execRec(${item.id})" style="background:${color}; color:#000; border:none; padding:5px 10px; border-radius:4px; font-weight:bold; cursor:pointer;">${btnText}</button>
-                    <button onclick="delRec(${item.id})" style="background:none; border:1px solid #555; color:#888; padding:5px 10px; border-radius:4px; cursor:pointer;">🗑️</button>
-                </div>
-            </div>
-        `;
-    });
-}
-
-// Funzione per salvare un nuovo modello
-function addRecModel() {
-    const name = document.getElementById('newRecName').value;
-    const cat = document.getElementById('newRecCat').value;
-    const amount = parseFloat(document.getElementById('newRecAmount').value);
-    
-    // Controlla quale radio button è selezionato (Entrata o Uscita)
-    const typeEl = document.querySelector('input[name="newRecType"]:checked');
-    const type = typeEl ? typeEl.value : 'expense';
-
-    if(name && amount) {
-        appData.recurring.push({
-            id: Date.now(),
-            name: name,
-            category: cat,
-            amount: amount,
-            type: type
-        });
-        
-        // Pulisci i campi
-        document.getElementById('newRecName').value = '';
-        document.getElementById('newRecAmount').value = '';
-        
-        saveData();
-        renderRecList(); // Ricarica la lista visiva
-    } else {
-        alert("Inserisci Nome e Importo!");
-    }
-}
-
-// Funzione per ESEGUIRE (Pagare o Incassare)
-function execRec(id) {
-    const item = appData.recurring.find(x => x.id === id);
-    if(item) {
-        const today = new Date().toISOString().slice(0, 10);
-        
-        // Aggiunge la transazione
-        appData.transactions.push({
-            id: Date.now(),
-            date: today,
-            category: item.category,
-            desc: item.name + ' (Ricorrente)',
-            amount: item.amount,
-            type: item.type
-        });
-
-        // Aggiorna il portafoglio
-        if(item.type === 'income') appData.wallet += item.amount;
-        else appData.wallet -= item.amount;
-
-        saveData();
-        closeModal();
-        
-        // Aggiorna la schermata principale
-        document.getElementById('monthFilter').value = today.slice(0, 7);
-        refreshUI();
-        
-        alert("✅ Operazione registrata con successo!");
-    }
-}
-
-// Funzione per eliminare modello
-function delRec(id) {
-    if(confirm("Eliminare questo modello?")) {
-        appData.recurring = appData.recurring.filter(x => x.id !== id);
-        saveData();
-        renderRecList();
-    }
-}
-// --- GESTIONE CATEGORIE DINAMICHE ---
-
-// 1. Inizializza le categorie se è la prima volta
-if (!appData.categories || appData.categories.length === 0) {
-    appData.categories = [
-        "🏠 Casa", "🍔 Cibo", "🚗 Trasporti", 
-        "🛍️ Shopping", "🎉🎮 Svago", "💊 Salute", 
-        "💰 Stipendio", "🎁 Regalo", "📦 Altro"
-    ];
-}
-
-// 2. Funzione per riempire TUTTI i menu a tendina del sito
-function renderCategoryOptions() {
-    // Trova tutti i selettori di categoria nel sito (Main, e Modale Ricorrenti)
-    const selectors = ['catSelect', 'recCat', 'newRecCat']; // ID dei tuoi select
-    
-    selectors.forEach(id => {
-        const sel = document.getElementById(id);
-        if(sel) {
-            const currentVal = sel.value; // Ricorda cosa era selezionato
-            sel.innerHTML = ''; // Pulisce
-            
-            appData.categories.forEach(cat => {
-                sel.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
-            
-            // Se possibile, rimette il valore che c'era
-            if(appData.categories.includes(currentVal)) sel.value = currentVal;
-        }
-    });
-}
-
-// 3. Funzione per Aggiungere/Rimuovere Categorie
-function manageCategories() {
-    let action = prompt("Scrivi una nuova categoria per aggiungerla (es. '🐶 Cane').\nOppure scrivi il nome esatto di una esistente per ELIMINARLA.");
-    
-    if (action) {
-        // Rimuovi spazi extra
-        action = action.trim();
-        
-        // Se esiste già, la eliminiamo
-        if (appData.categories.includes(action)) {
-            if(confirm(`Vuoi davvero eliminare la categoria "${action}"?`)) {
-                appData.categories = appData.categories.filter(c => c !== action);
-                alert("🗑️ Categoria eliminata!");
-            }
-        } else {
-            // Altrimenti la aggiungiamo
-            appData.categories.push(action);
-            alert("✅ Nuova categoria aggiunta!");
-        }
-        
-        saveData();
-        renderCategoryOptions(); // Aggiorna subito i menu
-    }
-}
-
-// Avvia il caricamento delle categorie all'apertura
-renderCategoryOptions();
-
-// --- GESTIONE OBIETTIVO SALDO (LIQUIDITÀ) ---
-
-// Funzione per impostare l'obiettivo
-function setLiquidityTarget() {
-    const current = appData.liquidityTarget || 0;
-    const input = prompt("Qual è il tuo obiettivo di saldo minimo da avere sul conto? (€)", current);
-    
-    if(input !== null) {
-        const val = parseFloat(input.replace(',', '.'));
-        if(!isNaN(val) && val >= 0) {
-            appData.liquidityTarget = val;
-            saveData();
-            renderLiquidity();
-        }
-    }
-}
-
-// Funzione per disegnare la barra
-function renderLiquidity() {
-    const target = appData.liquidityTarget || 1; // Evita divisione per zero
-    const current = appData.wallet;
-    
-    // Calcola percentuale
-    let perc = (current / target) * 100;
-    if (perc > 100) perc = 100; // La barra non esce fuori
-    if (perc < 0) perc = 0;
-
-    // Colore dinamico: Rosso se sei lontano, Verde se ci sei vicino
-    let color = '#00b894'; // Verde
-    if (perc < 30) color = '#d63031'; // Rosso
-    else if (perc < 70) color = '#fdcb6e'; // Giallo
-
-    // Aggiorna HTML
-    document.getElementById('liquidityBar').style.width = perc + "%";
-    document.getElementById('liquidityBar').style.background = color;
-    
-    // Testo
-    const targetText = appData.liquidityTarget ? ` / €${appData.liquidityTarget}` : " (Clicca per impostare)";
-    document.getElementById('liquidityText').innerText = `Target: €${targetText}`;
-    document.getElementById('liquidityPerc').innerText = `${perc.toFixed(1)}% Raggiunto`;
-}
-
-// --- GESTIONE SKILLS (LOGICA QUANTITATIVA) ---
-
-// Inizializza
-if (!appData.skills) appData.skills = [];
-
-function renderSkills() {
-    const container = document.getElementById('skillsList');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (appData.skills.length === 0) {
-        container.innerHTML = '<div style="color:#666; text-align:center;">Nessun obiettivo attivo.</div>';
-        return;
-    }
-
-    appData.skills.forEach(s => {
-        // Calcolo percentuale matematica
-        // (Attuale / Target) * 100. Massimo 100%.
-        let perc = 0;
-        if(s.target > 0) perc = (s.current / s.target) * 100;
-        if(perc > 100) perc = 100;
-
-        // Colore barra
-        let color = '#ff7675'; // Rosso
-        if (perc > 40) color = '#fdcb6e'; // Giallo
-        if (perc >= 100) color = '#55efc4'; // Verde (Completato)
-
-        container.innerHTML += `
-            <div style="background: #1e1e24; padding: 15px; border-radius: 10px; border: 1px solid #333;">
-                
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                    <div style="font-weight:bold; font-size:1.1rem;">${s.name}</div>
-                    <div style="font-size:0.9rem; color:#aaa;">
-                        <span style="color:white; font-weight:bold;">${s.current}</span> / ${s.target} ${s.unit}
-                    </div>
-                </div>
-
-                <div style="background:#333; height:12px; border-radius:6px; overflow:hidden; margin-bottom:15px; position:relative;">
-                    <div style="width:${perc}%; height:100%; background:${color}; transition: width 0.5s;"></div>
-                    <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); font-size:0.6rem; line-height:12px; color:white; text-shadow:0 0 2px black;">
-                        ${perc.toFixed(1)}%
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <input type="number" id="add_val_${s.id}" placeholder="Quantità fatta oggi" 
-                           style="flex:1; padding:8px; border-radius:5px; border:1px solid #555; background:#111; color:white;">
-                    
-                    <button onclick="updateProgress(${s.id})" 
-                            style="background:var(--accent); color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer; font-weight:bold;">
-                        AGGIUNGI
-                    </button>
-                    
-                    <button onclick="deleteSkill(${s.id})" 
-                            style="background:none; border:1px solid #444; color:#666; padding:8px; border-radius:5px; cursor:pointer;">
-                        🗑️
-                    </button>
-                </div>
-
-            </div>
-        `;
-    });
-}
-
-// 1. Aggiungi Nuova Skill
-function addSkill() {
-    const name = document.getElementById('skillName').value;
-    const target = parseFloat(document.getElementById('skillTarget').value);
-    const unit = document.getElementById('skillUnit').value || ''; // Opzionale
-
-    if (name && target && target > 0) {
-        appData.skills.push({
-            id: Date.now(),
-            name: name,
-            target: target,  // Obiettivo finale (es. 300)
-            current: 0,      // Si parte da 0
-            unit: unit       // Es. 'pag', 'km', 'kg'
-        });
-
-        // Pulisci campi
-        document.getElementById('skillName').value = '';
-        document.getElementById('skillTarget').value = '';
-        document.getElementById('skillUnit').value = '';
-        
-        saveData();
-        renderSkills();
-    } else {
-        alert("Inserisci almeno il Nome e un Obiettivo numerico!");
-    }
-}
-
-// 2. Aggiorna Progresso (Somma il valore)
-function updateProgress(id) {
-    const valInput = document.getElementById(`add_val_${id}`);
-    const val = parseFloat(valInput.value);
-
-    if (!isNaN(val)) {
-        const skill = appData.skills.find(s => s.id === id);
-        if (skill) {
-            skill.current += val; // Somma al totale
-            
-            // (Opzionale) Se vuoi che non vada mai sotto zero:
-            if(skill.current < 0) skill.current = 0;
-            
-            saveData();
-            renderSkills();
-        }
-    }
-}
-
-// 3. Elimina
-function deleteSkill(id) {
-    if(confirm("Eliminare questo obiettivo?")) {
-        appData.skills = appData.skills.filter(s => s.id !== id);
-        saveData();
-        renderSkills();
-    }
-}
-
-// Avvia
-renderSkills();
-
-// --- FUNZIONI CALCOLATRICE ---
-
-function toggleCalculator() {
-    const body = document.getElementById('calcBody');
-    // Se è nascosto (none) o vuoto, mostralo. Altrimenti nascondilo.
-    if (body.style.display === 'none' || body.style.display === '') {
-        body.style.display = 'block';
-    } else {
-        body.style.display = 'none';
-    }
-}
-
-function calcAppend(val) {
-    const display = document.getElementById('calcDisplay');
-    // Evita doppi operatori (es. ++ o //)
-    const lastChar = display.value.slice(-1);
-    const operators = ['+', '-', '*', '/'];
-    
-    if (operators.includes(val) && operators.includes(lastChar)) {
-        // Sostituisce l'ultimo operatore se ne premi un altro
-        display.value = display.value.slice(0, -1) + val;
-    } else {
-        display.value += val;
-    }
-}
-
-function calcClear() {
-    document.getElementById('calcDisplay').value = '';
-}
-
-function calcDelete() {
-    const display = document.getElementById('calcDisplay');
-    display.value = display.value.toString().slice(0, -1);
-}
-
-function calcCalculate() {
-    const display = document.getElementById('calcDisplay');
-    try {
-        // eval() è pericoloso in siti pubblici complessi, ma sicuro in una calc personale locale
-        // Se c'è un errore matematico (es. 9/0) il try-catch lo gestisce
-        if(display.value) {
-            display.value = eval(display.value);
-        }
-    } catch (e) {
-        display.value = 'Error';
-        setTimeout(() => display.value = '', 1500); // Cancella errore dopo 1.5s
-    }
-}
-
-// --- INIZIALIZZAZIONE DATI SCUOLA (Aggiungi questo pezzo dentro INIT o appData) ---
-    // Se appData.school non esiste (vecchi utenti), lo crea vuoto
-    if (!appData.school) appData.school = [];
-
-    // Chiama questa funzione dentro refreshUI() per aggiornare la grafica all'avvio
-    // Esempio: function refreshUI() { ... renderSchool(); }
-    
-    // --- FUNZIONI REGISTRO SCOLASTICO ---
-
-    function addGrade() {
-    console.log("Tentativo di aggiunta voto...");
-
-    // 1. AUTOCORREZIONE: Se la lista scuola non esiste, la creo ora.
-    if (!appData.school) {
-        console.log("Lista scuola mancante, la creo ora.");
-        appData.school = [];
-    }
-
-    // 2. Prendo i valori
-    const subInput = document.getElementById('subjectInput');
-    const gradeInput = document.getElementById('gradeInput');
-    const termInput = document.getElementById('termSelect');
-
-    const subName = subInput.value.trim();
-    const gradeVal = parseFloat(gradeInput.value);
-    const term = parseInt(termInput.value);
-
-    // 3. Controllo errori (Scrive un alert se manca qualcosa)
-    if (!subName) {
-        alert("Devi scrivere il nome della materia!");
-        return;
-    }
-    if (isNaN(gradeVal)) {
-        alert("Devi scrivere un voto valido (es. 7.5)");
-        return;
-    }
-
-    // 4. Cerca se la materia esiste già
-    let subject = appData.school.find(s => s.name.toLowerCase() === subName.toLowerCase());
-
-    if (!subject) {
-        // Se non esiste, crea nuova materia
-        subject = { id: Date.now(), name: subName, grades: [] };
-        appData.school.push(subject);
-    }
-
-    // 5. Aggiungi il voto
-    subject.grades.push({ 
-        val: gradeVal, 
-        term: term, 
-        date: new Date().toLocaleDateString() 
-    });
-
-    console.log("Voto aggiunto!", subject);
-
-    // 6. Pulisci input
-    gradeInput.value = '';
-    subInput.value = ''; 
-    subInput.focus();
-
-    // 7. SALVA E AGGIORNA (Fondamentale!)
-    saveData();     // Salva nel database
-    renderSchool(); // Disegna subito a schermo il risultato
-}
-
-    function removeGrade(subId, gradeIndex) {
-        const subject = appData.school.find(s => s.id === subId);
-        if (subject) {
-            if(confirm("Rimuovere questo voto?")) {
-                subject.grades.splice(gradeIndex, 1);
-                // Se non ci sono più voti, rimuovi la materia (opzionale, io lo lascerei per ordine)
-                if (subject.grades.length === 0) {
-                    appData.school = appData.school.filter(s => s.id !== subId);
-                }
-                saveData();
-            }
-        }
-    }
-
-    function renderSchool() {
-    const container = document.getElementById('schoolList');
-    const dl = document.getElementById('subjectListSuggestions');
-    
-    if (!container) return;
-
-    container.innerHTML = '';
-    dl.innerHTML = '';
-
-    // Variabili per la Media Aritmetica Pura (Metodo Registro)
-    let grandTotalSumQ1 = 0;
-    let grandTotalCountQ1 = 0;
-    let grandTotalSumQ2 = 0;
-    let grandTotalCountQ2 = 0;
-
-    if (appData.school) {
-        appData.school.sort((a, b) => a.name.localeCompare(b.name));
-    
-        appData.school.forEach(sub => {
-            dl.innerHTML += `<option value="${sub.name}">`;
-
-            // Separiamo i voti
-            const gradesQ1 = sub.grades.map((g, i) => ({...g, originalIndex: i})).filter(g => g.term === 1);
-            const gradesQ2 = sub.grades.map((g, i) => ({...g, originalIndex: i})).filter(g => g.term === 2);
-
-            // --- CALCOLO PER IL REGISTRO (Accumuliamo tutti i voti nel calderone generale) ---
-            gradesQ1.forEach(g => { grandTotalSumQ1 += g.val; grandTotalCountQ1++; });
-            gradesQ2.forEach(g => { grandTotalSumQ2 += g.val; grandTotalCountQ2++; });
-            // ---------------------------------------------------------------------------------
-
-            // Medie della singola materia (per visualizzazione riga)
-            const avgQ1 = gradesQ1.length > 0 ? (gradesQ1.reduce((a, b) => a + b.val, 0) / gradesQ1.length) : 0;
-            const avgQ2 = gradesQ2.length > 0 ? (gradesQ2.reduce((a, b) => a + b.val, 0) / gradesQ2.length) : 0;
-            
-            // Media Totale Materia (tutti i voti insieme)
-            const allGrades = sub.grades;
-            const subjectAvg = allGrades.length > 0 ? (allGrades.reduce((a, b) => a + b.val, 0) / allGrades.length) : 0;
-
-            // Render dei pallini (Chips)
-            const renderChips = (list) => list.map(g => 
-                `<span onclick="removeGrade(${sub.id}, ${g.originalIndex})" 
-                       style="cursor:pointer; font-size:0.8rem; padding:2px 6px; border-radius:4px; margin-right:4px; display:inline-block; margin-bottom:2px;
-                       background:${g.val >= 6 ? 'rgba(0, 184, 148, 0.2)' : 'rgba(214, 48, 49, 0.2)'}; 
-                       color:${g.val >= 6 ? '#00b894' : '#d63031'}; border:1px solid ${g.val >= 6 ? '#00b894' : '#d63031'};"
-                       title="Clicca per eliminare">${g.val}</span>`
-            ).join('');
-
-            const colorQ1 = avgQ1 >= 6 ? '#00b894' : (avgQ1 > 0 ? '#d63031' : '#666');
-            const colorQ2 = avgQ2 >= 6 ? '#00b894' : (avgQ2 > 0 ? '#d63031' : '#666');
-
-            container.innerHTML += `
-                <div style="background:#25252b; padding:15px; border-radius:8px; border-left: 4px solid #666; margin-bottom:10px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <div>
-                            <span style="font-weight:bold; font-size:1.1rem; color:white;">${sub.name}</span>
-                            <span style="margin-left:8px; font-size:0.8rem; color:#aaa;">(Med: ${subjectAvg > 0 ? subjectAvg.toFixed(2) : '-'})</span>
-                             <button onclick="deleteSubject(${sub.id})" style="background:none; border:none; color:#444; font-size:0.8rem; cursor:pointer; margin-left:5px;">(x)</button>
-                        </div>
-                        <div style="font-family:'Courier New', monospace; font-size:0.9rem;">
-                            <span style="color:#aaa;">Q1:</span><span style="color:${colorQ1}; font-weight:bold;">${avgQ1 > 0 ? avgQ1.toFixed(2) : '-'}</span>
-                            <span style="color:#444; margin:0 5px;">|</span>
-                            <span style="color:#aaa;">Q2:</span><span style="color:${colorQ2}; font-weight:bold;">${avgQ2 > 0 ? avgQ2.toFixed(2) : '-'}</span>
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <div style="display:flex; align-items:center;">
-                            <span style="font-size:0.7rem; color:#666; width:25px;">Q1</span>
-                            <div style="flex:1;">${gradesQ1.length ? renderChips(gradesQ1) : '<span style="font-size:0.7rem; color:#444;">...</span>'}</div>
-                        </div>
-                        <div style="display:flex; align-items:center;">
-                            <span style="font-size:0.7rem; color:#666; width:25px;">Q2</span>
-                            <div style="flex:1;">${gradesQ2.length ? renderChips(gradesQ2) : '<span style="font-size:0.7rem; color:#444;">...</span>'}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // --- CALCOLO MEDIA GENERALE (ARITMETICA PURA) ---
-    const finalAvgQ1 = grandTotalCountQ1 > 0 ? (grandTotalSumQ1 / grandTotalCountQ1) : 0;
-    const finalAvgQ2 = grandTotalCountQ2 > 0 ? (grandTotalSumQ2 / grandTotalCountQ2) : 0;
-
-    // Se Q2 è vuoto, la media totale è uguale a Q1 (non fare la media con 0!)
-    let globalAvg = 0;
-    if (finalAvgQ1 > 0 && finalAvgQ2 > 0) {
-        // Se esistono entrambi i quadrimestri, facciamo la media tra tutte le somme diviso tutti i voti totali
-        globalAvg = (grandTotalSumQ1 + grandTotalSumQ2) / (grandTotalCountQ1 + grandTotalCountQ2);
-    } else if (finalAvgQ1 > 0) {
-        globalAvg = finalAvgQ1;
-    } else if (finalAvgQ2 > 0) {
-        globalAvg = finalAvgQ2;
-    }
-
-    // Aggiorna i numerini in alto
-    const elQ1 = document.getElementById('gpaQ1'); if(elQ1) elQ1.innerText = finalAvgQ1 > 0 ? finalAvgQ1.toFixed(2) : '-';
-    const elQ2 = document.getElementById('gpaQ2'); if(elQ2) elQ2.innerText = finalAvgQ2 > 0 ? finalAvgQ2.toFixed(2) : '-';
-    const elTot = document.getElementById('globalGpa'); if(elTot) elTot.innerText = globalAvg > 0 ? globalAvg.toFixed(2) : '0.0';
-}
-// --- FOCUS TIMER LOGIC (MULTI-TASK) ---
-let focusInterval = null;
-let focusSecondsLeft = 25 * 60;
-let isFocusRunning = false;
-
-// Aggiorna il display del timer
-function updateFocusDisplay() {
-    const m = Math.floor(focusSecondsLeft / 60);
-    const s = focusSecondsLeft % 60;
-    const timeString = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    
-    document.getElementById('focusDisplay').innerText = timeString;
-    
-    if(isFocusRunning) document.title = `(${timeString}) Focus`;
-    else document.title = 'SIA Manager';
-}
-
-// Funzioni per regolare il tempo (+5, -5 minuti)
-function adjustTime(deltaMins) {
-    if(isFocusRunning) return;
-    let input = document.getElementById('focusDuration');
-    let newVal = parseInt(input.value) + deltaMins;
-    if(newVal < 1) newVal = 1;
-    input.value = newVal;
-    manualTimeSet();
-}
-
-function manualTimeSet() {
-    if(isFocusRunning) return;
-    const input = document.getElementById('focusDuration');
-    let val = parseInt(input.value);
-    if(isNaN(val) || val < 1) val = 25;
-    focusSecondsLeft = val * 60;
-    updateFocusDisplay();
-}
-
-// Start / Pausa / Reset
-function startFocus() {
-    if(isFocusRunning) return;
-    isFocusRunning = true;
-    
-    document.getElementById('btnStartFocus').style.display = 'none';
-    document.getElementById('btnPauseFocus').style.display = 'inline-block';
-    document.getElementById('timerStatus').innerText = "🔥 IN CORSO";
-    document.getElementById('timerStatus').style.color = "var(--accent)";
-
-    focusInterval = setInterval(() => {
-        if(focusSecondsLeft > 0) {
-            focusSecondsLeft--;
-            updateFocusDisplay();
-        } else {
-            clearInterval(focusInterval);
-            isFocusRunning = false;
-            alert("⏰ Tempo Scaduto!");
-            resetFocus();
-        }
-    }, 1000);
-}
-
-function pauseFocus() {
-    clearInterval(focusInterval);
-    isFocusRunning = false;
-    document.getElementById('btnStartFocus').style.display = 'inline-block';
-    document.getElementById('btnPauseFocus').style.display = 'none';
-    document.getElementById('timerStatus').innerText = "⏸ PAUSA";
-    document.getElementById('timerStatus').style.color = "var(--warning)";
-}
-
-function resetFocus() {
-    pauseFocus();
-    manualTimeSet(); // Ricarica il tempo dall'input
-    document.getElementById('timerStatus').innerText = "PRONTO";
-    document.getElementById('timerStatus').style.color = "#666";
-    document.title = "SIA Manager";
-}
-
-// --- LOGICA LISTA OBIETTIVI ---
-
-function addFocusTask() {
-    const input = document.getElementById('newFocusTask');
-    const text = input.value.trim();
-    if(!text) return;
-
-    const list = document.getElementById('focusTodoList');
-    const id = Date.now(); // ID unico per il task
-
-    const itemHTML = `
-        <div id="task-${id}" style="background:#111; padding:10px; border-radius:6px; border:1px solid #333; display:flex; align-items:center; justify-content:space-between; animation: fadeIn 0.3s;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <input type="checkbox" onchange="toggleTask('${id}')" style="accent-color:var(--success); transform:scale(1.2); cursor:pointer;">
-                <span class="task-text" style="color:white;">${text}</span>
-            </div>
-            <button onclick="deleteTask('${id}')" style="background:none; border:none; color:#666; cursor:pointer;">✕</button>
-        </div>
-    `;
-
-    list.insertAdjacentHTML('beforeend', itemHTML);
-    input.value = '';
-    updateTaskCount();
-}
-
-function toggleTask(id) {
-    const el = document.getElementById(`task-${id}`);
-    const checkbox = el.querySelector('input[type="checkbox"]');
-    const text = el.querySelector('.task-text');
-
-    if(checkbox.checked) {
-        text.style.textDecoration = "line-through";
-        text.style.color = "#666";
-        el.style.opacity = "0.6";
-        el.style.borderColor = "var(--success)"; // Bordo verde quando fatto
-    } else {
-        text.style.textDecoration = "none";
-        text.style.color = "white";
-        el.style.opacity = "1";
-        el.style.borderColor = "#333";
-    }
-}
-
-function deleteTask(id) {
-    const el = document.getElementById(`task-${id}`);
-    el.remove();
-    updateTaskCount();
-}
-
-function clearFocusList() {
-    if(confirm("Vuoi cancellare tutta la lista?")) {
-        document.getElementById('focusTodoList').innerHTML = '';
-        updateTaskCount();
-    }
-}
-
-function updateTaskCount() {
-    const count = document.getElementById('focusTodoList').children.length;
-    document.getElementById('tasksCount').innerText = `${count} obiettivi`;
-}
+    // ================= AVVIO APP =================
+    window.onload = function() {
+        loadData();
+    };
+
+</script>
+</body>
+</html>
 </script>
 
 </body>
