@@ -3,490 +3,768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Manager - PRO</title>
+    <title>SIA Manager - Full Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* --- STILI CSS --- */
+        /* --- CSS STYLES --- */
         :root { 
-            --bg: #121214; --card: #1e1e24; --text: #fff; --subtext: #a0a0a0;
-            --accent: #6c5ce7; --success: #00b894; --danger: #d63031; --warning: #fdcb6e; 
-            --border: #333;
+            --bg-color: #121214; 
+            --card-bg: #1e1e24; 
+            --text-primary: #ffffff; 
+            --text-secondary: #a0a0b0;
+            --accent: #6c5ce7; 
+            --success: #00b894; 
+            --danger: #d63031; 
+            --warning: #fdcb6e;
+            --input-bg: #2d3436;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; padding-bottom: 80px; }
-        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        
-        /* Cards */
-        .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        h2 { margin-top: 0; color: var(--subtext); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Inputs & Buttons */
-        input, select { background: #2d3436; border: 1px solid #444; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: inherit; }
-        button { cursor: pointer; border: none; padding: 10px; border-radius: 6px; font-weight: bold; transition: 0.2s; }
-        button:active { transform: scale(0.98); }
-        .btn-green { background: var(--success); color: #000; }
-        .btn-red { background: var(--danger); color: #fff; }
-        .btn-dark { background: #333; color: #fff; }
-        .btn-accent { background: var(--accent); color: #fff; }
-        .btn-small { padding: 5px 10px; font-size: 0.8rem; }
-        
-        .row { display: flex; gap: 10px; }
-        .col { flex: 1; }
 
-        /* Wallet Header */
-        .wallet-display { font-size: 2.5rem; font-weight: 800; color: var(--success); font-family: 'Fira Code', monospace; margin: 5px 0; }
-        .target-bar-bg { height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-top: 5px; }
-        .target-bar-fill { height: 100%; background: var(--warning); width: 0%; transition: width 0.5s; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            margin: 0; 
+            padding: 40px 20px; 
+            padding-bottom: 100px;
+        }
 
-        /* Savings Cards */
-        .savings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
-        .saving-item { background: #25252b; padding: 10px; border-radius: 8px; border: 1px solid #333; }
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+        }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        td, th { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
-        th { color: var(--subtext); font-weight: 400; }
+        /* CARD STYLE */
+        .card { 
+            background-color: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            border: 1px solid #333;
+        }
+
+        h2 { 
+            font-size: 1.2rem; font-weight: 800; margin: 0 0 20px 0; 
+            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* HEADER & WALLET */
+        .header-section {
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, #2d3436, #1e1e24);
+            padding: 20px; border-radius: 12px; border-left: 5px solid var(--accent);
+        }
+        .wallet-group { text-align: right; }
+        .wallet-label { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+        .wallet-input { 
+            background: transparent; border: none; color: var(--success); 
+            font-family: 'Fira Code', monospace; font-size: 2rem; font-weight: bold; 
+            text-align: right; width: 250px; outline: none; border-bottom: 1px dashed #444; 
+        }
+
+        /* INPUT AREA */
+        .input-grid {
+            display: grid; grid-template-columns: 1fr 1fr 2fr 1fr; gap: 15px; align-items: end;
+        }
+        label { font-size: 0.75rem; color: #888; margin-bottom: 8px; display: block; }
+        input, select { 
+            width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #444; 
+            color: white; border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+        }
+        .btn-action { padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: transform 0.1s; }
+        .btn-action:active { transform: scale(0.98); }
+        .bg-inc { background: var(--success); color: #000; }
+        .bg-exp { background: var(--danger); color: #fff; }
+
+        /* GOALS */
+        .goal-row {
+            display: flex; align-items: center; background: #25252b; padding: 15px; 
+            border-radius: 8px; margin-bottom: 10px;
+        }
+        .goal-bar-container { flex-grow: 1; height: 12px; background: #111; border-radius: 6px; margin: 0 15px; overflow: hidden; }
+        .goal-fill { height: 100%; transition: width 0.5s; background: linear-gradient(90deg, var(--accent), #a29bfe); }
+        .goal-btn { background: #333; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 10px; font-size: 0.8rem; }
+
+        /* CHARTS */
+        .charts-container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .chart-box { background: #25252b; padding: 15px; border-radius: 8px; height: 300px; }
+
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
+        th { text-align: left; color: #666; padding: 10px; border-bottom: 1px solid #333; font-size: 0.8rem; text-transform: uppercase; }
+        td { padding: 12px 10px; border-bottom: 1px solid #2a2a2a; }
         .amount-pos { color: var(--success); font-weight: bold; }
         .amount-neg { color: var(--danger); font-weight: bold; }
 
-        /* Utility */
-        .text-right { text-align: right; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        /* FOOTER & UTILS */
+        .footer-tools { display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; justify-content: center; }
+        .btn-tool { background: transparent; border: 1px solid #555; color: #888; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        .btn-tool:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-box { background: #1e1e24; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; border: 1px solid #444; color: white; }
+
+        /* CALCULATOR */
+        .calc-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9990; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .calc-toggle-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); color: white; font-size: 1.8rem; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .calculator-body { display: none; background: rgba(30,30,36,0.95); padding: 15px; border-radius: 20px; width: 260px; border: 1px solid #444; }
+        .calc-display { width: 100%; height: 50px; background: #111; color: white; border: none; border-radius: 10px; font-size: 1.5rem; text-align: right; padding: 10px; margin-bottom: 15px; font-family: monospace; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { padding: 15px; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: white; background: #2d3436; }
+        .btn-op { background: #e17055; } .btn-eq { background: #00b894; grid-column: span 2; } .btn-ac { background: #d63031; }
+
+        @media (max-width: 768px) {
+            .input-grid { grid-template-columns: 1fr; }
+            .charts-container { grid-template-columns: 1fr; height: auto; }
+            .header-section { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .wallet-input { text-align: left; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
 
-    <div class="card" style="border-left: 5px solid var(--success);">
-        <div class="flex-between">
+    <div class="header-section">
+        <div>
+            <h1 style="margin:0; font-size:1.5rem;">Dashboard Finanziaria</h1>
+            <span style="color:#666; font-size:0.9rem;">Gestione Economica Personale</span>
+        </div>
+        <div class="wallet-group">
+            <label class="wallet-label">SALDO DISPONIBILE</label>
+            <span>€</span>
+            <input type="number" id="walletInput" class="wallet-input" value="0.00" onchange="manualWalletUpdate()">
+            
+            <div style="margin-top:15px; padding-top:15px; border-top:1px solid #333;">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#aaa; margin-bottom:5px;">
+                    <span>🎯 Obiettivo Liquidità</span>
+                    <span id="liquidityText" style="cursor:pointer; text-decoration:underline;" onclick="setLiquidityTarget()">Imposta</span>
+                </div>
+                <div style="background:#111; height:8px; border-radius:4px; overflow:hidden;">
+                    <div id="liquidityBar" style="width:0%; height:100%; background:linear-gradient(90deg, #fdcb6e, #00b894);"></div>
+                </div>
+                <div style="text-align:right; font-size:0.75rem; color:#666; margin-top:2px;" id="liquidityPerc">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="margin:0;">Nuova Transazione</h2>
+            <button onclick="openModal()" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75rem; font-weight:bold;">🔁 Modelli / Fisse</button>
+        </div>
+        <div class="input-grid">
             <div>
-                <span style="color:var(--subtext);">SALDO DISPONIBILE</span>
-                <div class="wallet-display" id="displayWallet">€0.00</div>
+                <label>Data</label>
+                <input type="date" id="dateInput">
             </div>
-            <div class="text-right">
-                <small style="color:var(--subtext);">Obiettivo Liquidità</small>
-                <div style="font-family:'Fira Code'; font-weight:bold; color:var(--warning);" id="displayLiquidityTarget">€0.00</div>
-                <button class="btn-dark btn-small" onclick="setLiquidityTarget()">Modifica Target</button>
+            <div>
+                <label>Categoria</label>
+                <div style="position: relative; width: 100%;">
+                    <select id="catSelect" style="width: 100%; padding: 12px; padding-right: 50px; border-radius: 8px; border: 1px solid #444; background: #2d3436; color: white; appearance: none; -webkit-appearance: none;">
+                        </select>
+                    <div style="position: absolute; right: 50px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none;">▼</div>
+                    <button onclick="manageCategories()" style="position: absolute; right: 0; top: 0; bottom: 0; width: 40px; background: #333; border: 1px solid #444; border-radius: 0 8px 8px 0; cursor: pointer; color:white;">+</button>
+                </div>
             </div>
-        </div>
-        <div class="target-bar-bg">
-            <div class="target-bar-fill" id="liquidityBar"></div>
-        </div>
-        <div style="font-size: 0.8rem; color: #666; margin-top: 5px; text-align: right;" id="liquidityPerc">0% del target</div>
-    </div>
-
-    <div class="card">
-        <h2>🏦 Obiettivi di Risparmio <button class="btn-dark btn-small" onclick="addSavingsGoal()">+ Nuovo Obiettivo</button></h2>
-        <p style="font-size: 0.8rem; color: #888; margin-top: -10px;">Attenzione: Aggiungere soldi qui li sottrae dal Saldo Disponibile.</p>
-        <div class="savings-grid" id="savingsList">
+            <div>
+                <label>Descrizione</label>
+                <input type="text" id="descInput" placeholder="Dettaglio...">
             </div>
-    </div>
-
-    <div class="card">
-        <h2>💰 Nuova Transazione</h2>
-        <div class="row">
-            <input type="date" id="tDate" class="col">
-            <div class="col" style="display: flex; gap: 5px;">
-                <select id="tCat" style="flex:1; margin-bottom: 10px;">
-                    </select>
-                <button class="btn-dark" onclick="addCategory()" style="width: 40px; height: 42px;">+</button>
+            <div>
+                <label>Importo</label>
+                <input type="number" id="amountInput" placeholder="0.00">
             </div>
         </div>
-        <div class="row">
-            <input type="text" id="tDesc" placeholder="Descrizione (es. Spesa)" style="flex: 2;">
-            <input type="number" id="tAmount" placeholder="€ Importo" style="flex: 1;">
-        </div>
-        <div class="row">
-            <button onclick="addTrans('income')" class="col btn-green">+ ENTRATA</button>
-            <button onclick="addTrans('expense')" class="col btn-red">- SPESA</button>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn-action bg-inc" style="flex:1" onclick="addTransaction('income')">AGGIUNGI ENTRATA</button>
+            <button class="btn-action bg-exp" style="flex:1" onclick="addTransaction('expense')">AGGIUNGI USCITA</button>
         </div>
     </div>
 
     <div class="card">
-        <h2>📊 Analisi Finanziaria</h2>
-        <div class="row" style="height: 250px;">
-            <div class="col" style="position: relative;">
-                <h4 style="text-align:center; margin:0; color:#888; font-size:0.8rem;">Ripartizione Spese (Mese)</h4>
-                <canvas id="chartPie"></canvas>
+        <h2>🎯 Obiettivi di Risparmio <button class="btn-tool" style="font-size:0.7rem; padding:4px 8px;" onclick="createGoal()">+ Nuovo</button></h2>
+        <div id="goalsContainer"></div>
+    </div>
+
+    <div class="card">
+        <div class="filters">
+            <h2 style="margin:0; width:100%;">Analisi Finanziaria</h2>
+            <input type="month" id="monthFilter" style="width:auto; background:#111;" onchange="renderCharts()">
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-box">
+                <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.8rem;">RIPARTIZIONE SPESE (Mese)</div>
+                <canvas id="monthlyChart"></canvas>
             </div>
-            <div class="col" style="position: relative;">
-                <h4 style="text-align:center; margin:0; color:#888; font-size:0.8rem;">Andamento Annuale</h4>
-                <canvas id="chartLine"></canvas>
+            <div class="chart-box">
+                <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.8rem;">ANDAMENTO ANNUALE (Gen-Dic)</div>
+                <canvas id="annualChart"></canvas>
             </div>
+        </div>
+        
+        <div id="statsRow" style="display:flex; justify-content:space-around; margin-top:20px; text-align:center; border-top:1px solid #333; padding-top:15px;">
+            <div><div style="font-size:0.8rem; color:#888;">ENTRATE MESE</div><div id="monthIncVal" style="color:var(--success); font-weight:bold; font-size:1.2rem;">€0</div></div>
+            <div><div style="font-size:0.8rem; color:#888;">USCITE MESE</div><div id="monthExpVal" style="color:var(--danger); font-weight:bold; font-size:1.2rem;">€0</div></div>
+            <div><div style="font-size:0.8rem; color:#888;">RISPARMIO MESE</div><div id="monthNetVal" style="color:white; font-weight:bold; font-size:1.2rem;">€0</div></div>
         </div>
     </div>
 
     <div class="card">
         <h2>📝 Registro Movimenti</h2>
-        <div style="max-height: 300px; overflow-y: auto;">
-            <table id="transTable"></table>
+        <div style="overflow-x: auto; max-height:300px; overflow-y:auto;">
+            <table>
+                <thead>
+                    <tr><th width="15%">Data</th><th width="20%">Categoria</th><th width="40%">Descrizione</th><th width="15%">Importo</th><th width="10%">Azioni</th></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
     </div>
 
     <div class="card">
-        <h2>🎓 Registro Voti <span id="gradeAvg" style="color:var(--accent);">Media: -</span></h2>
-        <div class="row">
-            <input type="text" id="gSubject" placeholder="Materia (es. Matematica)" style="flex: 2;">
-            <input type="number" id="gGrade" placeholder="Voto" style="flex: 1;">
-            <button onclick="addGrade()" class="btn-dark">+</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="margin:0;">🍅 Focus Session</h2>
+            <div id="timerStatus" style="font-size:0.8rem; color:#666; font-weight:bold; letter-spacing:1px;">PRONTO</div>
         </div>
-        <table id="gradeTable"></table>
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px; text-align:center; background:#2d3436; padding:20px; border-radius:12px; border:1px solid #444;">
+                <div id="focusDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 15px;">25:00</div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:15px;">
+                    <button onclick="adjustTime(-5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">-</button>
+                    <input type="number" id="focusDuration" value="25" onchange="manualTimeSet()" style="width:100px; text-align:center; background:none; border:none; color:white; font-size:1.2rem; font-weight:bold;">
+                    <span style="color:#666;">min</span>
+                    <button onclick="adjustTime(+5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">+</button>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button id="btnStartFocus" onclick="startFocus()" style="background:var(--accent); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">▶ START</button>
+                    <button onclick="resetFocus()" style="background:#444; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">↺</button>
+                </div>
+            </div>
+            <div style="flex:1.5; min-width:250px;">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <input type="text" id="newFocusTask" placeholder="Scrivi obiettivo..." onkeypress="if(event.key === 'Enter') addFocusTask()" style="flex:1; padding:10px; border-radius:6px; border:1px solid #555; background:#1e1e24; color:white;">
+                    <button onclick="addFocusTask()" style="background:#444; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
+                </div>
+                <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;"></div>
+            </div>
+        </div>
     </div>
 
     <div class="card">
-        <h2>🧠 Skills & Progressi</h2>
-        <div class="row">
-            <input type="text" id="sName" placeholder="Skill (es. Lettura)" class="col">
-            <input type="number" id="sTarget" placeholder="Target" style="width: 80px;">
-            <button onclick="addSkill()" class="btn-dark">+</button>
+        <h2>🧠 Skills & Obiettivi</h2>
+        <div style="background:#2d3436; padding:10px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="skillName" placeholder="Nome" style="flex: 2;">
+                <input type="number" id="skillTarget" placeholder="Target" style="flex: 1;">
+                <button onclick="addSkill()" style="background: var(--success); border: none; border-radius: 6px; color: white; width: 40px;">+</button>
+            </div>
         </div>
-        <div id="skillsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        <div id="skillsList" style="display: flex; flex-direction: column; gap: 15px;"></div>
     </div>
 
-    <div class="card" style="border-top: 4px solid var(--accent); text-align: center;">
-        <h2>🍅 Focus Session</h2>
-        <input type="text" id="focusGoal" placeholder="Obiettivo della sessione? (es. Studiare cap. 3)" style="text-align: center; margin-bottom: 15px;">
-        <div id="timerDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: bold;">25:00</div>
-        <div class="row" style="justify-content: center;">
-            <button onclick="startTimer()" class="btn-accent" style="width: 120px;">START</button>
-            <button onclick="resetTimer()" class="btn-dark">RESET</button>
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h2 style="margin:0;">🎓 Registro Voti</h2>
+            <div style="font-size:0.8rem; background:#111; padding:5px 10px; border-radius:6px; border:1px solid #444;">
+                <span style="color:#888;">Media Totale:</span> <span id="globalGpa" style="color:white; font-weight:bold; font-size:1rem;">0.0</span>
+            </div>
         </div>
+        <div style="background:#2d3436; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 0.5fr; gap: 10px; align-items: end;">
+                <div><label>Materia</label><input type="text" id="subjectInput" placeholder="Es. Storia"></div>
+                <div><label>Voto</label><input type="number" id="gradeInput" step="0.25" placeholder="Es. 8.5"></div>
+                <div><label>Quad</label><select id="termSelect"><option value="1">1° Q</option><option value="2">2° Q</option></select></div>
+                <button onclick="addGrade()" style="height: 42px; background: var(--accent); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">+</button>
+            </div>
+        </div>
+        <div id="schoolList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+
+    <div class="footer-tools">
+        <button class="btn-tool" onclick="downloadJSON()">💾 Backup</button>
+        <input type="file" id="fileUpload" style="display:none" onchange="uploadJSON(this)">
+        <button class="btn-tool" onclick="document.getElementById('fileUpload').click()">📂 Ripristina</button>
+        <button class="btn-tool" style="border-color:var(--danger); color:var(--danger)" onclick="hardReset()">⚠️ Reset</button>
     </div>
 
 </div>
 
+<div id="recurringModal" class="modal-overlay">
+    <div class="modal-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0;">🔁 Modelli Fissi</h3>
+            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+        </div>
+        <div id="recList" style="margin-bottom:20px; max-height:200px; overflow-y:auto; border:1px solid #333; padding:5px; border-radius:5px; background:#111;"></div>
+        <div style="background:#2d3436; padding:15px; border-radius:8px;">
+            <div style="font-weight:bold; margin-bottom:10px; color:var(--accent);">+ NUOVO MODELLO</div>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <label style="flex:1;"><input type="radio" name="newRecType" value="expense" checked> 🔴 Uscita</label>
+                <label style="flex:1;"><input type="radio" name="newRecType" value="income"> 🟢 Entrata</label>
+            </div>
+            <input type="text" id="newRecName" placeholder="Nome (es. Affitto)" style="width:100%; margin-bottom:8px;">
+            <input type="number" id="newRecAmount" placeholder="€" style="width:100%; margin-bottom:8px;">
+            <button onclick="addRecModel()" style="width:100%; background:var(--success); border:none; padding:10px; border-radius:5px; font-weight:bold;">SALVA</button>
+        </div>
+    </div>
+</div>
+
+<div class="calc-widget">
+    <div id="calcBody" class="calculator-body">
+        <input type="text" id="calcDisplay" class="calc-display" readonly placeholder="0">
+        <div class="calc-grid">
+            <button class="calc-btn btn-ac" onclick="calcClear()">AC</button>
+            <button class="calc-btn btn-op" onclick="calcAppend('/')">÷</button>
+            <button class="calc-btn btn-op" onclick="calcAppend('*')">×</button>
+            <button class="calc-btn" onclick="calcDelete()">⌫</button>
+            <button class="calc-btn" onclick="calcAppend('7')">7</button><button class="calc-btn" onclick="calcAppend('8')">8</button><button class="calc-btn" onclick="calcAppend('9')">9</button><button class="calc-btn btn-op" onclick="calcAppend('-')">-</button>
+            <button class="calc-btn" onclick="calcAppend('4')">4</button><button class="calc-btn" onclick="calcAppend('5')">5</button><button class="calc-btn" onclick="calcAppend('6')">6</button><button class="calc-btn btn-op" onclick="calcAppend('+')">+</button>
+            <button class="calc-btn" onclick="calcAppend('1')">1</button><button class="calc-btn" onclick="calcAppend('2')">2</button><button class="calc-btn" onclick="calcAppend('3')">3</button><button class="calc-btn" onclick="calcAppend('0')">0</button>
+            <button class="calc-btn" onclick="calcAppend('.')">.</button><button class="calc-btn btn-eq" onclick="calcCalculate()">=</button>
+        </div>
+    </div>
+    <button class="calc-toggle-btn" onclick="toggleCalculator()">🧮</button>
+</div>
+
 <script>
-    // --- 1. CONFIGURAZIONE DATABASE ---
-    const DB_NAME = 'LifeManager_Pro_V5'; 
-    
-    // Struttura Dati Iniziale
-    let data = {
-        wallet: 0.00,
-        liquidityTarget: 1000.00,
-        categories: ['Cibo', 'Trasporti', 'Svago', 'Lavoro', 'Casa', 'Altro'],
+    const DB_KEY = 'SIA_Finance_Final';
+    let appData = {
+        wallet: 0,
+        liquidityTarget: 1000,
+        categories: ['🍕 Cibo', '🎁 Regali', '⛽ Benzina', '🎉 Svago', '🚗 Trasporti', '💸 Invest/Risp', '📦 Altro', '🛵 Lavoro (Deliveroo)', '👕 Vinted'],
         transactions: [],
-        savings: [], // { name: 'Auto', current: 0, target: 2000 }
+        goals: [],
+        recurring: [],
         skills: [],
-        grades: []   // { subject: 'Math', grade: 28, date: '...' }
+        school: [], // { subject, grade, term }
+        tasks: []
     };
 
-    let charts = { pie: null, line: null };
+    let chartInstances = { monthly: null, annual: null };
 
-    // --- 2. SISTEMA DI SALVATAGGIO ---
-    function saveData() {
-        localStorage.setItem(DB_NAME, JSON.stringify(data));
-        updateUI();
-    }
-
+    // --- INIT & SAVE ---
     function loadData() {
-        const saved = localStorage.getItem(DB_NAME);
-        if (saved) {
-            let parsed = JSON.parse(saved);
-            // Merge per assicurarsi che i nuovi campi (es. grades) esistano anche nei vecchi salvataggi
-            data = { ...data, ...parsed };
-        }
-        document.getElementById('tDate').valueAsDate = new Date();
-        updateUI();
-    }
-
-    // --- 3. CORE LOGIC (UI & RENDERING) ---
-    function updateUI() {
-        // A. Wallet & Liquidity
-        const w = parseFloat(data.wallet);
-        const t = parseFloat(data.liquidityTarget);
-        document.getElementById('displayWallet').innerText = '€' + w.toFixed(2);
-        document.getElementById('displayLiquidityTarget').innerText = 'Target: €' + t.toFixed(2);
+        const saved = localStorage.getItem(DB_KEY);
+        if (saved) appData = JSON.parse(saved);
+        if(!appData.categories) appData.categories = ['Altro'];
+        if(!appData.school) appData.school = [];
         
-        let perc = (t > 0) ? (w / t) * 100 : 0;
-        perc = Math.min(Math.max(perc, 0), 100); // Clamp 0-100
+        document.getElementById('dateInput').valueAsDate = new Date();
+        document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
+        renderCategories();
+        refreshUI();
+    }
+    function saveData() {
+        localStorage.setItem(DB_KEY, JSON.stringify(appData));
+        refreshUI();
+    }
+    function refreshUI() {
+        document.getElementById('walletInput').value = parseFloat(appData.wallet).toFixed(2);
+        
+        // Liquidity Bar
+        const t = appData.liquidityTarget || 1;
+        let perc = (appData.wallet / t) * 100;
+        perc = Math.max(0, Math.min(100, perc));
         document.getElementById('liquidityBar').style.width = perc + '%';
-        document.getElementById('liquidityBar').style.backgroundColor = perc >= 100 ? '#00b894' : '#fdcb6e';
-        document.getElementById('liquidityPerc').innerText = perc.toFixed(1) + '% del target';
+        document.getElementById('liquidityPerc').innerText = perc.toFixed(1) + '%';
 
-        // B. Categorie (Dropdown)
-        const catSelect = document.getElementById('tCat');
-        const currentVal = catSelect.value;
-        catSelect.innerHTML = '';
-        data.categories.forEach(c => {
-            catSelect.innerHTML += `<option value="${c}">${c}</option>`;
-        });
-        if(data.categories.includes(currentVal)) catSelect.value = currentVal;
-
-        // C. Risparmi (Logic complessa)
-        renderSavings();
-
-        // D. Transazioni
-        renderTransactions();
-
-        // E. Grafici
+        renderTable();
+        renderGoals();
         renderCharts();
-
-        // F. Skills
+        renderRecList();
         renderSkills();
-
-        // G. Voti
-        renderGrades();
+        renderSchool();
+        renderFocusTasks();
     }
 
-    // --- 4. GESTIONE TRANSAZIONI & CATEGORIE ---
-    function addCategory() {
-        const newCat = prompt("Nome nuova categoria:");
-        if (newCat && !data.categories.includes(newCat)) {
-            data.categories.push(newCat);
+    // --- WALLET ---
+    function manualWalletUpdate() {
+        appData.wallet = parseFloat(document.getElementById('walletInput').value);
+        saveData();
+    }
+    function setLiquidityTarget() {
+        const v = prompt("Target Liquidità:", appData.liquidityTarget);
+        if(v) { appData.liquidityTarget = parseFloat(v); saveData(); }
+    }
+
+    // --- CATEGORIES ---
+    function renderCategories() {
+        const sel = document.getElementById('catSelect');
+        const oldVal = sel.value;
+        sel.innerHTML = '';
+        appData.categories.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            sel.appendChild(opt);
+        });
+        if(appData.categories.includes(oldVal)) sel.value = oldVal;
+        
+        // Populate modal select too
+        // (logic skipped for brevity, relies on main list)
+    }
+    function manageCategories() {
+        const newC = prompt("Nome nuova categoria:");
+        if(newC && !appData.categories.includes(newC)) {
+            appData.categories.push(newC);
+            renderCategories();
             saveData();
         }
     }
 
-    function addTrans(type) {
-        const desc = document.getElementById('tDesc').value;
-        const amount = parseFloat(document.getElementById('tAmount').value);
-        const cat = document.getElementById('tCat').value;
-        const date = document.getElementById('tDate').value;
+    // --- TRANSACTIONS ---
+    function addTransaction(type) {
+        const desc = document.getElementById('descInput').value;
+        const amVal = document.getElementById('amountInput').value;
+        const cat = document.getElementById('catSelect').value;
+        const date = document.getElementById('dateInput').value;
 
-        if (desc && !isNaN(amount) && amount > 0) {
-            data.transactions.push({ desc, amount, cat, type, date });
-            
-            // Aggiorna Saldo
-            if (type === 'income') data.wallet += amount;
-            else data.wallet -= amount;
+        if(!desc || !amVal || !date) return alert("Compila tutti i campi");
+        
+        const amount = parseFloat(amVal);
+        appData.transactions.push({ id: Date.now(), date, cat, desc, amount, type });
+        
+        if(type === 'income') appData.wallet += amount;
+        else appData.wallet -= amount;
 
-            document.getElementById('tDesc').value = '';
-            document.getElementById('tAmount').value = '';
-            saveData();
-        } else {
-            alert("Inserisci descrizione e importo valido!");
-        }
+        document.getElementById('descInput').value = '';
+        document.getElementById('amountInput').value = '';
+        saveData();
     }
-
-    function deleteTrans(index) {
-        if(confirm("Eliminare transazione? Il saldo verrà ricalcolato.")) {
-            // Indice invertito perché la lista è visualizzata al contrario
-            const realIndex = data.transactions.length - 1 - index;
-            const t = data.transactions[realIndex];
-            
-            // Storna saldo
-            if(t.type === 'income') data.wallet -= t.amount;
-            else data.wallet += t.amount;
-
-            data.transactions.splice(realIndex, 1);
+    function deleteTransaction(id) {
+        const idx = appData.transactions.findIndex(t => t.id === id);
+        if(idx > -1) {
+            const t = appData.transactions[idx];
+            if(t.type === 'income') appData.wallet -= t.amount;
+            else appData.wallet += t.amount;
+            appData.transactions.splice(idx, 1);
             saveData();
         }
     }
-
-    function renderTransactions() {
-        const table = document.getElementById('transTable');
-        table.innerHTML = '';
-        data.transactions.slice().reverse().forEach((t, i) => {
-            const cssClass = t.type === 'income' ? 'amount-pos' : 'amount-neg';
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        const sorted = [...appData.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        sorted.forEach(t => {
             const sign = t.type === 'income' ? '+' : '-';
-            table.innerHTML += `
+            const cls = t.type === 'income' ? 'amount-pos' : 'amount-neg';
+            tbody.innerHTML += `
                 <tr>
-                    <td><small>${t.date}</small></td>
-                    <td><b>${t.desc}</b> <br><small style="color:#888">${t.cat}</small></td>
-                    <td class="${cssClass} text-right">${sign}€${t.amount.toFixed(2)}</td>
-                    <td class="text-right"><button onclick="deleteTrans(${i})" style="background:none; color:#666;">x</button></td>
+                    <td>${t.date}</td>
+                    <td><span style="font-size:0.8rem; background:#333; padding:2px 6px; border-radius:4px;">${t.cat}</span></td>
+                    <td>${t.desc}</td>
+                    <td class="${cls}">${sign}€${t.amount.toFixed(2)}</td>
+                    <td><button onclick="deleteTransaction(${t.id})" style="color:#d63031; background:none; border:none; cursor:pointer;">x</button></td>
                 </tr>
             `;
         });
     }
 
-    // --- 5. GESTIONE RISPARMI (Collegano al Saldo) ---
-    function setLiquidityTarget() {
-        const val = prompt("Nuovo obiettivo di liquidità:", data.liquidityTarget);
-        if(val && !isNaN(val)) { data.liquidityTarget = parseFloat(val); saveData(); }
-    }
-
-    function addSavingsGoal() {
-        const name = prompt("Nome Obiettivo (es. Auto Nuova):");
-        const target = prompt("Target (es. 5000):");
+    // --- GOALS ---
+    function createGoal() {
+        const name = prompt("Nome obiettivo:");
+        const target = prompt("Target (€):");
         if(name && target) {
-            data.savings.push({ name, current: 0, target: parseFloat(target) });
+            appData.goals.push({ id: Date.now(), name, target: parseFloat(target), current: 0 });
             saveData();
         }
     }
-
-    function updateSavings(index, amount) {
-        // amount positivo = deposito (toglie dal wallet)
-        // amount negativo = prelievo (aggiunge al wallet)
-        
-        if (amount > 0 && data.wallet < amount) {
-            alert("Non hai abbastanza liquidità nel saldo principale!");
-            return;
-        }
-        if (amount < 0 && data.savings[index].current < Math.abs(amount)) {
-            alert("Non ci sono abbastanza fondi in questo salvadanaio!");
-            return;
-        }
-
-        data.savings[index].current += amount;
-        data.wallet -= amount; // Inverte la logica: se metto nel salvadanaio, tolgo dal wallet
-        saveData();
-    }
-
-    function deleteSavings(index) {
-        if(confirm("Eliminare obiettivo? I fondi torneranno nel saldo.")) {
-            data.wallet += data.savings[index].current;
-            data.savings.splice(index, 1);
+    function updateGoal(id, amount) {
+        const g = appData.goals.find(x => x.id === id);
+        if(g) {
+            // Check funds if adding
+            if(amount > 0 && appData.wallet < amount) return alert("Saldo insufficiente!");
+            // Check goal funds if withdrawing
+            if(amount < 0 && g.current < Math.abs(amount)) return alert("Fondi insufficienti nell'obiettivo!");
+            
+            g.current += amount;
+            appData.wallet -= amount; // Move money
             saveData();
         }
     }
-
-    function renderSavings() {
-        const list = document.getElementById('savingsList');
-        list.innerHTML = '';
-        data.savings.forEach((s, i) => {
-            const perc = Math.min((s.current / s.target) * 100, 100);
-            list.innerHTML += `
-                <div class="saving-item">
-                    <div class="flex-between">
-                        <strong>${s.name}</strong>
-                        <button onclick="deleteSavings(${i})" style="color:#d63031; background:none;">x</button>
+    function deleteGoal(id) {
+        if(confirm("Eliminare? I soldi torneranno nel saldo.")) {
+            const idx = appData.goals.findIndex(g => g.id === id);
+            appData.wallet += appData.goals[idx].current;
+            appData.goals.splice(idx, 1);
+            saveData();
+        }
+    }
+    function renderGoals() {
+        const c = document.getElementById('goalsContainer');
+        c.innerHTML = '';
+        appData.goals.forEach(g => {
+            const p = Math.min(100, (g.current / g.target) * 100);
+            c.innerHTML += `
+                <div class="goal-row">
+                    <div style="width:120px;">
+                        <div style="font-weight:bold;">${g.name}</div>
+                        <button onclick="deleteGoal(${g.id})" style="font-size:0.7rem; color:#d63031; background:none; border:none; padding:0;">Elimina</button>
                     </div>
-                    <div style="font-size:1.2rem; margin:5px 0;">€${s.current.toFixed(2)} <small style="color:#666">/ ${s.target}</small></div>
-                    <div class="target-bar-bg" style="height:6px;"><div class="target-bar-fill" style="width:${perc}%; background:var(--accent);"></div></div>
-                    <div class="row" style="margin-top:10px;">
-                        <button class="col btn-dark" onclick="askSavings(${i}, true)">+ Versa</button>
-                        <button class="col btn-dark" onclick="askSavings(${i}, false)">- Preleva</button>
-                    </div>
+                    <div class="goal-bar-container"><div class="goal-fill" style="width:${p}%"></div></div>
+                    <div class="goal-nums">€${g.current} / ${g.target}</div>
+                    <button class="goal-btn" onclick="updateGoal(${g.id}, parseFloat(prompt('Versa:')))">+</button>
+                    <button class="goal-btn" onclick="updateGoal(${g.id}, -parseFloat(prompt('Preleva:')))">-</button>
                 </div>
             `;
         });
     }
 
-    function askSavings(index, isDeposit) {
-        const val = parseFloat(prompt(isDeposit ? "Quanto vuoi versare?" : "Quanto vuoi prelevare?"));
-        if(!isNaN(val) && val > 0) {
-            updateSavings(index, isDeposit ? val : -val);
-        }
-    }
-
-    // --- 6. GRAFICI AVANZATI ---
+    // --- CHARTS (IL FIX RICHIESTO) ---
     function renderCharts() {
-        // Grafico 1: Torta Spese (Mese Corrente)
-        const currentMonth = new Date().getMonth();
+        const mFilter = document.getElementById('monthFilter').value; // "YYYY-MM"
+        const [year, month] = mFilter.split('-');
+
+        // 1. PIE CHART (Dati filtrati per mese selezionato)
         const cats = {};
-        data.transactions.forEach(t => {
-            if (t.type === 'expense' && new Date(t.date).getMonth() === currentMonth) {
-                cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+        let mInc = 0, mExp = 0;
+
+        appData.transactions.forEach(t => {
+            if(t.date.startsWith(mFilter)) {
+                if(t.type === 'expense') {
+                    cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+                    mExp += t.amount;
+                } else {
+                    mInc += t.amount;
+                }
             }
         });
 
-        if (charts.pie) charts.pie.destroy();
-        charts.pie = new Chart(document.getElementById('chartPie'), {
+        // Update Stats Text
+        document.getElementById('monthIncVal').innerText = `€${mInc.toFixed(2)}`;
+        document.getElementById('monthExpVal').innerText = `€${mExp.toFixed(2)}`;
+        const net = mInc - mExp;
+        document.getElementById('monthNetVal').innerText = `€${net.toFixed(2)}`;
+        document.getElementById('monthNetVal').style.color = net >= 0 ? '#00b894' : '#d63031';
+
+        if(chartInstances.monthly) chartInstances.monthly.destroy();
+        chartInstances.monthly = new Chart(document.getElementById('monthlyChart'), {
             type: 'doughnut',
             data: {
                 labels: Object.keys(cats),
-                datasets: [{ data: Object.values(cats), backgroundColor: ['#fdcb6e', '#00b894', '#6c5ce7', '#d63031', '#74b9ff'] }]
+                datasets: [{ data: Object.values(cats), backgroundColor: ['#fdcb6e','#00b894','#6c5ce7','#d63031','#74b9ff','#a29bfe'], borderWidth:0 }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            options: { responsive:true, maintainAspectRatio:false, plugins: { legend: { display: false } } }
         });
 
-        // Grafico 2: Linea Annuale (Entrate vs Uscite)
-        const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
-        const incomes = Array(12).fill(0);
-        const expenses = Array(12).fill(0);
-        
-        data.transactions.forEach(t => {
-            const m = new Date(t.date).getMonth();
-            if(t.type === 'income') incomes[m] += t.amount;
-            else expenses[m] += t.amount;
+        // 2. ANNUAL LINE CHART (Raggruppato per MESI: Gen-Dic)
+        const monthLabels = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+        let annualInc = new Array(12).fill(0);
+        let annualExp = new Array(12).fill(0);
+
+        // Filtriamo per l'anno selezionato nel filtro (o anno corrente se preferisci)
+        appData.transactions.forEach(t => {
+            if(t.date.startsWith(year)) { // Prende solo l'anno corrente selezionato
+                const mIndex = parseInt(t.date.split('-')[1]) - 1; // 0 for Jan, 11 for Dec
+                if(t.type === 'income') annualInc[mIndex] += t.amount;
+                else annualExp[mIndex] += t.amount;
+            }
         });
 
-        if (charts.line) charts.line.destroy();
-        charts.line = new Chart(document.getElementById('chartLine'), {
+        if(chartInstances.annual) chartInstances.annual.destroy();
+        chartInstances.annual = new Chart(document.getElementById('annualChart'), {
             type: 'line',
             data: {
-                labels: months,
+                labels: monthLabels,
                 datasets: [
-                    { label: 'Entrate', data: incomes, borderColor: '#00b894', tension: 0.3 },
-                    { label: 'Uscite', data: expenses, borderColor: '#d63031', tension: 0.3 }
+                    { label: 'Entrate', data: annualInc, borderColor: '#00b894', tension: 0.3, pointRadius: 2 },
+                    { label: 'Uscite', data: annualExp, borderColor: '#d63031', tension: 0.3, pointRadius: 2 }
                 ]
             },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false } } }
+            options: { 
+                responsive:true, maintainAspectRatio:false, 
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { grid: { display: false, color: '#333' }, ticks: { color: '#888' } },
+                    y: { grid: { color: '#333' }, ticks: { color: '#888' } }
+                }
+            }
         });
     }
 
-    // --- 7. SKILLS & VOTI ---
-    function addSkill() {
-        const name = document.getElementById('sName').value;
-        const target = parseFloat(document.getElementById('sTarget').value);
-        if(name && target) { 
-            data.skills.push({ name, target, progress: 0 }); 
-            saveData(); 
-            document.getElementById('sName').value=''; 
-            document.getElementById('sTarget').value=''; 
-        }
-    }
-
-    function renderSkills() {
-        const div = document.getElementById('skillsList');
-        div.innerHTML = '';
-        data.skills.forEach((s, i) => {
-            const perc = (s.progress / s.target) * 100;
-            div.innerHTML += `
-                <div style="background:#25252b; padding:10px; border-radius:8px;">
-                    <div class="flex-between"><span>${s.name}</span> <span>${s.progress}/${s.target}</span></div>
-                    <div class="target-bar-bg"><div class="target-bar-fill" style="width:${perc}%; background:var(--accent)"></div></div>
-                    <div class="text-right" style="margin-top:5px;">
-                        <button onclick="modSkill(${i}, 1)" class="btn-dark btn-small">+1</button>
-                        <button onclick="delSkill(${i})" style="color:#d63031; background:none;">Elimina</button>
-                    </div>
-                </div>`;
-        });
-    }
-    function modSkill(i, v) { data.skills[i].progress += v; saveData(); }
-    function delSkill(i) { data.skills.splice(i, 1); saveData(); }
-
-    // VOTI
-    function addGrade() {
-        const sub = document.getElementById('gSubject').value;
-        const gr = parseFloat(document.getElementById('gGrade').value);
-        if(sub && !isNaN(gr)) {
-            data.grades.push({ subject: sub, grade: gr });
+    // --- RECURRING MODAL ---
+    function openModal() { document.getElementById('recurringModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('recurringModal').style.display = 'none'; }
+    function addRecModel() {
+        const name = document.getElementById('newRecName').value;
+        const amt = parseFloat(document.getElementById('newRecAmount').value);
+        const type = document.querySelector('input[name="newRecType"]:checked').value;
+        
+        if(name && amt) {
+            appData.recurring.push({ name, amount: amt, type });
             saveData();
-            document.getElementById('gSubject').value = '';
-            document.getElementById('gGrade').value = '';
+            document.getElementById('newRecName').value = '';
         }
     }
-
-    function deleteGrade(index) {
-        data.grades.splice(index, 1);
-        saveData();
-    }
-
-    function renderGrades() {
-        const tbl = document.getElementById('gradeTable');
-        tbl.innerHTML = '';
-        let sum = 0;
-        data.grades.forEach((g, i) => {
-            sum += g.grade;
-            tbl.innerHTML += `<tr><td>${g.subject}</td><td><b>${g.grade}</b></td><td class="text-right"><button onclick="deleteGrade(${i})" style="color:#666; background:none;">x</button></td></tr>`;
+    function renderRecList() {
+        const l = document.getElementById('recList');
+        l.innerHTML = '';
+        appData.recurring.forEach((r, i) => {
+            l.innerHTML += `
+                <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #333;">
+                    <span>${r.name} (${r.amount})</span>
+                    <div>
+                        <button onclick="useRec(${i})" style="color:#00b894; background:none; border:none; margin-right:5px;">USA</button>
+                        <button onclick="delRec(${i})" style="color:#d63031; background:none; border:none;">x</button>
+                    </div>
+                </div>
+            `;
         });
-        const avg = data.grades.length ? (sum / data.grades.length).toFixed(1) : '-';
-        document.getElementById('gradeAvg').innerText = 'Media: ' + avg;
     }
+    function useRec(i) {
+        const r = appData.recurring[i];
+        document.getElementById('descInput').value = r.name;
+        document.getElementById('amountInput').value = r.amount;
+        // Auto select type logic implicitly handled by button click
+        closeModal();
+    }
+    function delRec(i) { appData.recurring.splice(i, 1); saveData(); }
 
-    // --- 8. FOCUS TIMER ---
+    // --- FOCUS ---
     let timerInt = null, timeLeft = 1500;
-    function startTimer() {
+    function adjustTime(mins) { 
+        timeLeft += mins * 60; 
+        if(timeLeft < 0) timeLeft = 0;
+        updateTimerDisplay();
+    }
+    function manualTimeSet() {
+        timeLeft = parseInt(document.getElementById('focusDuration').value) * 60;
+        updateTimerDisplay();
+    }
+    function updateTimerDisplay() {
+        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        document.getElementById('focusDisplay').innerText = `${m}:${s}`;
+    }
+    function startFocus() {
         if(timerInt) return;
+        document.getElementById('timerStatus').innerText = "IN CORSO...";
+        document.getElementById('timerStatus').style.color = "#00b894";
         timerInt = setInterval(() => {
             timeLeft--;
-            const m = Math.floor(timeLeft/60).toString().padStart(2,'0');
-            const s = (timeLeft%60).toString().padStart(2,'0');
-            document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-            if(timeLeft <= 0) { 
-                clearInterval(timerInt); 
-                alert("Sessione terminata: " + document.getElementById('focusGoal').value); 
-                resetTimer(); 
+            updateTimerDisplay();
+            if(timeLeft <= 0) {
+                clearInterval(timerInt); timerInt=null;
+                alert("Sessione Terminata!");
+                document.getElementById('timerStatus').innerText = "FATTO";
             }
         }, 1000);
     }
-    function resetTimer() { clearInterval(timerInt); timerInt=null; timeLeft=1500; document.getElementById('timerDisplay').innerText="25:00"; }
+    function resetFocus() { clearInterval(timerInt); timerInt=null; timeLeft=1500; updateTimerDisplay(); document.getElementById('timerStatus').innerText="PRONTO"; }
+    function addFocusTask() {
+        const t = document.getElementById('newFocusTask').value;
+        if(t) { appData.tasks.push(t); saveData(); document.getElementById('newFocusTask').value=''; }
+    }
+    function renderFocusTasks() {
+        const l = document.getElementById('focusTodoList');
+        l.innerHTML = '';
+        appData.tasks.forEach((t, i) => {
+            l.innerHTML += `<div style="background:#333; padding:5px 10px; border-radius:4px; font-size:0.9rem; display:flex; justify-content:space-between;">${t} <span onclick="appData.tasks.splice(${i},1); saveData();" style="cursor:pointer; color:#d63031;">x</span></div>`;
+        });
+    }
 
-    // AVVIO
+    // --- SKILLS ---
+    function addSkill() {
+        const n = document.getElementById('skillName').value;
+        const t = document.getElementById('skillTarget').value;
+        if(n && t) { appData.skills.push({ name: n, target: parseFloat(t), progress: 0 }); saveData(); }
+    }
+    function renderSkills() {
+        const l = document.getElementById('skillsList');
+        l.innerHTML = '';
+        appData.skills.forEach((s, i) => {
+            const p = (s.progress / s.target) * 100;
+            l.innerHTML += `
+                <div style="background:#25252b; padding:10px; border-radius:8px; border:1px solid #333;">
+                    <div style="display:flex; justify-content:space-between;"><span>${s.name}</span> <span>${s.progress}/${s.target}</span></div>
+                    <div style="height:6px; background:#111; margin-top:5px;"><div style="width:${p}%; height:100%; background:var(--accent);"></div></div>
+                    <div style="margin-top:5px; text-align:right;">
+                        <button onclick="modSkill(${i}, 1)" style="background:#333; color:white; border:none;">+1</button>
+                        <button onclick="delSkill(${i})" style="color:#d63031; background:none; border:none;">x</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    function modSkill(i, v) { appData.skills[i].progress += v; saveData(); }
+    function delSkill(i) { appData.skills.splice(i, 1); saveData(); }
+
+    // --- SCHOOL ---
+    function addGrade() {
+        const sub = document.getElementById('subjectInput').value;
+        const gr = parseFloat(document.getElementById('gradeInput').value);
+        const term = document.getElementById('termSelect').value;
+        if(sub && !isNaN(gr)) {
+            appData.school.push({ subject: sub, grade: gr, term: term });
+            saveData();
+            document.getElementById('gradeInput').value = '';
+        }
+    }
+    function renderSchool() {
+        const l = document.getElementById('schoolList');
+        l.innerHTML = '';
+        let sums = {1:0, 2:0}, counts = {1:0, 2:0};
+        
+        appData.school.forEach((s, i) => {
+            sums[s.term] += s.grade; counts[s.term]++;
+            l.innerHTML += `
+                <div style="display:flex; justify-content:space-between; padding:8px; background:#25252b; margin-bottom:5px; border-radius:6px; border-left:3px solid ${s.grade >= 6 ? 'var(--success)' : 'var(--danger)'}">
+                    <span>${s.subject} <small style="color:#666">(${s.term}°Q)</small></span>
+                    <b>${s.grade} <span onclick="appData.school.splice(${i},1); saveData();" style="color:#d63031; cursor:pointer; margin-left:10px;">x</span></b>
+                </div>`;
+        });
+        
+        const avg1 = counts[1] ? (sums[1]/counts[1]).toFixed(2) : '-';
+        const avg2 = counts[2] ? (sums[2]/counts[2]).toFixed(2) : '-';
+        const totAvg = (sums[1]+sums[2]) / (counts[1]+counts[2]) || 0;
+        
+        document.getElementById('globalGpa').innerText = totAvg.toFixed(2);
+        // Note: You would need IDs for Q1/Q2 display if you kept them in HTML
+    }
+
+    // --- CALCULATOR ---
+    function toggleCalculator() {
+        const b = document.getElementById('calcBody');
+        b.style.display = (b.style.display === 'block') ? 'none' : 'block';
+    }
+    function calcAppend(v) { document.getElementById('calcDisplay').value += v; }
+    function calcClear() { document.getElementById('calcDisplay').value = ''; }
+    function calcDelete() { const d = document.getElementById('calcDisplay'); d.value = d.value.slice(0, -1); }
+    function calcCalculate() { 
+        try { document.getElementById('calcDisplay').value = eval(document.getElementById('calcDisplay').value); } 
+        catch { alert("Errore"); } 
+    }
+
+    // --- EXPORT/IMPORT ---
+    function downloadJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+        const a = document.createElement('a'); a.href = dataStr; a.download = "backup_sia.json"; a.click();
+    }
+    function uploadJSON(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const fr = new FileReader();
+        fr.onload = function(e) {
+            appData = JSON.parse(e.target.result);
+            saveData();
+            alert("Backup ripristinato!");
+        };
+        fr.readAsText(file);
+    }
+    function hardReset() {
+        if(confirm("Cancellare TUTTO?")) { localStorage.removeItem(DB_KEY); location.reload(); }
+    }
+
+    // START
     window.onload = loadData;
 
 </script>
