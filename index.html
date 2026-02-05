@@ -179,39 +179,75 @@
         </div>
     </div>
 
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h2 style="margin:0;">🍅 Focus Session</h2>
-            <div id="timerStatus" style="font-size:0.8rem; color:#666; font-weight:bold; letter-spacing:1px;">PRONTO</div>
+<div class="card">
+    <h2>⏱️ Monte Ore & Statistiche</h2>
+    <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+         <div style="flex-grow: 1;">
+             <label>Attività Manuale</label>
+             <select id="manualTimeCat" style="width: 100%; padding: 12px; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px;">
+                 <option value="Studio">📚 Studio</option>
+                 <option value="Lavoro">💼 Lavoro</option>
+                 <option value="Lettura">📖 Lettura</option>
+                 <option value="Progetti">🚀 Progetti</option>
+                 <option value="Sport">🏋️ Sport</option>
+             </select>
+         </div>
+         <div style="width: 100px;">
+             <label>Minuti</label>
+             <input type="number" id="manualTimeMin" placeholder="min" style="width: 100%; padding: 12px; background: #2d3436; border: 1px solid #444; color: white; border-radius: 8px;">
+         </div>
+         <button onclick="addManualTime()" style="padding: 12px; font-size: 1.2rem; background: var(--success); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">+</button>
+    </div>
+    <div id="timeStatsContainer" style="display: flex; flex-direction: column; gap: 8px;">
         </div>
-        <div style="display:flex; gap:20px; flex-wrap:wrap;">
-            <div style="flex:1; min-width:200px; text-align:center; background:#2d3436; padding:20px; border-radius:12px; border:1px solid #444;">
-                <div id="focusDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 15px;">25:00</div>
-                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:15px;">
-                    <button onclick="adjustTime(-5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">-</button>
-                    <input type="number" id="focusDuration" value="25" onchange="manualTimeSet()" style="width:100px; text-align:center; background:none; border:none; color:white; font-size:1.2rem; font-weight:bold;">
-                    <span style="color:#666;">min</span>
-                    <button onclick="adjustTime(+5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">+</button>
-                </div>
-                <div style="display:flex; gap:10px; justify-content:center;">
-                    <button id="btnStartFocus" onclick="startFocus()" style="background:var(--accent); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">▶ START</button>
-                    <button id="btnPauseFocus" onclick="pauseFocus()" style="display:none; background:var(--warning); color:black; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">⏸ PAUSA</button>
-                    <button onclick="resetFocus()" style="background:#444; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">↺</button>
-                </div>
+</div>
+    
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0;">🍅 Focus Session</h2>
+        <div id="timerStatus" style="font-size:0.8rem; color:#666; font-weight:bold; letter-spacing:1px;">PRONTO</div>
+    </div>
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+        
+        <div style="flex:1; min-width:200px; text-align:center; background:#2d3436; padding:20px; border-radius:12px; border:1px solid #444;">
+            
+            <div style="margin-bottom: 15px;">
+                <label style="text-align: center; margin-bottom: 5px; display: block; font-size: 0.8rem; color: #888;">Cosa stai facendo?</label>
+                <select id="focusCategorySelector" style="width: 100%; padding: 8px; text-align: center; font-weight: bold; background: #111; color: white; border: 1px solid #444; border-radius: 6px;">
+                    <option value="Studio">📚 Studio</option>
+                    <option value="Lavoro">💼 Lavoro</option>
+                    <option value="Lettura">📖 Lettura</option>
+                    <option value="Progetti">🚀 Progetti</option>
+                    <option value="Sport">🏋️ Sport</option>
+                </select>
             </div>
-            <div style="flex:1.5; min-width:250px;">
-                <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <input type="text" id="newFocusTask" placeholder="Scrivi obiettivo e premi Invio..." onkeypress="if(event.key === 'Enter') addFocusTask()" style="flex:1; padding:10px; border-radius:6px; border:1px solid #555; background:#1e1e24; color:white;">
-                    <button onclick="addFocusTask()" style="background:#444; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
-                </div>
-                <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;"></div>
-                <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#888;">
-                    <span id="tasksCount">0 obiettivi</span>
-                    <button onclick="clearFocusList()" style="background:none; border:none; color:#d63031; cursor:pointer; font-size:0.75rem;">Pulisci tutto</button>
-                </div>
+            <div id="focusDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 15px;">25:00</div>
+            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:15px;">
+                <button onclick="adjustTime(-5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">-</button>
+                <input type="number" id="focusDuration" value="25" onchange="manualTimeSet()" style="width:100px; text-align:center; background:none; border:none; color:white; font-size:1.2rem; font-weight:bold;">
+                <span style="color:#666;">min</span>
+                <button onclick="adjustTime(+5)" style="background:none; border:none; color:#666; font-size:1.2rem; cursor:pointer;">+</button>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button id="btnStartFocus" onclick="startFocus()" style="background:var(--accent); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">▶ START</button>
+                <button id="btnPauseFocus" onclick="pauseFocus()" style="display:none; background:var(--warning); color:black; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">⏸ PAUSA</button>
+                <button onclick="resetFocus()" style="background:#444; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">↺</button>
+            </div>
+        </div>
+
+        <div style="flex:1.5; min-width:250px;">
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="newFocusTask" placeholder="Scrivi obiettivo e premi Invio..." onkeypress="if(event.key === 'Enter') addFocusTask()" style="flex:1; padding:10px; border-radius:6px; border:1px solid #555; background:#1e1e24; color:white;">
+                <button onclick="addFocusTask()" style="background:#444; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
+            </div>
+            <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;"></div>
+            <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#888;">
+                <span id="tasksCount">0 obiettivi</span>
+                <button onclick="clearFocusList()" style="background:none; border:none; color:#d63031; cursor:pointer; font-size:0.75rem;">Pulisci tutto</button>
             </div>
         </div>
     </div>
+</div>
 
     <div class="card" style="margin-top: 20px;">
         <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px;">🧠 Skills & Obiettivi</h2>
@@ -333,6 +369,7 @@
         skills: [],
         school: [],
         focusTasks: []
+        timeStats: {}
     };
 
     let chartInstances = { monthly: null, annual: null };
@@ -797,6 +834,65 @@
     // AVVIO
     window.onload = loadData;
 
+    // --- NUOVE FUNZIONI PER IL TIME TRACKER ---
+
+// 1. Aggiunta manuale
+function addManualTime() {
+    const cat = document.getElementById('manualTimeCat').value;
+    const mins = parseInt(document.getElementById('manualTimeMin').value);
+    
+    // Inizializza l'oggetto se non esiste (sicurezza per vecchi salvataggi)
+    if (!appData.timeStats) appData.timeStats = {};
+
+    if(cat && mins > 0) {
+        if(!appData.timeStats[cat]) appData.timeStats[cat] = 0;
+        appData.timeStats[cat] += mins;
+        saveData(); // Salva e aggiorna la grafica
+        document.getElementById('manualTimeMin').value = '';
+    }
+}
+
+// 2. Aggiunta automatica dal Timer
+function addTimerTime(cat, mins) {
+    if (!appData.timeStats) appData.timeStats = {};
+    
+    if(!appData.timeStats[cat]) appData.timeStats[cat] = 0;
+    appData.timeStats[cat] += mins;
+    saveData();
+}
+
+// 3. Visualizzazione Statistiche
+function renderTimeStats() {
+    const c = document.getElementById('timeStatsContainer');
+    if(!c) return; // Sicurezza se l'HTML non è ancora stato incollato
+    c.innerHTML = '';
+    
+    if (!appData.timeStats) appData.timeStats = {};
+
+    // Ordina le attività per tempo (dalla più alta)
+    const sorted = Object.entries(appData.timeStats).sort((a,b) => b[1] - a[1]);
+    
+    if(sorted.length === 0) {
+        c.innerHTML = '<div style="color:#666; text-align:center; font-style:italic; padding: 10px;">Nessuna attività registrata</div>';
+        return;
+    }
+
+    sorted.forEach(([key, mins]) => {
+        if(mins > 0) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            // Formattazione bella: "1h 30m" o solo "45m"
+            const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
+            
+            c.innerHTML += `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #2d3436; padding: 10px; border-radius: 6px; border: 1px solid #444;">
+                    <span style="font-weight: bold; color: white;">${key}</span>
+                    <span style="font-family: 'Fira Code', monospace; color: var(--accent); font-size: 1.1rem;">${timeStr}</span>
+                </div>
+            `;
+        }
+    });
+}
 </script>
 </body>
 </html>
