@@ -265,67 +265,75 @@
     </div>
 
 <div class="card" style="margin-top: 30px; border-top: 4px solid #a29bfe;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h2 style="margin:0;">🏛️ Libretto Universitario</h2>
-            <div style="text-align:right;">
-                <div style="font-size:0.8rem; color:#888;">Media Ponderata</div>
-                <span id="uniGlobalGpa" style="color:#a29bfe; font-weight:bold; font-size:1.2rem;">0.00</span>
-            </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <h2 style="margin:0;">🏛️ Libretto Universitario</h2>
+        <div style="text-align:right;">
+            <div style="font-size:0.8rem; color:#888;">Media Ponderata</div>
+            <span id="uniGlobalGpa" style="color:#a29bfe; font-weight:bold; font-size:1.2rem;">0.00</span>
         </div>
-    
-        <div style="background:#2d3436; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr; gap: 10px; align-items: end;">
-                
-                <div>
-                    <label style="font-size:0.8rem; color:#aaa;">Esame</label>
-                    <input type="text" id="uniSubjectInput" placeholder="Es. Analisi 1" 
-                           style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
-                </div>
-                
-                <div>
-                    <label style="font-size:0.8rem; color:#aaa;">Voto</label>
-                    <input type="number" id="uniGradeInput" placeholder="18-30" min="18" max="31"
-                           style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
-                </div>
-    
-                <div>
-                    <label style="font-size:0.8rem; color:#aaa;">CFU</label>
-                    <input type="number" id="uniCfuInput" placeholder="Es. 6, 9" 
-                           style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
-                </div>
-    
-                <div>
-                    <label style="font-size:0.8rem; color:#aaa;">Anno</label>
-                    <select id="uniYearSelect" style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
-                        <option value="1">1° Anno</option>
-                        <option value="2">2° Anno</option>
-                        <option value="3">3° Anno</option>
-                        <option value="4">Fuori C.</option>
-                    </select>
-                </div>
-    
-                <button onclick="addUniExam()" style="height: 38px; background: #a29bfe; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">+</button>
-            </div>
-        </div>
-    
-        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-            <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:#aaa;">MEDIA 1° ANNO</div>
-                <div id="gpaY1" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
-            </div>
-            <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:#aaa;">MEDIA 2° ANNO</div>
-                <div id="gpaY2" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
-            </div>
-            <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:#aaa;">MEDIA 3° ANNO</div>
-                <div id="gpaY3" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
-            </div>
-        </div>
-    
-        <div id="uniExamList" style="display: flex; flex-direction: column; gap: 10px; max-height:300px; overflow-y:auto;">
-            </div>
     </div>
+ 
+    <div style="background:#2d3436; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 0.5fr; gap: 10px; align-items: end;">
+             
+            <div>
+                <label style="font-size:0.8rem; color:#aaa;">Esame</label>
+                <input type="text" id="uniSubjectInput" placeholder="Es. Analisi 1" 
+                       style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+            </div>
+
+            <div>
+                <label style="font-size:0.8rem; color:#aaa;">Blocco (Opz)</label>
+                <input type="text" id="uniBlockInput" placeholder="Es. Anatomia" 
+                       style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:#fab1a0; border-radius:5px;">
+            </div>
+             
+            <div>
+                <label style="font-size:0.8rem; color:#aaa;">Voto</label>
+                <input type="number" id="uniGradeInput" placeholder="18-30" min="18" max="31"
+                       style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+            </div>
+ 
+            <div>
+                <label style="font-size:0.8rem; color:#aaa;">CFU</label>
+                <input type="number" id="uniCfuInput" placeholder="Es. 6, 9" 
+                       style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+            </div>
+ 
+            <div>
+                <label style="font-size:0.8rem; color:#aaa;">Anno</label>
+                <select id="uniYearSelect" style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+                    <option value="1">1° Anno</option>
+                    <option value="2">2° Anno</option>
+                    <option value="3">3° Anno</option>
+                    <option value="4">Fuori C.</option>
+                </select>
+            </div>
+ 
+            <button onclick="addUniExam()" style="height: 38px; background: #a29bfe; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">+</button>
+        </div>
+    </div>
+ 
+    <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+        <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
+            <div style="font-size:0.7rem; color:#aaa;">MEDIA 1° ANNO</div>
+            <div id="gpaY1" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
+        </div>
+        <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
+            <div style="font-size:0.7rem; color:#aaa;">MEDIA 2° ANNO</div>
+            <div id="gpaY2" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
+        </div>
+        <div style="flex:1; background:#1e1e24; border:1px solid #333; padding:10px; border-radius:8px; text-align:center;">
+            <div style="font-size:0.7rem; color:#aaa;">MEDIA 3° ANNO</div>
+            <div id="gpaY3" style="font-size:1.1rem; font-weight:bold; color:white;">0.0</div>
+        </div>
+    </div>
+    
+    <div id="uniBlocksList" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom: 20px;"></div>
+ 
+    <div id="uniExamList" style="display: flex; flex-direction: column; gap: 10px; max-height:300px; overflow-y:auto;">
+    </div>
+</div>
     <div class="footer-tools">
         <button class="btn-tool" onclick="downloadJSON()">💾 Backup Dati</button>
         <input type="file" id="fileUpload" style="display:none" onchange="uploadJSON(this)">
@@ -860,16 +868,18 @@
     window.onload = loadData;
 
 // ==========================================
-    // LOGICA UNIVERSITÀ (CFU + MEDIA PONDERATA)
+    // LOGICA UNIVERSITÀ (CFU + MEDIA + BLOCCHI)
     // ==========================================
 
     window.addUniExam = function() {
         const subInput = document.getElementById('uniSubjectInput');
+        const blockInput = document.getElementById('uniBlockInput'); // NUOVO
         const gradeInput = document.getElementById('uniGradeInput');
         const cfuInput = document.getElementById('uniCfuInput');
         const yearSelect = document.getElementById('uniYearSelect');
 
         const subject = subInput ? subInput.value.trim() : "";
+        const block = blockInput ? blockInput.value.trim() : ""; // NUOVO
         const grade = gradeInput ? parseFloat(gradeInput.value) : 0;
         const cfu = cfuInput ? parseFloat(cfuInput.value) : 0;
         const year = yearSelect ? yearSelect.value : "1";
@@ -881,14 +891,15 @@
         // Assicuriamoci che l'array esista
         if (!window.appData.uniExams) window.appData.uniExams = [];
 
-        window.appData.uniExams.push({ id: Date.now(), subject, grade, cfu, year });
+        // Salviamo anche il blocco
+        window.appData.uniExams.push({ id: Date.now(), subject, block, grade, cfu, year });
 
         // SALVATAGGIO UNIVERSALE (Funziona anche col vecchio sistema)
         localStorage.setItem('siaData', JSON.stringify(window.appData));
         
         renderUni();
         
-        subInput.value = ''; gradeInput.value = ''; cfuInput.value = '';
+        subInput.value = ''; blockInput.value = ''; gradeInput.value = ''; cfuInput.value = '';
     };
 
     window.deleteUniExam = function(index) {
@@ -901,17 +912,22 @@
 
     window.renderUni = function() {
         const list = document.getElementById('uniExamList');
+        const blockList = document.getElementById('uniBlocksList'); // NUOVO
         if (!list) return;
 
         list.innerHTML = '';
+        if(blockList) blockList.innerHTML = '';
         
         // Se non ci sono dati, inizializza array vuoto
         const exams = window.appData.uniExams || [];
         
         let totalWeighted = 0; 
-        let totalCfu = 0;     
+        let totalCfu = 0;      
         let sums = {1:0, 2:0, 3:0, 4:0};
         let cfus = {1:0, 2:0, 3:0, 4:0};
+        
+        // NUOVO: Oggetto per calcolare i blocchi
+        let blocks = {};
 
         exams.forEach((e, index) => {
             totalWeighted += (e.grade * e.cfu);
@@ -919,12 +935,22 @@
             sums[e.year] += (e.grade * e.cfu);
             cfus[e.year] += e.cfu;
 
+            // Logica Blocchi
+            if(e.block) {
+                if(!blocks[e.block]) blocks[e.block] = { wSum: 0, cfu: 0 };
+                blocks[e.block].wSum += (e.grade * e.cfu);
+                blocks[e.block].cfu += e.cfu;
+            }
+
             let color = e.grade >= 27 ? '#55efc4' : (e.grade >= 24 ? '#ffeaa7' : '#fab1a0');
+            
+            // Mostra il tag del blocco se presente
+            let blockBadge = e.block ? `<span style="background:#fab1a0; color:#2d3436; font-size:0.7rem; padding:2px 6px; border-radius:4px; margin-left:5px;">${e.block}</span>` : '';
 
             list.innerHTML += `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px; border-left:3px solid ${color};">
                     <div>
-                        <div style="font-weight:bold;">${e.subject}</div>
+                        <div style="font-weight:bold;">${e.subject} ${blockBadge}</div>
                         <div style="font-size:0.8rem; color:#888;">${e.cfu} CFU • Anno ${e.year}</div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px;">
@@ -933,6 +959,22 @@
                     </div>
                 </div>`;
         });
+
+        // RENDER BLOCCHI
+        if(blockList) {
+            Object.keys(blocks).forEach(name => {
+                let b = blocks[name];
+                let avg = (b.wSum / b.cfu).toFixed(2);
+                blockList.innerHTML += `
+                    <div style="background:#fab1a0; color:#2d3436; padding:8px 12px; border-radius:8px; flex:1; min-width:120px;">
+                        <div style="font-size:0.65rem; font-weight:bold; text-transform:uppercase;">${name}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                            <span style="font-size:1.2rem; font-weight:800;">${avg}</span>
+                            <span style="font-size:0.7rem; font-weight:bold;">${b.cfu} CFU</span>
+                        </div>
+                    </div>`;
+            });
+        }
 
         // Aggiorna Media Totale
         const globalDisplay = document.getElementById('uniGlobalGpa');
