@@ -334,6 +334,31 @@
     <div id="uniExamList" style="display: flex; flex-direction: column; gap: 10px; max-height:300px; overflow-y:auto;">
     </div>
 </div>
+
+<div class="card" style="margin-top: 30px; border-top: 4px solid #ff7675;">
+        <h2 style="margin:0; margin-bottom: 20px;">📅 Prossimi Appelli</h2>
+        
+        <div style="background:#2d3436; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #444;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 0.5fr; gap: 10px; align-items: end;">
+                
+                <div>
+                    <label style="font-size:0.8rem; color:#aaa;">Materia</label>
+                    <input type="text" id="examName" placeholder="Es. Diritto Privato" 
+                           style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+                </div>
+                
+                <div>
+                    <label style="font-size:0.8rem; color:#aaa;">Data</label>
+                    <input type="date" id="examDate" 
+                           style="width:100%; padding:8px; background:#1e1e24; border:1px solid #555; color:white; border-radius:5px;">
+                </div>
+
+                <button onclick="addDeadline()" style="height: 38px; background: #ff7675; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">+</button>
+            </div>
+        </div>
+
+        <div id="deadlineList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
     <div class="footer-tools">
         <button class="btn-tool" onclick="downloadJSON()">💾 Backup Dati</button>
         <input type="file" id="fileUpload" style="display:none" onchange="uploadJSON(this)">
@@ -989,6 +1014,116 @@
         const y2 = document.getElementById('gpaY2'); if(y2) y2.innerText = cfus[2] > 0 ? (sums[2]/cfus[2]).toFixed(1) : "-";
         const y3 = document.getElementById('gpaY3'); if(y3) y3.innerText = cfus[3] > 0 ? (sums[3]/cfus[3]).toFixed(1) : "-";
     };
+	
+	// ==========================================
+    // LOGICA SCADENZARIO (Metodo Sicuro)
+    // ==========================================
+
+    window.addDeadline = function() {
+        var nameInput = document.getElementById('examName');
+        var dateInput = document.getElementById('examDate');
+        
+        var n = nameInput.value;
+        var d = dateInput.value;
+
+        if(!n || !d) { 
+            alert("Inserisci nome e data!"); 
+            return; 
+        }
+
+        // Inizializza array se manca
+        if(!window.appData.deadlines) window.appData.deadlines = [];
+
+        // Aggiunge
+        window.appData.deadlines.push({
+            id: Date.now(), 
+            name: n, 
+            date: d
+        });
+        
+        // Salva
+        localStorage.setItem('siaData', JSON.stringify(window.appData));
+        
+        // Aggiorna vista e pulisce campi
+        renderDeadlines();
+        nameInput.value = '';
+        dateInput.value = '';
+    };
+
+    window.deleteDeadline = function(index) {
+        if(confirm("Rimuovere scadenza?")) {
+            window.appData.deadlines.splice(index, 1);
+            localStorage.setItem('siaData', JSON.stringify(window.appData));
+            renderDeadlines();
+        }
+    };
+
+    window.renderDeadlines = function() {
+        var list = document.getElementById('deadlineList');
+        if(!list) return;
+
+        list.innerHTML = '';
+        var items = window.appData.deadlines || [];
+
+        // Ordina per data (dal più vicino)
+        items.sort(function(a, b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            
+            // Calcolo Giorni (FIX Fuso Orario)
+            var today = new Date();
+            today.setHours(0,0,0,0);
+            
+            var parts = item.date.split('-'); // Divide AAAA-MM-GG
+            // Crea data (Mese parte da 0 in JS, quindi -1)
+            var examDate = new Date(parts[0], parts[1] - 1, parts[2]);
+            examDate.setHours(0,0,0,0);
+
+            var diffTime = examDate - today;
+            var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // Colori e Icone
+            var color = '#55efc4'; // Verde (tranquillo)
+            var text = diffDays + ' giorni rimasti';
+            var icon = '😎';
+
+            if (diffDays < 0) {
+                color = '#636e72'; text = 'Fatto'; icon = '🏁';
+            } else if (diffDays === 0) {
+                color = '#ff7675'; text = 'OGGI!'; icon = '😱';
+			} else if (diffDays <= 1) {
+                color = '#ff7675'; text = 'DOMANI!'; icon = '🤯';
+            } else if (diffDays <= 3) {
+                color = '#ff7675'; icon = '🔥'; // Rosso
+            } else if (diffDays <= 7) {
+                color = '#fdcb6e'; icon = '⚠️'; // Giallo
+            }
+
+            // Formatta data per lettura umana
+            var dateString = examDate.toLocaleDateString();
+
+            // Costruisci HTML con il metodo sicuro (+ invece di backtick)
+            var html = '<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; border-left:4px solid ' + color + ';">';
+            
+            html += '<div>';
+            html += '<div style="font-weight:bold;">' + item.name + '</div>';
+            html += '<div style="font-size:0.8rem; color:#aaa;">' + dateString + '</div>';
+            html += '</div>';
+
+            html += '<div style="display:flex; align-items:center; gap:15px;">';
+            html += '<div style="text-align:right;">';
+            html += '<div style="font-size:1.1rem; font-weight:bold; color:' + color + ';">' + text + '</div>';
+            html += '</div>';
+            html += '<div style="font-size:1.2rem;">' + icon + '</div>';
+            html += '<button onclick="deleteDeadline(' + i + ')" style="background:none; border:none; cursor:pointer; font-size:0.8rem; color:#666;">✕</button>';
+            html += '</div></div>';
+
+            list.innerHTML += html;
+        }
+    };
 
     // --- AVVIO AUTOMATICO PER GITHUB ---
     // Questo pezzo sostituisce il bisogno di "refreshAll"
@@ -1000,6 +1135,7 @@
             catch(e) { window.appData = {}; }
         }
         renderUni();
+		try { renderDeadlines(); } catch(e) {}
     }, 1200); // Parte dopo 1.2 secondi, sicuro che il resto è pronto
 </script>
 </body>
