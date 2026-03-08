@@ -3,130 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyLife Dashboard</title>
+    <title>MyLife Pro Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
     <div id="login-screen" class="screen active">
-        <div class="login-box card">
-            <h2>Accedi alla Dashboard</h2>
-            <input type="text" id="username" placeholder="Nome Utente">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="login()">Entra</button>
-            <p class="small-text">Nota: Attualmente i dati sono salvati in locale.</p>
+        <div class="login-container">
+            <div class="login-header">
+                <i class="fa-solid fa-user-shield login-icon"></i>
+                <h2>Benvenuto</h2>
+                <p>Accedi alla tua dashboard personale</p>
+            </div>
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" placeholder="Nome Utente">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password">
+                </div>
+                <button onclick="login()" class="btn-primary btn-block">Accedi</button>
+            </div>
+            <div class="login-footer">
+                <p class="small-text"><i class="fa-solid fa-circle-info"></i> Attualmente i dati sono salvati in locale nel browser.</p>
+            </div>
         </div>
     </div>
 
     <div id="app-screen" class="screen">
         <nav class="sidebar">
-            <h2>MyLife</h2>
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-rocket"></i> <span>MyLife<span class="pro">Pro</span></span>
+            </div>
             <ul>
-                <li onclick="switchTab('studio')" id="nav-studio" class="active"><i class="fa-solid fa-graduation-cap"></i> Studio</li>
-                <li onclick="switchTab('finanza')" id="nav-finanza"><i class="fa-solid fa-wallet"></i> Finanza</li>
-                <li onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Esci</li>
+                <li onclick="switchTab('studio')" id="nav-studio" class="active">
+                    <i class="fa-solid fa-graduation-cap"></i> <span>Area Studio</span>
+                </li>
+                <li onclick="switchTab('finanza')" id="nav-finanza">
+                    <i class="fa-solid fa-wallet"></i> <span>Finanze</span>
+                </li>
             </ul>
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="btn-secondary btn-block">
+                    <i class="fa-solid fa-right-from-bracket"></i> Esci
+                </button>
+            </div>
         </nav>
 
         <main class="content">
             
-            
             <section id="studio" class="tab-content active">
-                <header>
-                    <h1>Area Studio</h1>
+                <header class="main-header">
+                    <div>
+                        <h1>Dashboard Studio</h1>
+                        <p class="subtitle">Gestisci il tuo percorso accademico</p>
+                    </div>
                 </header>
                 
                 <div class="grid-container">
                     <div class="card pomodoro-card">
-                        <h3>Focus Timer</h3>
-                        <div class="timer-display">
-                            <input type="number" id="pomo-mins" value="25"> : 
-                            <span id="pomo-secs">00</span>
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock"></i> Focus Timer</h3>
+                        </div>
+                        <div class="timer-display-container">
+                            <div class="timer-circle">
+                                <div class="timer-numbers">
+                                    <input type="number" id="pomo-mins" value="25">:<span id="pomo-secs">00</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="timer-controls">
-                            <button onclick="startTimer()">Start</button>
-                            <button onclick="pauseTimer()">Pausa</button>
-                            <button onclick="resetTimer()">Reset</button>
+                            <button onclick="startTimer()" class="btn-success"><i class="fa-solid fa-play"></i></button>
+                            <button onclick="pauseTimer()" class="btn-warning"><i class="fa-solid fa-pause"></i></button>
+                            <button onclick="resetTimer()" class="btn-danger-outline"><i class="fa-solid fa-rotate-left"></i></button>
                         </div>
-                        <div class="task-list">
-                            <h4>Task Attuali</h4>
-                            <input type="text" id="new-task" placeholder="Aggiungi un task...">
-                            <button onclick="addTask()">+</button>
-                            <ul id="tasks"></ul>
+                        <div class="task-section">
+                            <h4>Task Sessione</h4>
+                            <div class="input-action-group">
+                                <input type="text" id="new-task" placeholder="Cosa studi ora?">
+                                <button onclick="addTask()" class="btn-primary-sm">+</button>
+                            </div>
+                            <ul id="tasks" class="minimal-list"></ul>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <h3>Prossimi Appelli / Obiettivi</h3>
-                        <p><em>Modulo da espandere: Inserisci qui le date degli esami e gli argomenti.</em></p>
+                    <div class="card bg-gradient-dark text-white">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-calendar-check"></i> Prossimi Eventi</h3>
                         </div>
+                        <div class="placeholder-content">
+                            <i class="fa-regular fa-hourglass-half fa-2x"></i>
+                            <p>Modulo appelli/obiettivi pronto per l'implementazione.</p>
+                            <button class="btn-white-outline btn-small">Aggiungi Evento</button>
+                        </div>
+                    </div>
 
                     <div class="card full-width">
-                        <h3>Registro Voti & Libretto Universitario</h3>
-                        <p><em>Modulo strutturale pronto. Qui aggiungeremo la logica per i CFU e la media ponderata/aritmetica.</em></p>
-                        <button class="btn-outline">Aggiungi Esame/Voto</button>
+                        <div class="card-header sp-between">
+                            <h3><i class="fa-solid fa-book-bookmark"></i> Registro Voti & Libretto</h3>
+                            <button class="btn-primary-sm"><i class="fa-solid fa-plus"></i> Nuovo Voto</button>
+                        </div>
+                        <div class="placeholder-content-horizontal">
+                            <i class="fa-solid fa-chart-line fa-3x"></i>
+                            <p>Qui visualizzerai la tua media voti, i CFU totali e i consigli per alzare la media. Struttura dati pronta.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            
             <section id="finanza" class="tab-content">
-                <header>
-                    <h1>Gestione Finanziaria</h1>
+                <header class="main-header">
+                    <div>
+                        <h1>Gestione Finanziaria</h1>
+                        <p class="subtitle">Traccia entrate, uscite e risparmi</p>
+                    </div>
                 </header>
 
                 <div class="grid-container">
-                    <div class="card balance-card">
-                        <h3>Saldo Disponibile</h3>
-                        <h2 id="current-balance">€ 0.00</h2>
-                        <button onclick="editBalance()" class="btn-small">Modifica Manualmente</button>
-                        <hr>
-                        <h3>Obiettivo Risparmio</h3>
-                        <p>Target: <span id="savings-target">€ 1000</span></p>
-                        <button class="btn-outline">Versa nei risparmi</button>
+                    <div class="card balance-card bg-primary text-white">
+                        <div class="card-header sp-between">
+                            <h3>Saldo Disponibile</h3>
+                            <button onclick="editBalance()" class="btn-icon-white"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </div>
+                        <h2 id="current-balance" class="big-money">€ 0.00</h2>
+                        <hr class="light-hr">
+                        <div class="savings-mini">
+                            <p>Obiettivo Risparmio: <span id="savings-target">€ 1.000</span></p>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 30%"></div></div>
+                        </div>
                     </div>
 
                     <div class="card">
-                        <h3>Nuova Transazione</h3>
-                        <div class="form-group">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-plus-circle"></i> Rapida</h3>
+                        </div>
+                        <div class="form-grid">
                             <input type="date" id="trans-date">
                             <select id="trans-type">
-                                <option value="in">Entrata (+)</option>
                                 <option value="out">Uscita (-)</option>
+                                <option value="in">Entrata (+)</option>
                             </select>
-                            <input type="text" id="trans-category" placeholder="Categoria (es. Spesa, Stipendio)">
-                            <input type="number" id="trans-amount" placeholder="Importo (€)">
-                            <input type="text" id="trans-desc" placeholder="Descrizione">
-                            <button onclick="addTransaction()">Registra</button>
+                            <input type="number" id="trans-amount" placeholder="0.00 €">
+                            <input type="text" id="trans-category" placeholder="Categoria">
+                            <input type="text" id="trans-desc" placeholder="Descrizione" class="full-width-input">
+                            <button onclick="addTransaction()" class="btn-primary btn-block full-width-input">Registra</button>
                         </div>
                     </div>
 
                     <div class="card chart-card">
-                        <h3>Spese per Categoria</h3>
-                        <canvas id="pieChart"></canvas>
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Spese / Categoria</h3>
+                        </div>
+                        <div class="chart-container-p">
+                            <canvas id="pieChart"></canvas>
+                        </div>
                     </div>
                     <div class="card chart-card">
-                        <h3>Entrate vs Uscite (Anno)</h3>
-                        <canvas id="barChart"></canvas>
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-column"></i> Trend Anno</h3>
+                        </div>
+                        <div class="chart-container-p">
+                            <canvas id="barChart"></canvas>
+                        </div>
                     </div>
 
-                    <div class="card full-width">
-                        <h3>Registro Movimenti</h3>
-                        <table id="transactions-table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Categoria</th>
-                                    <th>Descrizione</th>
-                                    <th>Importo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                </tbody>
-                        </table>
+                    <div class="card full-width last-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-list-ul"></i> Ultimi Movimenti</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="transactions-table" class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Categoria</th>
+                                        <th>Descrizione</th>
+                                        <th class="text-right">Importo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
