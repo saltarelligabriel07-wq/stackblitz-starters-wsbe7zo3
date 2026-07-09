@@ -440,10 +440,16 @@
     <div class="card" style="border-top: 4px solid var(--accent-light);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
             <h2>🏛️ Libretto Universitario</h2>
-            <div style="text-align:right;">
-                <div style="font-size:0.8rem; color:var(--text-secondary);">Media Ponderata</div>
-                <span id="uniGlobalGpa" style="color:var(--accent-light); font-weight:bold; font-size:1.2rem;">0.00</span>
-            </div>
+            <div style="text-align:right; display:flex; gap:15px; align-items:center;">
+    <div>
+        <div style="font-size:0.8rem; color:var(--text-secondary);">Media Ponderata</div>
+        <span id="uniGlobalGpa" style="color:var(--accent-light); font-weight:bold; font-size:1.2rem;">0.00</span>
+    </div>
+    <div style="border-left:1px solid var(--border-color); padding-left:15px;">
+        <div style="font-size:0.8rem; color:var(--text-secondary);">Base di Laurea</div>
+        <span id="uniGraduationGrade" style="color:var(--success); font-weight:bold; font-size:1.2rem;">0.00</span>
+    </div>
+</div>
         </div>
      
         <div style="background:var(--input-bg); padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid var(--border-color);">
@@ -1153,8 +1159,20 @@ function renderUni() {
     }
     
     for(let i=1; i<=3; i++) { const el = document.getElementById(`gpaY${i}`); if(el) el.innerText = yearCfu[i] > 0 ? (yearSums[i] / yearCfu[i]).toFixed(2) : "0.00"; }
-    const globalUniGpa = document.getElementById('uniGlobalGpa');
-    if(globalUniGpa) { globalUniGpa.innerText = totalCfu > 0 ? (totalWeighted / totalCfu).toFixed(2) : "0.00"; }
+   const globalUniGpa = document.getElementById('uniGlobalGpa');
+const graduationGrade = document.getElementById('uniGraduationGrade');
+
+if (totalCfu > 0) {
+    const media = totalWeighted / totalCfu;
+    if (globalUniGpa) globalUniGpa.innerText = media.toFixed(2);
+    
+    // Calcolo voto di laurea: (Media / 30) * 110
+    const votoBase = (media / 30) * 110;
+    if (graduationGrade) graduationGrade.innerText = votoBase.toFixed(2);
+} else {
+    if (globalUniGpa) globalUniGpa.innerText = "0.00";
+    if (graduationGrade) graduationGrade.innerText = "0.00";
+}
 }
 
 // --- MODELLI RAPIDI & WIDGET CALCOLATRICE ---
