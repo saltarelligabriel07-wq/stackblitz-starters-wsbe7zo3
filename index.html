@@ -218,6 +218,17 @@
     <div class="header-section">
         <div>
             <h1 style="margin:0; font-size:1.5rem; display:flex; align-items:center; gap:10px; color:var(--text-primary);">SIA Manager Pro <button class="btn-tool" style="padding:2px 8px; font-size:0.7rem; border-radius:12px;" onclick="startOnboarding(true)">ℹ️ Guida Rapida</button></h1>
+            <h1 style="margin:0; font-size:1.5rem; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--text-primary);">
+    SIA Manager Pro 
+    <button class="btn-tool" style="padding:2px 8px; font-size:0.7rem; border-radius:12px;" onclick="startOnboarding(true)">ℹ️ Guida Rapida</button>
+    <select id="themeSelector" onchange="changeTheme()" class="btn-tool" style="padding:2px 8px; font-size:0.7rem; border-radius:12px; cursor:pointer;">
+        <option value="purple">💜 Purple</option>
+        <option value="blue">💙 Ocean</option>
+        <option value="green">💚 Emerald</option>
+        <option value="red">❤️ Crimson</option>
+        <option value="dark">🖤 Dark Mono</option>
+    </select>
+</h1>
             <span style="color:var(--text-secondary); font-size:0.9rem;">Ecosistema Autonomo di Risparmio Avanzato</span>
         </div>
         <div class="wallet-group">
@@ -649,6 +660,11 @@ function loadData() {
     if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
     
     renderAll();
+    // Ripristina il tema salvato
+    if (appData.theme && appThemes[appData.theme]) {
+        document.getElementById('themeSelector').value = appData.theme;
+        changeTheme(true); // Applica senza sovrascrivere inutilmente
+    }
     
     if (appData.isFirstTime) {
         startOnboarding();
@@ -1204,6 +1220,28 @@ window.calcEqual = function() {
     } catch (e) { document.getElementById('calcDisplay').value = "Errore"; calcExpression = ""; }
 };
 
+    // --- SISTEMA DI TEMI VISIVI ---
+const appThemes = {
+    purple: { '--bg-color': '#0f0c1b', '--card-bg': '#1a162b', '--text-secondary': '#b3a9db', '--accent': '#8e44ad', '--accent-light': '#a29bfe', '--input-bg': '#251f3d', '--border-color': '#403366' },
+    blue:   { '--bg-color': '#080c14', '--card-bg': '#111827', '--text-secondary': '#93c5fd', '--accent': '#2563eb', '--accent-light': '#60a5fa', '--input-bg': '#1e293b', '--border-color': '#334155' },
+    green:  { '--bg-color': '#06120b', '--card-bg': '#0d2417', '--text-secondary': '#86efac', '--accent': '#16a34a', '--accent-light': '#4ade80', '--input-bg': '#143623', '--border-color': '#22543d' },
+    red:    { '--bg-color': '#170808', '--card-bg': '#271111', '--text-secondary': '#fca5a5', '--accent': '#dc2626', '--accent-light': '#f87171', '--input-bg': '#3b1818', '--border-color': '#572323' },
+    dark:   { '--bg-color': '#0f0f0f', '--card-bg': '#1a1a1a', '--text-secondary': '#a3a3a3', '--accent': '#525252', '--accent-light': '#a3a3a3', '--input-bg': '#262626', '--border-color': '#404040' }
+};
+
+window.changeTheme = function(preventSave = false) {
+    const selected = document.getElementById('themeSelector').value;
+    const theme = appThemes[selected];
+    if (theme) {
+        for (const [property, value] of Object.entries(theme)) {
+            document.documentElement.style.setProperty(property, value);
+        }
+        if (!preventSave) {
+            appData.theme = selected;
+            saveData();
+        }
+    }
+};
 // --- AVVIO AUTOMATICO PER GITHUB ---
 setTimeout(() => {
     console.log("Avvio automatico SIA Manager Module...");
