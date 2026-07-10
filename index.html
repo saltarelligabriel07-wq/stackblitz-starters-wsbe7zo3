@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIA Manager Pro - Purple Edition</title>
+    <title>SIA Manager Pro - Ultimate Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
+    /* =========================================================
+       VARIABILI E RESET GLOBALE
+    ========================================================= */
     :root { 
-        --bg-color: #0f0c1b;         /* Sfondo profondo viola scuro */
-        --card-bg: #1a162b;          /* Sfondo schede viola di media intensità */
+        --bg-color: #0f0c1b;         
+        --card-bg: #1a162b;          
         --text-primary: #ffffff;
-        --text-secondary: #b3a9db;    /* Testo secondario violaceo chiaro */
-        --accent: #8e44ad;           /* Accento Viola Vivace */
-        --accent-light: #a29bfe;     /* Accento Viola Chiaro / Lavanda */
+        --text-secondary: #b3a9db;    
+        --accent: #8e44ad;           
+        --accent-light: #a29bfe;     
         --success: #00b894;
         --danger: #d63031;
         --warning: #fdcb6e;
         --info: #00cec9;
-        --input-bg: #251f3d;         /* Sfondo input con sfumatura violacea */
-        --border-color: #403366;     /* Colore bordi viola coerente */
+        --input-bg: #251f3d;         
+        --border-color: #403366;     
     }
     
     body { 
@@ -30,108 +33,147 @@
         margin: 0; 
         padding: 40px 20px; 
         overflow-y: scroll;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
     
     .container { 
         width: 100%; 
-        max-width: 950px; 
+        max-width: 1000px; 
         margin: 0 auto; 
         display: flex; 
         flex-direction: column; 
-        gap: 30px;
+        gap: 25px; 
         padding-bottom: 100px; 
     }
     
+    /* =========================================================
+       STRUTTURA BASE DELLE SCHEDE
+    ========================================================= */
+    .macro-section-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--accent-light);
+        margin: 40px 0 10px 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     .card { 
         background-color: var(--card-bg); 
         border-radius: 12px; 
         padding: 25px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4); 
         border: 1px solid var(--border-color); 
+        transition: all 0.3s ease;
     }
     
     h2 { 
-        font-size: 1.2rem; 
+        font-size: 1.1rem; 
         font-weight: 800; 
-        margin: 0 0 20px 0;
+        margin: 0 0 20px 0; 
         color: var(--text-secondary); 
         text-transform: uppercase; 
         letter-spacing: 1px; 
         display: flex; 
         justify-content: space-between; 
-        align-items: center;
+        align-items: center; 
     }
     
+    /* =========================================================
+       HEADER E GESTIONE PORTAFOGLIO
+    ========================================================= */
     .header-section { 
         display: flex; 
         justify-content: space-between; 
         align-items: center; 
         background: linear-gradient(135deg, var(--input-bg), var(--card-bg));
-        padding: 20px; 
+        padding: 25px; 
         border-radius: 12px; 
-        border-left: 5px solid var(--accent); 
+        border-left: 6px solid var(--accent); 
         border-top: 1px solid var(--border-color);
         border-right: 1px solid var(--border-color);
         border-bottom: 1px solid var(--border-color);
     }
     
     .wallet-group { text-align: right; }
-    .wallet-label { font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 5px; font-weight: bold;}
     
-    .wallet-input { 
-        background: transparent; 
-        border: none; 
-        color: var(--success); 
-        font-family: 'Fira Code', monospace; 
-        font-size: 2rem; 
-        font-weight: bold;
-        text-align: right; 
-        width: 230px; 
-        outline: none; 
-        border-bottom: 1px dashed var(--border-color); 
+    .wallet-label { 
+        font-size: 0.8rem; 
+        color: var(--text-secondary); 
+        display: block; 
+        margin-bottom: 8px; 
+        font-weight: 800;
     }
-    .wallet-input:focus { border-bottom: 1px solid var(--success); }
     
+    /* =========================================================
+       INPUT, PULSANTI E COMPONENTI DI SISTEMA
+    ========================================================= */
     .input-grid { 
         display: grid; 
-        grid-template-columns: 1fr 1fr 2fr 1fr; 
-        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+        gap: 15px; 
         align-items: end; 
     }
     
-    label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 8px; display: block; font-weight: 600;}
+    label { 
+        font-size: 0.8rem; 
+        color: var(--text-secondary); 
+        margin-bottom: 8px; 
+        display: block; 
+        font-weight: 600;
+    }
+    
     input, select { 
         width: 100%; 
         padding: 12px; 
         background: var(--input-bg); 
         border: 1px solid var(--border-color); 
-        color: white;
+        color: white; 
         border-radius: 8px; 
         font-size: 1rem; 
         box-sizing: border-box; 
     }
-    input:focus, select:focus { border-color: var(--accent-light); outline: none;}
+    
+    input:focus, select:focus { 
+        border-color: var(--accent-light); 
+        outline: none;
+    }
     
     .btn-action { 
-        padding: 12px; 
+        padding: 12px 20px; 
         border-radius: 8px; 
-        font-weight: bold; 
-        border: none;
+        font-weight: 800; 
+        border: none; 
         cursor: pointer; 
-        transition: transform 0.1s, opacity 0.2s; 
+        transition: transform 0.1s, filter 0.2s; 
+        text-transform: uppercase;
     }
-    .btn-action:active { transform: scale(0.98); }
-    .btn-action:hover { opacity: 0.9; }
     
+    .btn-action:active { transform: scale(0.96); }
+    .btn-action:hover { filter: brightness(1.1); }
     .bg-inc { background: var(--success); color: #000; }
     .bg-exp { background: var(--danger); color: #fff; }
     
-    /* SYSTEM SMART RULES & BUDGETS */
-    .smart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .rules-box { background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);}
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    
-    /* Switch stilizzato */
+    .btn-tool { 
+        background: var(--input-bg); 
+        border: 1px solid var(--border-color); 
+        color: var(--text-primary); 
+        padding: 8px 16px; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        font-size: 0.85rem; 
+        font-weight: 600; 
+        transition: all 0.2s;
+    }
+    .btn-tool:hover { 
+        border-color: var(--accent-light); 
+        background: var(--border-color); 
+    }
+
+    /* Switch Custom */
     .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .3s; border-radius: 24px; }
@@ -139,75 +181,81 @@
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(20px); }
 
-    .budget-progress-container { margin-bottom: 12px; background: var(--bg-color); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);}
-    .budget-meta { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;}
-    .budget-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden;}
-    .budget-bar-fill { height: 100%; width: 0%; transition: width 0.4s, background-color 0.3s;}
+    /* =========================================================
+       METRICHE, PROGRESS BAR E GRAFICI
+    ========================================================= */
+    .smart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .rules-box { background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color);}
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-    /* METRICS SYSTEMS */
-    .finance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-    .finance-card { background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
-    .finance-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .budget-progress-container { margin-bottom: 12px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);}
+    .budget-bar-bg { width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 5px;}
+    .budget-bar-fill { height: 100%; width: 0%; transition: width 0.4s; }
+
+    .finance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .finance-card { background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
+    .finance-title { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
     .finance-value { font-size: 1.4rem; font-weight: 800; margin: 8px 0; font-family: 'Fira Code', monospace; }
 
-    .goal-row { display: flex; align-items: center; background: var(--input-bg); padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-color); }
-    .goal-info { width: 150px; font-weight: bold; font-size: 0.9rem;}
-    .goal-bar-container { flex-grow: 1; height: 12px; background: var(--bg-color); border-radius: 6px; margin: 0 15px; overflow: hidden;}
+    .goal-row { display: flex; align-items: center; background: var(--input-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px;}
+    .goal-bar-container { flex-grow: 1; min-width: 150px; height: 12px; background: var(--bg-color); border-radius: 6px; overflow: hidden;}
     .goal-fill { height: 100%; transition: width 0.5s; background: linear-gradient(90deg, var(--accent), var(--accent-light));}
-    .goal-nums { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); width: 120px; text-align: right;}
-    .goal-btn { background: var(--border-color); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px; font-size: 0.8rem; }
-    .goal-btn:hover { background: var(--accent); }
-    
-    .charts-container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-    .chart-box { background: var(--input-bg); padding: 15px; border-radius: 8px; height: 300px; border: 1px solid var(--border-color);}
-    
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem;}
-    th { text-align: left; color: var(--text-secondary); padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; text-transform: uppercase;}
-    td { padding: 12px 10px; border-bottom: 1px solid var(--border-color);}
-    .row-inc { border-left: 4px solid var(--success); }
-    .row-exp { border-left: 4px solid var(--danger); }
-    
-    .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .charts-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .chart-box { background: var(--input-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column;}
+    .canvas-wrapper { position: relative; height: 250px; width: 100%; flex-grow: 1;}
+
+    /* =========================================================
+       TABELLE E TAGS
+    ========================================================= */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem;}
+    th { text-align: left; color: var(--text-secondary); padding: 12px; border-bottom: 2px solid var(--border-color); text-transform: uppercase;}
+    td { padding: 12px; border-bottom: 1px solid var(--border-color);}
+    .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
     .tag-inc { background: rgba(0, 184, 148, 0.15); color: var(--success); }
     .tag-exp { background: rgba(214, 48, 49, 0.15); color: var(--danger); }
     
-    .filters { display: flex; gap: 10px; margin-bottom: 15px;}
+    /* =========================================================
+       RPG, HABITS E WRAPPED (NEW)
+    ========================================================= */
+    .badge-icon { font-size: 2rem; filter: grayscale(100%); opacity: 0.3; transition: all 0.3s; text-align: center;}
+    .badge-icon.unlocked { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
+    .exp-bar-container { background: var(--bg-color); height: 12px; border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border-color); }
+    .exp-bar-fill { height: 100%; background: linear-gradient(90deg, #f1c40f, #e67e22); width: 0%; transition: width 0.5s ease-out; }
     
-    /* Footer & Tools */
-    .footer-tools { display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; justify-content: center; }
-    .btn-tool { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight:600;}
-    .btn-tool:hover { border-color: var(--accent-light); color: var(--accent-light); background: var(--input-bg); }
-    
-    /* MODALI STRUTTURATE E ONBOARDING OVERLAY */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center;}
-    .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); color: white; box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;}
-    
-    /* Onboarding Tour Style */
-    .tour-box { background: linear-gradient(145deg, var(--card-bg), var(--input-bg)); border: 2px solid var(--accent); text-align: center; max-width: 500px;}
-    .tour-step-dots { display: flex; justify-content: center; gap: 8px; margin: 15px 0;}
-    .dot { width: 10px; height: 10px; background: var(--border-color); border-radius: 50%;}
-    .dot.active { background: var(--accent); }
+    .habit-row { display: flex; align-items: center; justify-content: space-between; background: var(--input-bg); padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color); }
+    .habit-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--success); }
 
-    /* WIDGET CALCOLATRICE FLOATING */
+    /* SIA Wrapped Overlay */
+    .wrapped-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99998; justify-content: center; align-items: center; }
+    .wrapped-card { background: linear-gradient(135deg, var(--accent), var(--accent-light)); border-radius: 20px; padding: 40px; text-align: center; color: white; max-width: 450px; width: 90%; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .wrapped-stat { font-size: 2.5rem; font-weight: 900; margin: 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); font-family: 'Fira Code', monospace;}
+
+    /* Zen Mode Overlay */
+    .zen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f0c1b; z-index: 99999; flex-direction: column; justify-content: center; align-items: center; }
+    .zen-timer { font-size: 10rem; font-weight: 900; font-family: 'Fira Code', monospace; color: var(--accent-light); text-shadow: 0 0 30px var(--accent); margin-bottom: 20px;}
+    .zen-btn-group { display: flex; gap: 20px; margin-top: 30px; }
+    .zen-close { position: absolute; top: 30px; right: 30px; background: none; border: none; color: white; font-size: 2.5rem; cursor: pointer; }
+
+    /* =========================================================
+       MODALI E CALCOLATRICE
+    ========================================================= */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 10000; justify-content: center; align-items: center;}
+    .modal-box { background: var(--card-bg); padding: 30px; border-radius: 12px; width: 90%; max-width: 550px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;}
+
     .calc-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9990; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-    .calc-toggle-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); color: white; font-size: 1.8rem; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform 0.2s;}
+    .calc-toggle-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); color: white; font-size: 1.8rem; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.2s;}
     .calc-toggle-btn:hover { transform: scale(1.1); }
-    .calculator-body { display: none; background: rgba(26, 22, 43, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-color); padding: 15px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); width: 260px; animation: slideUp 0.3s ease-out; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .calc-display { width: 100%; height: 50px; background: var(--bg-color); color: white; border: none; border-radius: 10px; font-size: 1.5rem; text-align: right; padding: 10px; margin-bottom: 15px; box-sizing: border-box; font-family: monospace;}
+    .calculator-body { display: none; background: rgba(26, 22, 43, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-color); padding: 15px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); width: 260px; }
+    .calc-display { width: 100%; height: 50px; background: var(--bg-color); color: white; border: none; border-radius: 8px; font-size: 1.5rem; text-align: right; padding: 10px; margin-bottom: 15px; font-family: monospace;}
     .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .calc-btn { padding: 15px; border-radius: 12px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: background 0.1s; color: white; background: var(--input-bg); }
-    .calc-btn:hover { background: var(--border-color); }
+    .calc-btn { padding: 15px; border-radius: 8px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: white; background: var(--input-bg); transition: background 0.1s;}
     .calc-btn:active { transform: scale(0.95); }
-    .btn-op { background: var(--accent); } .btn-eq { background: var(--success); grid-column: span 2; } .btn-ac { background: var(--danger); }
-
+    
     @media (max-width: 768px) {
-        .input-grid { grid-template-columns: 1fr; }
-        .smart-grid { grid-template-columns: 1fr; }
-        .charts-container { grid-template-columns: 1fr; height: auto; }
-        .wallet-input { font-size: 1.5rem; width: 100%; text-align: right; }
         .header-section { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .wallet-group { width: 100%; }
+        .zen-timer { font-size: 5rem; }
     }
     </style>
 </head>
@@ -217,40 +265,80 @@
 
     <div class="header-section">
         <div>
-            <h1 style="margin:0; font-size:1.5rem; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--text-primary);">
-    SIA Manager Pro 
-    <button class="btn-tool" style="padding:2px 8px; font-size:0.7rem; border-radius:12px;" onclick="startOnboarding(true)">ℹ️ Guida Rapida</button>
-    <select id="themeSelector" onchange="changeTheme()" class="btn-tool" style="padding:2px 8px; font-size:0.7rem; border-radius:12px; cursor:pointer;">
-        <option value="purple">💜 Purple</option>
-        <option value="blue">💙 Ocean</option>
-        <option value="green">💚 Emerald</option>
-        <option value="red">❤️ Crimson</option>
-        <option value="dark">🖤 Dark Mono</option>
-    </select>
-</h1>
-            <span style="color:var(--text-secondary); font-size:0.9rem;">Ecosistema Autonomo di Risparmio Avanzato</span>
+            <h1 style="margin:0; font-size:1.6rem; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--text-primary);">
+                SIA Manager Pro 
+                <select id="themeSelector" onchange="changeTheme()" class="btn-tool" style="padding:4px 10px; font-size:0.8rem; border-radius:12px;">
+                    <option value="purple">💜 Tema Purple</option>
+                    <option value="blue">💙 Tema Ocean</option>
+                    <option value="green">💚 Tema Emerald</option>
+                    <option value="dark">🖤 Tema Dark</option>
+                </select>
+            </h1>
+            <span style="color:var(--text-secondary); font-size:0.95rem;">Ecosistema Finanza & Stile di Vita</span>
         </div>
+        
         <div class="wallet-group">
-            <label class="wallet-label">SALDO LIQUIDO DISPONIBILE</label>
+            <label class="wallet-label">SALDO LIQUIDO TOTALE</label>
             <div style="display: flex; align-items: center; justify-content: flex-end;">
                 <span style="font-size: 2rem; font-weight: bold; color: var(--success); margin-right: 5px;">€</span>
-                <input type="number" id="walletInput" class="wallet-input" value="0.00" onchange="manualWalletUpdate()">
+                <span id="totalWalletDisplay" style="font-size: 2.5rem; font-weight: bold; color: var(--success); font-family: 'Fira Code', monospace;">0.00</span>
             </div>
             
-            <div id="paydayWidget" style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary); text-align: right;"></div>
+            <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn-tool" onclick="openWalletModal()" style="font-size:0.75rem;">🏦 Portafogli / Giroconti</button>
+            </div>
             
-            <div style="margin-top:15px; padding-top:15px; border-top:1px solid var(--border-color); width: 230px; margin-left: auto;">
+            <div id="paydayWidget" style="margin-top: 15px; font-size: 0.85rem; color: var(--text-secondary); text-align: right;"></div>
+            
+            <div style="margin-top:15px; padding-top:15px; border-top:1px solid var(--border-color); width: 250px; margin-left: auto;">
                 <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-secondary); margin-bottom:5px;">
                     <span>🎯 Target Riserva</span>
-                    <span id="liquidityText" style="cursor:pointer; text-decoration:underline;" onclick="setLiquidityTarget()">Imposta</span>
+                    <span style="cursor:pointer; text-decoration:underline; color:var(--accent-light);" onclick="setLiquidityTarget()">Imposta</span>
                 </div>
                 <div style="background:var(--bg-color); height:8px; border-radius:4px; overflow:hidden;">
                     <div id="liquidityBar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--warning), var(--success)); transition: width 0.5s;"></div>
                 </div>
-                <div style="text-align:right; font-size:0.75rem; color:var(--text-secondary); margin-top:2px;" id="liquidityPerc">0%</div>
+                <div style="text-align:right; font-size:0.75rem; color:var(--text-secondary); margin-top:4px;" id="liquidityPerc">0%</div>
             </div>
         </div>
     </div>
+
+
+    <div class="macro-section-title">🕹️ Stile di Vita & Produttività</div>
+
+    <div class="card" style="border-top: 4px solid #f1c40f;">
+        <h2>🌟 Profilo Utente & Trofei (RPG)</h2>
+        <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px;">
+                <div style="font-size:0.9rem; color:var(--text-secondary); font-weight:bold;">Livello Attuale</div>
+                <div style="font-size:3rem; font-weight:900; color:#f1c40f; line-height:1; text-shadow: 0 0 10px rgba(241,196,15,0.3);">Lvl <span id="rpgLevel">1</span></div>
+                <div class="exp-bar-container"><div id="rpgExpBar" class="exp-bar-fill"></div></div>
+                <div style="text-align:right; font-size:0.8rem; color:var(--text-secondary); margin-top:5px;">
+                    <span id="rpgExp">0</span> / <span id="rpgExpTarget">100</span> EXP
+                </div>
+            </div>
+            <div style="flex:2; display:flex; gap:15px; justify-content:space-around; background:var(--input-bg); padding:15px; border-radius:10px; border:1px solid var(--border-color);">
+                <div class="badge-icon" id="badgeSaver" title="Risparmiatore: Aggiungi fondi a un salvadanaio">
+                    <div>💰</div><div style="font-size:0.7rem; font-weight:bold; margin-top:5px; color:var(--text-primary);">Saver</div>
+                </div>
+                <div class="badge-icon" id="badgeFocus" title="Focus Master: Completa 5 Pomodori in un giorno">
+                    <div>🍅</div><div style="font-size:0.7rem; font-weight:bold; margin-top:5px; color:var(--text-primary);">Focus Master</div>
+                </div>
+                <div class="badge-icon" id="badgeHabit" title="Habit Pro: Mantieni un'abitudine">
+                    <div>✅</div><div style="font-size:0.7rem; font-weight:bold; margin-top:5px; color:var(--text-primary);">Habit Pro</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📅 Tracciamento Abitudini (Habit Tracker) <button class="btn-tool" onclick="promptAddHabit()">+ Nuova Abitudine</button></h2>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0;">Costruisci la tua routine. Spunta le attività per guadagnare EXP quotidiana!</p>
+        <div id="habitsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+
+    <div class="macro-section-title">💸 Finanza & Budget</div>
 
     <div class="smart-grid">
         <div class="card">
@@ -258,285 +346,370 @@
             <div class="rules-box">
                 <div class="toggle-row">
                     <div>
-                        <strong style="font-size:0.9rem; display:block;">Arrotondamento Spiccioli</strong>
-                        <span style="font-size:0.75rem; color:var(--text-secondary);">Arrotonda le uscite all'euro sup. e salva il resto</span>
+                        <strong style="font-size:0.95rem;">Arrotondamento Spiccioli</strong><br>
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Salva i resti delle uscite.</span>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" id="ruleRoundUp" onchange="updateSmartRules()">
-                        <span class="slider"></span>
-                    </label>
+                    <label class="switch"><input type="checkbox" id="ruleRoundUp" onchange="updateSmartRules()"><span class="slider"></span></label>
                 </div>
-                
-                <div class="toggle-row" style="margin-bottom:15px;">
+                <div class="toggle-row">
                     <div>
-                        <strong style="font-size:0.9rem; display:block;">Trattenuta Payday %</strong>
-                        <span style="font-size:0.75rem; color:var(--text-secondary);">Metti via una quota appena registri lo Stipendio</span>
+                        <strong style="font-size:0.95rem;">Trattenuta Payday %</strong><br>
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Trattieni % dallo Stipendio</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:5px;">
-                        <input type="number" id="rulePaydayPercent" style="width:55px; padding:6px; font-size:0.85rem;" min="0" max="90" onchange="updateSmartRules()">
-                        <span style="font-size:0.85rem; color:var(--text-secondary);">%</span>
+                        <input type="number" id="rulePaydayPercent" style="width:60px; padding:6px; text-align:center;" onchange="updateSmartRules()">
+                        <span style="font-weight:bold;">%</span>
                     </div>
                 </div>
-
-                <div style="border-top:1px solid var(--border-color); padding-top:12px;">
-                    <label style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px;">Salvadanaio di Destinazione Automatica</label>
-                    <select id="smartGoalSelect" style="padding:8px; font-size:0.85rem;" onchange="updateSmartRules()"></select>
+                <div style="border-top:1px solid var(--border-color); padding-top:15px; margin-top:10px;">
+                    <label>Salvadanaio di Destinazione Automatica</label>
+                    <select id="smartGoalSelect" onchange="updateSmartRules()"></select>
                 </div>
             </div>
         </div>
-
         <div class="card">
-            <h2>📊 Pianificazione Limiti Budget</h2>
-            <div id="budgetSectionContainer" style="max-height:165px; overflow-y:auto; padding-right:5px;">
-                </div>
-            <button class="btn-tool" style="width:100%; margin-top:10px; padding:6px;" onclick="openBudgetModal()">⚙️ Configura Tetti di Spesa</button>
+            <h2>📊 Budget Mensili <button class="btn-tool" onclick="openBudgetModal()">⚙️ Imposta Limiti</button></h2>
+            <div id="budgetSectionContainer" style="max-height:180px; overflow-y:auto; padding-right:5px;"></div>
         </div>
     </div>
 
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h2 style="margin:0;">Nuova Transazione</h2>
-            <button onclick="openModal()" style="background:none; border:1px solid var(--accent); color:var(--accent-light); padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75rem; font-weight:bold;">🔁 Modelli Fissi</button>
-        </div>
-        
+        <h2>Nuova Transazione <button class="btn-tool" onclick="openModal()">🔁 Modelli Fissi</button></h2>
         <div class="input-grid">
+            <div><label>Data</label><input type="date" id="dateInput"></div>
+            <div><label>Conto (Wallet)</label><select id="walletSelect"></select></div>
             <div>
-                <label>Data</label>
-                <input type="date" id="dateInput">
-            </div>
-            <div style="position: relative; width: 100%;">
                 <label>Categoria</label>
-                <select id="catSelect"></select>
-                <button onclick="manageCategories()" style="position: absolute; right: 0; bottom: 0; width: 40px; height: 45px; background: var(--input-bg); border: 1px solid var(--border-color); border-top-right-radius: 8px; border-bottom-right-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; justify-content: center; align-items: center;">⚙️</button>
+                <div style="display:flex; gap:5px;">
+                    <select id="catSelect"></select>
+                    <button onclick="promptManageCategories()" class="btn-tool" style="padding:0 15px;">⚙️</button>
+                </div>
             </div>
-            <div>
-                <label>Descrizione</label>
-                <input type="text" id="descInput" placeholder="Dettaglio transazione...">
+            <div><label>Descrizione</label><input type="text" id="descInput" placeholder="Dettaglio transazione..."></div>
+            <div><label>Importo (€)</label><input type="number" id="amountInput" placeholder="0.00" step="0.01"></div>
+        </div>
+        <div style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="roundUpToggle" checked style="width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent);">
+            <label for="roundUpToggle" style="margin: 0; cursor: pointer; font-size: 0.85rem;">🔄 Arrotonda automaticamente questa spesa (crea storno nei risparmi)</label>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-action bg-inc" style="flex:1" onclick="executeTransaction('income')">+ REGISTRA ENTRATA</button>
+            <button class="btn-action bg-exp" style="flex:1" onclick="executeTransaction('expense')">- REGISTRA USCITA</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🎯 Salvadanai Virtuali <button class="btn-tool" onclick="promptCreateGoal()">+ Crea Salvadanaio</button></h2>
+        <div id="goalsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+
+    <div class="card">
+        <h2>🤝 Spese Condivise (Split the Bill)</h2>
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid var(--border-color);">
+            <div class="input-grid">
+                <div><label>Motivo Spesa</label><input type="text" id="splitDesc" placeholder="Es. Cena sushi"></div>
+                <div><label>Conto Totale (€)</label><input type="number" id="splitTotal" placeholder="0.00" step="0.01"></div>
+                <div><label>Chi ha pagato alla cassa?</label><select id="splitPayer"><option value="me">Io (Vanto credito)</option><option value="other">Altri (Ho un debito)</option></select></div>
+                <div><label>Diviso in quanti?</label><input type="number" id="splitPeople" value="2" min="2"></div>
             </div>
-            <div>
-                <label>Importo (€)</label>
-                <input type="number" id="amountInput" placeholder="0.00" step="0.01">
+            <button onclick="executeAddSplit()" style="width:100%; margin-top:15px; padding:12px; background:var(--accent); border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">Aggiungi al Registro Condiviso</button>
+        </div>
+        <div style="display:flex; gap:15px; margin-bottom:15px;">
+            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:10px; text-align:center;">
+                <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:bold;">MI DEVONO</div>
+                <div id="splitCredit" style="font-size:1.5rem; font-weight:bold; color:var(--success);">€0.00</div>
+            </div>
+            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:10px; text-align:center;">
+                <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:bold;">DEVO AGLI ALTRI</div>
+                <div id="splitDebt" style="font-size:1.5rem; font-weight:bold; color:var(--danger);">€0.00</div>
+            </div>
+        </div>
+        <div id="splitList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <h2 style="margin:0;">Centro di Controllo Economico</h2>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-action bg-inc" onclick="showSiaWrapped()" style="background: linear-gradient(90deg, var(--accent), var(--accent-light)); color: white; padding: 8px 15px; font-size: 0.8rem; border-radius: 8px;">🎁 SIA WRAPPED</button>
+                <input type="month" id="monthFilter" style="background:var(--bg-color); width:auto; padding:8px; border-radius:8px;" onchange="renderAll()">
             </div>
         </div>
         
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-action bg-inc" style="flex:1" onclick="addTransaction('income')">PROCEDI COME ENTRATA</button>
-            <button class="btn-action bg-exp" style="flex:1" onclick="addTransaction('expense')">PROCEDI COME USCITA</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>🎯 Obiettivi di Risparmio Virtuali <button class="btn-tool" style="font-size:0.7rem; padding:4px 8px;" onclick="createGoal()">+ Nuovo Salvadanaio</button></h2>
-        <div id="goalsContainer"></div>
-    </div>
-
-    <div class="card">
-        <div class="filters">
-            <h2 style="margin:0; width:100%;">Centro di Controllo Economico</h2>
-            <input type="month" id="monthFilter" style="width:auto; background:var(--bg-color);" onchange="renderCharts()">
-        </div>
-
         <div class="finance-grid">
             <div class="finance-card" style="border-top: 4px solid var(--success);">
-                <span class="finance-title">💰 Entrate Mensili</span>
-                <div id="monthIncVal" class="finance-value" style="color: var(--success);">€0.00</div>
+                <span class="finance-title">💰 Entrate Mese</span>
+                <div id="monthIncVal" class="finance-value" style="color:var(--success);">€0.00</div>
             </div>
             <div class="finance-card" style="border-top: 4px solid var(--danger);">
-                <span class="finance-title">📉 Uscite Mensili</span>
-                <div id="monthExpVal" class="finance-value" style="color: var(--danger);">€0.00</div>
+                <span class="finance-title">📉 Uscite Mese</span>
+                <div id="monthExpVal" class="finance-value" style="color:var(--danger);">€0.00</div>
             </div>
             <div class="finance-card" id="netCard" style="border-top: 4px solid white;">
-                <span class="finance-title">⚖️ Risparmio Netto</span>
+                <span class="finance-title">⚖️ Netto Mese</span>
                 <div id="monthNetVal" class="finance-value">€0.00</div>
             </div>
+            <div class="finance-card" style="border-top: 4px solid var(--warning);">
+                <span class="finance-title">🔮 Previsione Fine Mese</span>
+                <div id="forecastVal" class="finance-value" style="color:var(--warning);">€0.00</div>
+                <div id="forecastMsg" style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">Calcolo...</div>
+            </div>
             <div class="finance-card" style="border-top: 4px solid var(--info);">
-                <span class="finance-title">📊 Tasso di Risparmio</span>
-                <div id="savingsRateVal" class="finance-value" style="color: var(--info);">0%</div>
-                <div style="background: var(--bg-color); height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px;">
-                    <div id="savingsRateBar" style="width: 0%; height: 100%; background: var(--info); transition: width 0.3s;"></div>
+                <span class="finance-title">📊 Tasso Risparmio</span>
+                <div id="savingsRateVal" class="finance-value" style="color:var(--info);">0%</div>
+                <div style="background:var(--bg-color); height:6px; border-radius:3px; margin-top:5px; overflow:hidden;">
+                    <div id="savingsRateBar" style="height:100%; background:var(--info); width:0%;"></div>
                 </div>
             </div>
         </div>
 
         <div class="charts-container">
             <div class="chart-box">
-                <div style="text-align:center; margin-bottom:10px; color:var(--text-secondary); font-size:0.8rem;">RIPARTIZIONE SPESE</div>
-                <canvas id="monthlyChart"></canvas>
+                <div style="text-align:center; font-size:0.8rem; font-weight:bold; color:var(--text-secondary); margin-bottom:10px;">RIPARTIZIONE SPESE</div>
+                <div class="canvas-wrapper"><canvas id="monthlyChart"></canvas></div>
             </div>
             <div class="chart-box">
-                <div style="text-align:center; margin-bottom:10px; color:var(--text-secondary); font-size:0.8rem;">CRONOLOGIA ANNUALE FLUSSI</div>
-                <canvas id="annualChart"></canvas>
+                <div style="text-align:center; font-size:0.8rem; font-weight:bold; color:var(--text-secondary); margin-bottom:10px;">ANDAMENTO ANNUALE FLUSSI</div>
+                <div class="canvas-wrapper"><canvas id="annualChart"></canvas></div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h2>📝 Registro dei Movimenti</h2>
+        <h2>📝 Storico Movimenti Filtrato</h2>
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:20px; display:flex; gap:15px; flex-wrap:wrap; align-items:end;">
+            <div style="flex:2; min-width:200px;">
+                <label>Ricerca Testuale</label>
+                <input type="text" id="searchTx" placeholder="Cerca descrizione o categoria..." oninput="renderTransactions()">
+            </div>
+            <div style="flex:1; min-width:130px;">
+                <label>Dal giorno</label>
+                <input type="date" id="filterFromDate" onchange="renderTransactions()">
+            </div>
+            <div style="flex:1; min-width:130px;">
+                <label>Al giorno</label>
+                <input type="date" id="filterToDate" onchange="renderTransactions()">
+            </div>
+        </div>
         <div style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
             <table>
                 <thead>
-                    <tr><th width="15%">Data</th><th width="20%">Categoria</th><th width="40%">Descrizione</th><th width="15%">Importo</th><th width="10%">Rimuovi</th></tr>
+                    <tr><th width="15%">Data</th><th width="15%">Conto</th><th width="15%">Categoria</th><th width="35%">Descrizione</th><th width="10%">Importo</th><th width="10%">Azioni</th></tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <div class="card">
-        <h2>⏳ Scadenze ed Esami Futuri</h2>
-        <div style="background:var(--input-bg); padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid var(--border-color);">
-            <div style="display:grid; grid-template-columns: 2fr 1fr auto; gap:10px; align-items:end;">
-                <div>
-                    <label>Descrizione Scadenza</label>
-                    <input type="text" id="deadlineNameInput" placeholder="Es. Consegna Progetto SIA">
-                </div>
-                <div>
-                    <label>Data Limite</label>
-                    <input type="date" id="deadlineDateInput">
-                </div>
-                <button onclick="addDeadline()" style="height:42px; background:var(--accent); border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; padding: 0 20px;">Aggiungi</button>
-            </div>
-        </div>
-        <div id="deadlinesList"></div>
-    </div>
+
+    <div class="macro-section-title">🎓 Studio & Università</div>
 
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
             <h2 style="margin:0;">🍅 Focus Room (Pomodoro)</h2>
-            <div id="timerStatus" style="font-size:0.8rem; color:var(--text-secondary); font-weight:bold; letter-spacing:1px;">SISTEMA IN ATTESA</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <select id="lofiAudio" class="btn-tool" onchange="executeChangeAudio()" style="padding: 6px 10px; font-size:0.75rem;">
+                    <option value="">🔇 Nessun suono</option>
+                    <option value="rain">🌧️ Pioggia Rilassante</option>
+                    <option value="fire">🔥 Camino Scricchiolante</option>
+                    <option value="lofi">🎧 Lo-Fi Beats</option>
+                </select>
+                <button onclick="toggleZenMode()" class="btn-tool" style="background:var(--accent); color:white; border:none; padding:6px 12px;">🧘 Zen Mode</button>
+                <div id="timerStatus" style="font-size:0.85rem; color:var(--text-secondary); font-weight:bold; background:var(--input-bg); padding:5px 10px; border-radius:6px; border:1px solid var(--border-color);">ATTESA</div>
+            </div>
         </div>
+        <audio id="focusAudio" loop style="display:none;"></audio>
+        
         <div style="display:flex; gap:20px; flex-wrap:wrap;">
-            <div style="flex:1; min-width:200px; text-align:center; background:var(--input-bg); padding:20px; border-radius:12px; border:1px solid var(--border-color);">
-                <div id="focusDisplay" style="font-size: 3.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 15px;">25:00</div>
-                <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:15px;">
-                    <button onclick="adjustTime(-5)" style="background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer;">-</button>
-                    <input type="number" id="focusDuration" value="25" onchange="manualTimeSet()" style="width:60px; text-align:center; background:none; border:none; color:white; font-size:1.2rem; font-weight:bold;">
-                    <span style="color:var(--text-secondary);">min</span>
-                    <button onclick="adjustTime(+5)" style="background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer;">+</button>
+            <div style="flex:1; min-width:250px; text-align:center; background:var(--input-bg); padding:30px; border-radius:12px; border:1px solid var(--border-color);">
+                <div id="focusDisplay" style="font-size: 4.5rem; font-family: 'Fira Code', monospace; font-weight: 800; color: white; line-height: 1; margin-bottom: 20px;">25:00</div>
+                <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin-bottom:20px;">
+                    <button onclick="executeAdjustTime(-5)" class="btn-tool" style="font-size:1.2rem; padding:5px 15px;">-</button>
+                    <input type="number" id="focusDuration" value="25" onchange="executeManualTimeSet()" style="width:70px; text-align:center; font-size:1.2rem; font-weight:bold;">
+                    <button onclick="executeAdjustTime(+5)" class="btn-tool" style="font-size:1.2rem; padding:5px 15px;">+</button>
                 </div>
                 <div style="display:flex; gap:10px; justify-content:center;">
-                    <button id="btnStartFocus" onclick="startFocus()" style="background:var(--accent); color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">▶ START</button>
-                    <button id="btnPauseFocus" onclick="pauseFocus()" style="display:none; background:var(--warning); color:black; border:none; padding:10px 25px; border-radius:8px; font-weight:bold; cursor:pointer;">⏸ IN PAUSA</button>
-                    <button onclick="resetFocus()" style="background:var(--border-color); color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">↺</button>
+                    <button id="btnStartFocus" onclick="executeStartFocus()" style="background:var(--accent); color:white; border:none; padding:12px 30px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">▶ START</button>
+                    <button id="btnPauseFocus" onclick="executePauseFocus()" style="display:none; background:var(--warning); color:black; border:none; padding:12px 30px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">⏸ PAUSA</button>
+                    <button onclick="executeResetFocus()" style="background:var(--border-color); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-size:1rem;">↺</button>
                 </div>
+                <p style="font-size:0.8rem; color:var(--success); font-weight:bold; margin-top:15px;">Completare la sessione garantisce +10 EXP!</p>
             </div>
-            <div style="flex:1.5; min-width:250px;">
+            
+            <div style="flex:1.5; min-width:300px;">
+                <h3 style="font-size:0.9rem; margin-top:0; color:var(--text-secondary);">Obiettivi di Sessione</h3>
                 <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    <input type="text" id="newFocusTask" placeholder="Aggiungi sotto-obiettivo operativo..." onkeypress="if(event.key === 'Enter') addFocusTask()" style="flex:1; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--card-bg); color:white;">
-                    <button onclick="addFocusTask()" style="background:var(--input-bg); color:white; border:1px solid var(--border-color); padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+</button>
+                    <input type="text" id="newFocusTask" placeholder="Aggiungi micro-task..." onkeypress="if(event.key === 'Enter') executeAddFocusTask()">
+                    <button onclick="executeAddFocusTask()" class="btn-tool" style="background:var(--card-bg); color:white;">Aggiungi</button>
                 </div>
-                <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto;"></div>
-                <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-secondary);">
-                    <span id="tasksCount">0 obiettivi</span>
-                    <button onclick="clearFocusList()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.75rem;">Azzera Lista</button>
+                <div id="focusTodoList" style="display:flex; flex-direction:column; gap:8px; max-height:250px; overflow-y:auto;"></div>
+                <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <span id="tasksCount" style="font-size:0.8rem; font-weight:bold;">0 task</span>
+                    <button onclick="executeClearFocusList()" style="background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer; font-size:0.8rem;">Svuota tutto</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h2>🧠 Skills & Obiettivi Individuali</h2>
-        <div style="background:var(--input-bg); padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid var(--border-color);">
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="text" id="skillName" placeholder="Nome Skill (Es. Machine Learning)" style="flex: 2; min-width:120px;">
-                <input type="number" id="skillTarget" placeholder="Target ore/pagine" style="flex: 1; min-width:80px;">
-                <input type="text" id="skillUnit" placeholder="Unità (ore, cap)" style="flex: 1; min-width:60px;">
-                <button onclick="addSkill()" style="padding:0 20px; background: var(--success); border: none; border-radius: 6px; color: black; font-weight: bold; cursor: pointer;">+</button>
-            </div>
+        <h2>🧠 Skills & Accrescimento Personale</h2>
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; margin-bottom:20px; align-items:end;">
+            <div><label>Competenza</label><input type="text" id="skillName" placeholder="Es. Programmazione"></div>
+            <div><label>Target</label><input type="number" id="skillTarget" placeholder="Es. 100"></div>
+            <div><label>Unità</label><input type="text" id="skillUnit" placeholder="ore, pag, corsi"></div>
+            <button onclick="executeAddSkill()" class="btn-action bg-inc" style="height:42px;">+</button>
         </div>
         <div id="skillsList" style="display: flex; flex-direction: column; gap: 15px;"></div>
     </div>
 
     <div class="card" style="border-top: 4px solid var(--accent-light);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h2>🏛️ Libretto Universitario</h2>
-            <div style="text-align:right; display:flex; gap:15px; align-items:center;">
-    <div>
-        <div style="font-size:0.8rem; color:var(--text-secondary);">Media Ponderata</div>
-        <span id="uniGlobalGpa" style="color:var(--accent-light); font-weight:bold; font-size:1.2rem;">0.00</span>
-    </div>
-    <div style="border-left:1px solid var(--border-color); padding-left:15px;">
-        <div style="font-size:0.8rem; color:var(--text-secondary);">Base di Laurea</div>
-        <span id="uniGraduationGrade" style="color:var(--success); font-weight:bold; font-size:1.2rem;">0.00</span>
-    </div>
-</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:15px;">
+            <h2 style="margin:0;">🏛️ Libretto Universitario</h2>
+            <div style="display:flex; gap:20px; background:var(--input-bg); padding:10px 20px; border-radius:10px; border:1px solid var(--border-color);">
+                <div style="text-align:center;">
+                    <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">Media Ponderata</div>
+                    <span id="uniGlobalGpa" style="color:var(--accent-light); font-weight:800; font-size:1.5rem;">0.00</span>
+                </div>
+                <div style="width:1px; background:var(--border-color);"></div>
+                <div style="text-align:center;">
+                    <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">Voto Laurea</div>
+                    <span id="uniGraduationGrade" style="color:var(--success); font-weight:800; font-size:1.5rem;">0.00</span>
+                </div>
+            </div>
         </div>
-     
+        
         <div style="background:var(--input-bg); padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid var(--border-color);">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: end;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end;">
+                <div style="grid-column: span 2;"><label>Nome Esame</label><input type="text" id="uniSubjectInput" placeholder="Es. Analisi Matematica 1"></div>
+                <div><label>Blocco (Opz)</label><input type="text" id="uniBlockInput" placeholder="Es. MAT"></div>
+                <div><label>Voto</label><input type="number" id="uniGradeInput" placeholder="18-31" min="18" max="31"></div>
+                <div><label>CFU</label><input type="number" id="uniCfuInput" placeholder="CFU"></div>
                 <div>
-                    <label>Esame</label>
-                    <input type="text" id="uniSubjectInput" placeholder="Es. Analisi 1">
-                </div>
-                <div>
-                    <label>Blocco (Opz)</label>
-                    <input type="text" id="uniBlockInput" placeholder="Es. Math" style="color:#fab1a0;">
-                </div>
-                <div>
-                    <label>Voto</label>
-                    <input type="number" id="uniGradeInput" placeholder="18-30L" min="18" max="31">
-                </div>
-                <div>
-                    <label>CFU</label>
-                    <input type="number" id="uniCfuInput" placeholder="CFU">
-                </div>
-                <div>
-                    <label>Anno Corso</label>
+                    <label>Anno</label>
                     <select id="uniYearSelect">
-                        <option value="1">1° Anno</option><option value="2">2° Anno</option><option value="3">3° Anno</option><option value="4">Fuori Corso</option>
+                        <option value="1">1° Anno</option><option value="2">2° Anno</option><option value="3">3° Anno</option><option value="4">F.C.</option>
                     </select>
                 </div>
-                <button onclick="addUniExam()" style="height: 42px; background: var(--accent-light); border: none; border-radius: 8px; color: black; font-weight: bold; cursor: pointer; padding: 0 15px;">+</button>
-            </div>
-        </div>
-     
-        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:var(--text-secondary);">MEDIA 1° ANNO</div>
-                <div id="gpaY1" style="font-size:1.1rem; font-weight:bold; color:white;">0.00</div>
-            </div>
-            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:var(--text-secondary);">MEDIA 2° ANNO</div>
-                <div id="gpaY2" style="font-size:1.1rem; font-weight:bold; color:white;">0.00</div>
-            </div>
-            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px; text-align:center;">
-                <div style="font-size:0.7rem; color:var(--text-secondary);">MEDIA 3° ANNO</div>
-                <div id="gpaY3" style="font-size:1.1rem; font-weight:bold; color:white;">0.00</div>
+                <button onclick="executeAddUniExam()" class="btn-action" style="background:var(--accent-light); color:black; height:42px;">Salva</button>
             </div>
         </div>
         
-        <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:5px;">Ripartizione Blocchi/Moduli:</div>
+        <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:10px; text-align:center;">
+                <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">MEDIA 1° ANNO</div>
+                <div id="gpaY1" style="font-size:1.3rem; font-weight:800;">0.00</div>
+            </div>
+            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:10px; text-align:center;">
+                <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">MEDIA 2° ANNO</div>
+                <div id="gpaY2" style="font-size:1.3rem; font-weight:800;">0.00</div>
+            </div>
+            <div style="flex:1; background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:10px; text-align:center;">
+                <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:bold;">MEDIA 3° ANNO</div>
+                <div id="gpaY3" style="font-size:1.3rem; font-weight:800;">0.00</div>
+            </div>
+        </div>
+        
+        <h3 style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; margin-bottom:10px; margin-top:30px;">📦 Medie Macro-Aree / Blocchi</h3>
         <div id="uniBlocksList" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;"></div>
         
-        <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:5px;">Esami Superati:</div>
-        <div id="uniExamsList"></div>
+        <h3 style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; margin-bottom:10px; margin-top:20px;">📋 Esami Verbalizzati</h3>
+        <div id="uniExamsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 
-    <div class="footer-tools">
-        <button class="btn-tool" onclick="exportData()">📤 Esporta Backup Dati</button>
-        <button class="btn-tool" onclick="importData()">📥 Importa Backup Dati</button>
+    <div class="card">
+        <h2>📅 Scadenze e Calendario</h2>
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:20px;">
+            <div class="input-grid">
+                <div style="grid-column: span 2;"><label>Cosa scade?</label><input type="text" id="deadlineNameInput" placeholder="Iscrizione appello, Bolletta..."></div>
+                <div><label>Data</label><input type="date" id="deadlineDateInput"></div>
+                <button onclick="executeAddDeadline()" class="btn-action bg-inc" style="height:42px;">Aggiungi Scadenza</button>
+            </div>
+        </div>
+        <div id="deadlinesList" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
 
+    <div style="display: flex; gap: 15px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-tool" onclick="exportData()" style="background:var(--input-bg); color:white;">📥 Scarica Backup Dati (JSON)</button>
+        <button class="btn-tool" onclick="importData()" style="background:var(--input-bg); color:white;">📤 Ripristina Dati (JSON)</button>
+        <button class="btn-tool" onclick="exportCSV()" style="background:var(--success); color:black; border:none;">📊 Esporta Spese in Excel (CSV)</button>
+    </div>
+
+</div>
+
+<div id="walletModal" class="modal-overlay">
+    <div class="modal-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="margin:0;">🏦 I tuoi Portafogli</h3>
+            <button onclick="closeWalletModal()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
+        </div>
+        
+        <div id="walletList" style="margin-bottom:20px; max-height:200px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+        <button onclick="promptNewWallet()" class="btn-tool" style="width:100%; margin-bottom:20px; background:var(--accent); color:white; border:none;">+ Aggiungi Nuovo Conto</button>
+        
+        <div style="border-top:1px solid var(--border-color); padding-top:20px;">
+            <h4 style="margin:0 0 15px 0;">🔄 Giroconto (Trasferisci fondi)</h4>
+            <div style="display:flex; gap:10px; margin-bottom:10px; align-items:end;">
+                <div style="flex:1;"><label>Da (Origine):</label><select id="giroFrom"></select></div>
+                <div style="flex:1;"><label>A (Destinazione):</label><select id="giroTo"></select></div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:end;">
+                <div style="flex:2;"><label>Importo (€)</label><input type="number" id="giroAmount" placeholder="0.00" step="0.01"></div>
+                <button onclick="executeGiroconto()" class="btn-action bg-inc" style="flex:1;">Trasferisci</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrappedModal" class="wrapped-overlay" onclick="closeSiaWrapped()">
+    <div class="wrapped-card" onclick="event.stopPropagation()">
+        <h2 style="color:white; text-align:center; display:block; font-size:2rem; margin-bottom:5px;">SIA Wrapped 🎉</h2>
+        <p style="margin-top:0; font-size:0.9rem; opacity:0.8;">Il resoconto del tuo anno finanziario</p>
+        
+        <div style="margin: 30px 0;">
+            <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.8);">Spesa Totale Annuale</div>
+            <div id="wrapTotal" class="wrapped-stat">€0.00</div>
+        </div>
+        <div style="margin: 30px 0;">
+            <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.8);">La Categoria che hai amato di più</div>
+            <div id="wrapCat" class="wrapped-stat" style="font-size:2rem;">Nessuna</div>
+        </div>
+        <div style="margin: 30px 0;">
+            <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.8);">Esperienza Guadagnata</div>
+            <div id="wrapExp" class="wrapped-stat" style="color:#f1c40f;">0</div>
+        </div>
+        
+        <button onclick="closeSiaWrapped()" class="btn-tool" style="background:white; color:var(--accent); border:none; width:100%; font-size:1.1rem; padding:12px; border-radius:30px; margin-top:20px; font-weight:900;">Chiudi</button>
+    </div>
+</div>
+
+<div id="zenOverlay" class="zen-overlay">
+    <button class="zen-close" onclick="toggleZenMode()">✕</button>
+    <div style="color:var(--text-secondary); font-size:1.5rem; letter-spacing:3px; margin-bottom:20px; text-transform:uppercase;">Deep Focus Mode</div>
+    <div id="zenFocusDisplay" class="zen-timer">25:00</div>
+    <div class="zen-btn-group">
+        <button onclick="executeStartFocus()" class="btn-action bg-inc" style="font-size:1.5rem; padding:15px 40px; border-radius:50px;">▶ START</button>
+        <button onclick="executePauseFocus()" class="btn-action" style="background:var(--warning); color:black; font-size:1.5rem; padding:15px 40px; border-radius:50px;">⏸ PAUSA</button>
+    </div>
 </div>
 
 <div id="recurringModal" class="modal-overlay">
     <div class="modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0;">Modelli Fissi Preimpostati</h3>
-            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="margin:0;">🔁 Modelli di Transazione</h3>
+            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
         </div>
-        <div id="recList" style="margin-bottom:15px; max-height:200px; overflow-y:auto;"></div>
-        <div style="border-top:1px solid var(--border-color); padding-top:15px;">
-            <h4 style="margin:0 0 10px 0;">Salva Nuovo Modello</h4>
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <label style="display:inline-flex; align-items:center; gap:5px;"><input type="radio" name="newRecType" value="expense" checked> Uscita</label>
-                <label style="display:inline-flex; align-items:center; gap:5px;"><input type="radio" name="newRecType" value="income"> Entrata</label>
+        <div id="recList" style="max-height:200px; overflow-y:auto; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;"></div>
+        <div style="border-top:1px solid var(--border-color); padding-top:20px;">
+            <h4 style="margin:0 0 15px 0;">Crea Nuovo Modello</h4>
+            <div style="display:flex; gap:15px; margin-bottom:15px;">
+                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="newRecType" value="expense" checked> Uscita</label>
+                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="radio" name="newRecType" value="income"> Entrata</label>
             </div>
-            <input type="text" id="newRecName" placeholder="Nome Modello (Es. Abbonamento Spotify)" style="margin-bottom:10px;">
-            <select id="newRecCat" style="margin-bottom:10px;"></select>
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="newRecAmount" placeholder="Importo €" step="0.01" style="flex:1;">
-                <button onclick="addRecModel()" style="flex:1; background:var(--success); border:none; border-radius:5px; font-weight:bold; cursor:pointer; color:black;">SALVA</button>
+            <input type="text" id="newRecName" placeholder="Nome (es. Netflix)" style="margin-bottom:15px;">
+            <select id="newRecCat" style="margin-bottom:15px;"></select>
+            <div style="display:flex; gap:15px;">
+                <input type="number" id="newRecAmount" placeholder="Importo Fissi €" style="flex:1;">
+                <button onclick="executeAddRecModel()" class="btn-action bg-inc" style="flex:1;">SALVA</button>
             </div>
         </div>
     </div>
@@ -544,709 +717,1443 @@
 
 <div id="budgetModal" class="modal-overlay">
     <div class="modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0;">Configura Budget Mensili</h3>
-            <button onclick="closeBudgetModal()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;">✕</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="margin:0;">📊 Imposta Budget Mensile</h3>
+            <button onclick="closeBudgetModal()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
         </div>
-        <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:0;">Assegna un limite massimo mensile per ogni voce di spesa.</p>
-        <div id="budgetInputsContainer" style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:15px; padding-right:5px;"></div>
-        <button onclick="saveBudgetLimits()" style="width:100%; padding:12px; background:var(--success); border:none; border-radius:8px; font-weight:bold; cursor:pointer; color:black;">CONFERMA E APPLICA</button>
-    </div>
-</div>
-
-<div id="onboardingModal" class="modal-overlay">
-    <div class="modal-box tour-box">
-        <h2 id="tourTitle" style="color:var(--accent-light); justify-content:center; font-size:1.4rem; margin-bottom:10px;">Benvenuto! 🚀</h2>
-        <div id="tourContent" style="font-size:0.9rem; line-height:1.5; color:#e0e0e0; min-height:100px; margin-bottom:20px;">Caricamento guida...</div>
-        <div class="tour-step-dots" id="tourDots"></div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-            <button id="tourPrevBtn" class="btn-tool" style="padding:6px 12px;" onclick="navigateTour(-1)">↩ Precedente</button>
-            <button id="tourNextBtn" class="btn-action bg-inc" style="padding:8px 20px; font-size:0.85rem;" onclick="navigateTour(1)">Avanti ➔</button>
-        </div>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0;">Determina un limite massimo di spesa per ogni categoria.</p>
+        <div id="budgetInputsContainer" style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:20px; padding-right:10px;"></div>
+        <button onclick="executeSaveBudgetLimits()" class="btn-action bg-inc" style="width:100%;">APPLICA LIMITI</button>
     </div>
 </div>
 
 <div class="calc-widget">
+    <button class="calc-toggle-btn" onclick="toggleCalc()">🧮</button>
     <div id="calcBody" class="calculator-body">
         <input type="text" id="calcDisplay" class="calc-display" readonly placeholder="0">
         <div class="calc-grid">
-            <button class="calc-btn btn-ac" onclick="calcClear()">AC</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('/')">÷</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('*')">×</button>
-            <button class="calc-btn" onclick="calcDelete()">⌫</button>
-            <button class="calc-btn" onclick="calcAppend('7')">7</button>
-            <button class="calc-btn" onclick="calcAppend('8')">8</button>
-            <button class="calc-btn" onclick="calcAppend('9')">9</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('-')">-</button>
-            <button class="calc-btn" onclick="calcAppend('4')">4</button>
-            <button class="calc-btn" onclick="calcAppend('5')">5</button>
-            <button class="calc-btn" onclick="calcAppend('6')">6</button>
-            <button class="calc-btn btn-op" onclick="calcAppend('+')">+</button>
-            <button class="calc-btn" onclick="calcAppend('1')">1</button>
-            <button class="calc-btn" onclick="calcAppend('2')">2</button>
-            <button class="calc-btn" onclick="calcAppend('3')">3</button>
-            <button class="calc-btn btn-eq" onclick="calcEqual()">=</button>
-            <button class="calc-btn" onclick="calcAppend('0')" style="grid-column: span 2;">0</button>
-            <button class="calc-btn" onclick="calcAppend('.')">.</button>
+            <button class="calc-btn btn-ac" onclick="calcAction('clear')">AC</button>
+            <button class="calc-btn btn-op" onclick="calcAction('/')">÷</button>
+            <button class="calc-btn btn-op" onclick="calcAction('*')">×</button>
+            <button class="calc-btn" onclick="calcAction('del')">⌫</button>
+            <button class="calc-btn" onclick="calcAction('7')">7</button>
+            <button class="calc-btn" onclick="calcAction('8')">8</button>
+            <button class="calc-btn" onclick="calcAction('9')">9</button>
+            <button class="calc-btn btn-op" onclick="calcAction('-')">-</button>
+            <button class="calc-btn" onclick="calcAction('4')">4</button>
+            <button class="calc-btn" onclick="calcAction('5')">5</button>
+            <button class="calc-btn" onclick="calcAction('6')">6</button>
+            <button class="calc-btn btn-op" onclick="calcAction('+')">+</button>
+            <button class="calc-btn" onclick="calcAction('1')">1</button>
+            <button class="calc-btn" onclick="calcAction('2')">2</button>
+            <button class="calc-btn" onclick="calcAction('3')">3</button>
+            <button class="calc-btn btn-eq" onclick="calcAction('=')">=</button>
+            <button class="calc-btn" onclick="calcAction('0')" style="grid-column: span 2;">0</button>
+            <button class="calc-btn" onclick="calcAction('.')">.</button>
         </div>
     </div>
-    <button class="calc-toggle-btn" onclick="toggleCalc()">🧮</button>
 </div>
 
 <script>
-// --- CORE ARCHITETTURA DATI IN LOCALSTORAGE (Compatibilità Github Assicurata) ---
+// =========================================================================
+// GESTIONE DATI E CORE JAVASCRIPT (Safe Mode per GitHub)
+// =========================================================================
+
 let appData = {
-    wallet: 0.00,
-    liquidityTarget: 1000.00,
-    categories: ["Cibo", "Trasporti", "Intrattenimento", "Spese Casalinghe", "Stipendio", "Risparmi", "Altro"],
+    wallet: 0, // Mantenuto per retrocompatibilità, ora ricalcolato dalle wallets
+    wallets: { "Principale": 0 },
+    liquidityTarget: 1000,
+    paydayDay: 27,
+    theme: 'purple',
+    categories: ["Stipendio", "Cibo", "Trasporti", "Intrattenimento", "Spese Casalinghe", "Risparmi", "Studio", "Altro"],
     transactions: [],
     goals: [],
-    skills: [],
-    uniExams: [],
-    focusTasks: [],
-    recurring: [],
-    deadlines: [],
+    splits: [],
     smartRules: { roundUp: false, paydayPercent: 0, selectedGoalId: null },
     budgetLimits: {},
-    paydayDay: 27,
-    isFirstTime: true
+    gamification: { exp: 0, level: 1, pomodorosToday: 0, lastDate: "", badges: { saver: false, pomodoro: false, habit: false } },
+    habits: [{ id: 1, name: "Bevi 2L d'acqua", history: {} }],
+    uniExams: [],
+    deadlines: [],
+    uniDeadlines: [],
+    focusTasks: [],
+    recurring: [],
+    skills: []
 };
 
 let monthlyChartInstance = null;
 let annualChartInstance = null;
-let currentTourStep = 0;
 
-const tourSteps = [
-    { title: "Benvenuto nella Purple Edition! 🚀", content: "Questa è la tua nuova plancia di comando finanziaria. I tuoi progressi vengono salvati in modo persistente localmente: i tuoi dati non andranno persi!" },
-    { title: "💰 Il Tuo Saldo Liquido", content: "Nell'intestazione trovi il tuo patrimonio reale disponibile. Cliccandoci sopra puoi modificarlo. Imposta anche un 'Target Riserva' e il giorno del tuo Payday!" },
-    { title: "🤖 Automazioni Intelligenti", content: "Attiva l'<b>Arrotondamento automatico</b>: ogni volta che inserisci una spesa, i centesimi andranno nel salvadanaio scelto! Con la <b>Trattenuta Payday</b>, l'app preleva una percentuale fissa in automatico appena ricevi lo Stipendio." },
-    { title: "📊 Budgeting Categorizzato", content: "Controlla le tue uscite impostando tetti massimi mensili. Le barre progresso cambieranno colore dinamicamente segnalandoti se stai spendendo troppo." },
-    { title: "🎯 Protezione dei Dati (GitHub)", content: "A fondo pagina troverai due nuovi pulsanti per esportare e importare un file di Backup dei tuoi dati, così potrai spostare o ripristinare il tuo profilo in qualsiasi momento su GitHub Pages." }
-];
-
-// --- GESTIONE COESIONE PERSISTENZA E MERGE SICURO ---
 function loadData() {
-    let legacyObj = null;
-    ['siaData', 'siaManagerData', 'appData', 'financialData', 'sia_manager_data'].forEach(k => {
-        const raw = localStorage.getItem(k);
-        if (raw) { try { legacyObj = JSON.parse(raw); } catch(e){} }
-    });
+    try {
+        let raw = localStorage.getItem('siaManager_v5') || localStorage.getItem('siaManager_v4') || localStorage.getItem('siaManager_v3') || localStorage.getItem('sia_manager_data') || localStorage.getItem('siaData');
+        if (raw) {
+            let parsed = JSON.parse(raw);
+            appData = { ...appData, ...parsed };
+            
+            // Nested Object Safeties
+            if(!appData.wallets) appData.wallets = { "Principale": appData.wallet || 0 };
+            appData.smartRules = { ...{ roundUp: false, paydayPercent: 0, selectedGoalId: null }, ...(parsed.smartRules || {}) };
+            appData.gamification = { ...{ exp: 0, level: 1, pomodorosToday: 0, lastDate: "", badges: { saver: false, pomodoro: false, habit: false } }, ...(parsed.gamification || {}) };
+            if(!appData.gamification.badges) appData.gamification.badges = { saver: false, pomodoro: false, habit: false };
+        }
+        
+        // Arrays safe-check
+        ['transactions','categories','goals','skills','uniExams','focusTasks','recurring','deadlines','splits','habits','uniDeadlines'].forEach(arr => {
+            if(!Array.isArray(appData[arr])) appData[arr] = [];
+        });
 
-    if (legacyObj && typeof legacyObj === 'object') {
-        appData = Object.assign({}, appData, legacyObj);
-        if (legacyObj.smartRules) appData.smartRules = Object.assign({}, appData.smartRules, legacyObj.smartRules);
-        if (legacyObj.budgetLimits) appData.budgetLimits = Object.assign({}, appData.budgetLimits, legacyObj.budgetLimits);
-        if (appData.transactions.length > 0 || appData.uniExams.length > 0) appData.isFirstTime = false;
-    }
-    
-    // Inizializzazioni di sicurezza arrays
-    if (!Array.isArray(appData.transactions)) appData.transactions = [];
-    if (!Array.isArray(appData.categories)) appData.categories = ["Cibo", "Trasporti", "Intrattenimento", "Spese Casalinghe", "Stipendio", "Risparmi", "Altro"];
-    if (!Array.isArray(appData.goals)) appData.goals = [];
-    if (!Array.isArray(appData.skills)) appData.skills = [];
-    if (!Array.isArray(appData.uniExams)) appData.uniExams = [];
-    if (!Array.isArray(appData.focusTasks)) appData.focusTasks = [];
-    if (!Array.isArray(appData.recurring)) appData.recurring = [];
-    if (!Array.isArray(appData.deadlines)) appData.deadlines = [];
-    if (!appData.smartRules) appData.smartRules = { roundUp: false, paydayPercent: 0, selectedGoalId: null };
-    if (!appData.budgetLimits) appData.budgetLimits = {};
-    if (!appData.paydayDay) appData.paydayDay = 27;
-    
-    // Inizializza filtri data
-    const filterInput = document.getElementById('monthFilter');
-    if (filterInput && !filterInput.value) filterInput.value = new Date().toISOString().substring(0, 7);
-    const dateInput = document.getElementById('dateInput');
-    if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
-    
-    renderAll();
-    // Ripristina il tema salvato
-    if (appData.theme && appThemes[appData.theme]) {
-        document.getElementById('themeSelector').value = appData.theme;
-        changeTheme(true); // Applica senza sovrascrivere inutilmente
-    }
-    
-    if (appData.isFirstTime) {
-        startOnboarding();
+        // Set default dates
+        const fIn = document.getElementById('monthFilter'); 
+        if (fIn && !fIn.value) {
+            const td = new Date();
+            fIn.value = `${td.getFullYear()}-${String(td.getMonth() + 1).padStart(2, '0')}`;
+        }
+        
+        const dIn = document.getElementById('dateInput'); 
+        if (dIn && !dIn.value) dIn.value = new Date().toISOString().split('T')[0];
+        
+        // Theme
+        if (appData.theme) { 
+            const sel = document.getElementById('themeSelector');
+            if(sel) sel.value = appData.theme; 
+            changeTheme(true); 
+        }
+
+        renderAll();
+    } catch(err) {
+        console.error("Errore critico durante loadData:", err);
     }
 }
 
 function saveData() {
-    const dataStr = JSON.stringify(appData);
-    localStorage.setItem('sia_manager_data', dataStr);
-    localStorage.setItem('siaData', dataStr); // Doppia copia per robustezza GitHub
-    renderAll();
-}
-
-// Funzioni Backup Sicurezza GitHub
-function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `sia_manager_backup_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = e => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsText(file, 'UTF-8');
-        reader.onload = readerEvent => {
-            try {
-                const content = JSON.parse(readerEvent.target.result);
-                if (confirm("Attenzione: questo sovrascriverà tutti i dati attuali con quelli del backup. Continuare?")) {
-                    appData = content;
-                    saveData();
-                    alert("Dati importati con successo!");
-                    location.reload();
-                }
-            } catch(err) { alert("File di backup non valido o danneggiato."); }
-        }
+    try {
+        const payload = JSON.stringify(appData);
+        localStorage.setItem('siaManager_v5', payload);
+        localStorage.setItem('sia_manager_data', payload); 
+        renderAll();
+    } catch(err) {
+        alert("Errore di salvataggio. Memoria Browser esaurita o Cookie bloccati.");
     }
-    input.click();
 }
 
+// Chiamate di rendering isolate per evitare blocchi a catena
 function renderAll() {
-    const walletIn = document.getElementById('walletInput');
-    if(walletIn && document.activeElement !== walletIn) walletIn.value = appData.wallet.toFixed(2);
+    try { renderHeaderAndWallets(); } catch(e) { console.error("renderHeaderAndWallets failed", e); }
+    try { renderGamification(); } catch(e) { console.error("renderGamification failed", e); }
+    try { renderHabits(); } catch(e) { console.error("renderHabits failed", e); }
+    try { renderSmartRulesConfig(); } catch(e) { console.error("renderSmartRulesConfig failed", e); }
+    try { renderBudgetBars(); } catch(e) { console.error("renderBudgetBars failed", e); }
+    try { renderTransactions(); } catch(e) { console.error("renderTransactions failed", e); }
+    try { renderGoals(); } catch(e) { console.error("renderGoals failed", e); }
+    try { renderSplits(); } catch(e) { console.error("renderSplits failed", e); }
+    try { renderChartsAndForecast(); } catch(e) { console.error("renderChartsAndForecast failed", e); }
+    try { renderFocusTasks(); } catch(e) { console.error("renderFocusTasks failed", e); }
+    try { renderSkills(); } catch(e) { console.error("renderSkills failed", e); }
+    try { renderUni(); } catch(e) { console.error("renderUni failed", e); }
+    try { renderDeadlines(); } catch(e) { console.error("renderDeadlines failed", e); }
+}
+
+
+// =========================================================================
+// HEADER, WALLET MULTIPLI E GIROCONTO
+// =========================================================================
+function renderHeaderAndWallets() {
+    let total = 0;
+    for(let k in appData.wallets) { total += appData.wallets[k]; }
+    appData.wallet = total; // Sync vecchie app
     
-    const target = appData.liquidityTarget || 1.00;
-    const pLiq = Math.min(100, Math.max(0, (appData.wallet / target) * 100));
-    if(document.getElementById('liquidityBar')) document.getElementById('liquidityBar').style.width = pLiq + '%';
-    if(document.getElementById('liquidityPerc')) document.getElementById('liquidityPerc').innerText = pLiq.toFixed(0) + '%';
-
-    if(document.getElementById('ruleRoundUp')) document.getElementById('ruleRoundUp').checked = appData.smartRules.roundUp;
-    if(document.getElementById('rulePaydayPercent')) document.getElementById('rulePaydayPercent').value = appData.smartRules.paydayPercent || 0;
-
-    renderPayday();
-    populateCategoriesDropdowns();
-    populateSmartGoalSelect();
-    renderBudgetBars();
-    renderTransactions();
-    renderCharts();
-    renderGoals();
-    renderFocusTasks();
-    renderSkills();
-    renderUni();
-    renderDeadlines();
-}
-
-// --- PAYDAY WIDGET ---
-function renderPayday() {
-    if (!appData.paydayDay) appData.paydayDay = 27;
-    const today = new Date();
-    let paydayDate = new Date(today.getFullYear(), today.getMonth(), appData.paydayDay);
-    if (today > paydayDate && today.getDate() !== appData.paydayDay) {
-        paydayDate = new Date(today.getFullYear(), today.getMonth() + 1, appData.paydayDay);
-    }
-    const diffTime = paydayDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const wDisplay = document.getElementById('totalWalletDisplay');
+    if(wDisplay) wDisplay.innerText = total.toFixed(2);
     
-    const container = document.getElementById('paydayWidget');
-    if (container) {
-        let testotimer = today.getDate() === appData.paydayDay ? "🎉 Oggi è il Payday!" : `Mancano ${diffDays} giorn${diffDays === 1 ? 'o' : 'i'}`;
-        container.innerHTML = `<span>💰 Payday (Giorno ${appData.paydayDay}): <strong style="color:var(--accent-light);">${testotimer}</strong></span>
-            <span onclick="setPaydayDay()" style="cursor:pointer; text-decoration:underline; font-size:0.75rem; color:var(--accent-light); margin-left:10px;">✍️ Modifica</span>`;
+    const target = appData.liquidityTarget || 1000;
+    const percLiq = Math.min(100, Math.max(0, (total / target) * 100));
+    
+    const lBar = document.getElementById('liquidityBar');
+    const lPerc = document.getElementById('liquidityPerc');
+    if(lBar) lBar.style.width = percLiq + '%';
+    if(lPerc) lPerc.innerText = Math.floor(percLiq) + '%';
+    
+    const wSel = document.getElementById('walletSelect');
+    if(wSel) {
+        const current = wSel.value;
+        wSel.innerHTML = '';
+        Object.keys(appData.wallets).forEach(w => wSel.innerHTML += `<option value="${w}">${w} (€${appData.wallets[w].toFixed(2)})</option>`);
+        if(appData.wallets[current] !== undefined) wSel.value = current;
     }
-}
-
-window.setPaydayDay = function() {
-    const val = prompt("Imposta il giorno del mese per il tuo Payday (1-31):", appData.paydayDay);
-    if(val && !isNaN(val) && val >= 1 && val <= 31) {
-        appData.paydayDay = parseInt(val);
-        saveData();
-    }
-}
-
-// --- ONBOARDING TOUR ---
-function startOnboarding() {
-    currentTourStep = 0;
-    document.getElementById('onboardingModal').style.display = 'flex';
-    updateTourUI();
-}
-
-function updateTourUI() {
-    const step = tourSteps[currentTourStep];
-    document.getElementById('tourTitle').innerHTML = step.title;
-    document.getElementById('tourContent').innerHTML = step.content;
-    document.getElementById('tourPrevBtn').style.visibility = currentTourStep === 0 ? 'hidden' : 'visible';
-    document.getElementById('tourNextBtn').innerText = currentTourStep === tourSteps.length - 1 ? "Inizia ora! ✨" : "Avanti ➔";
-
-    const dotsContainer = document.getElementById('tourDots');
-    dotsContainer.innerHTML = '';
-    tourSteps.forEach((_, i) => {
-        dotsContainer.innerHTML += `<div class="dot ${i === currentTourStep ? 'active' : ''}"></div>`;
-    });
-}
-
-window.navigateTour = function(direction) {
-    currentTourStep += direction;
-    if (currentTourStep < 0) currentTourStep = 0;
-    if (currentTourStep >= tourSteps.length) {
-        document.getElementById('onboardingModal').style.display = 'none';
-        appData.isFirstTime = false;
-        saveData();
-    } else { updateTourUI(); }
-};
-
-// --- WALLET E CATEGORIE ---
-function populateCategoriesDropdowns() {
-    ['catSelect', 'newRecCat'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            const currentSelected = el.value; el.innerHTML = '';
-            appData.categories.forEach(c => {
-                const opt = document.createElement('option'); opt.value = c; opt.innerText = c; el.appendChild(opt);
-            });
-            if (appData.categories.includes(currentSelected)) el.value = currentSelected;
+    
+    const pdW = document.getElementById('paydayWidget');
+    if(pdW) {
+        const pd = appData.paydayDay || 27;
+        const today = new Date();
+        let nextPd = new Date(today.getFullYear(), today.getMonth(), pd);
+        if(today > nextPd && today.getDate() !== pd) {
+            nextPd = new Date(today.getFullYear(), today.getMonth() + 1, pd);
         }
-    });
-}
-
-function populateSmartGoalSelect() {
-    const select = document.getElementById('smartGoalSelect');
-    if (!select) return;
-    select.innerHTML = '<option value="">-- Salvadanaio Automatico Default --</option>';
-    appData.goals.forEach(g => { select.innerHTML += `<option value="${g.id}">${g.name}</option>`; });
-    select.value = appData.smartRules.selectedGoalId || "";
+        const diffDays = Math.ceil((nextPd - today) / (1000 * 60 * 60 * 24));
+        const txt = diffDays === 0 ? "🎉 Oggi è il Payday!" : `Mancano ${diffDays} gg`;
+        pdW.innerHTML = `<span>💰 Giorno di Paga (il ${pd}): <strong style="color:var(--accent-light);">${txt}</strong></span> 
+                         <span onclick="promptSetPayday()" style="cursor:pointer; text-decoration:underline; font-weight:bold; color:var(--accent-light); margin-left:10px;">Modifica</span>`;
+    }
 }
 
 window.manualWalletUpdate = function() {
-    const val = parseFloat(document.getElementById('walletInput').value);
-    appData.wallet = isNaN(val) ? 0.00 : val; saveData();
+    alert("Ora usi portafogli multipli! Clicca su 'Portafogli / Giroconti' per modificare i fondi.");
 };
 
 window.setLiquidityTarget = function() {
-    const val = prompt("Nuovo obiettivo di riserva liquida (€):", appData.liquidityTarget);
-    if (val !== null) { const parsed = parseFloat(val); if (!isNaN(parsed) && parsed > 0) { appData.liquidityTarget = parsed; saveData(); } }
+    const v = prompt("Imposta il tuo Target di Riserva Liquida (€):", appData.liquidityTarget);
+    if(v !== null && !isNaN(parseFloat(v)) && parseFloat(v) > 0) {
+        appData.liquidityTarget = parseFloat(v);
+        saveData();
+    }
 };
 
-window.manageCategories = function() {
-    const newCat = prompt("Crea una nuova categoria personalizzata:");
-    if (newCat) { const cleaned = newCat.trim(); if (cleaned && !appData.categories.includes(cleaned)) { appData.categories.push(cleaned); saveData(); } }
+window.promptSetPayday = function() {
+    const v = prompt("Giorno del mese in cui ricevi lo Stipendio/Entrate fisse (1-31):", appData.paydayDay);
+    if(v !== null && !isNaN(parseInt(v)) && parseInt(v) >= 1 && parseInt(v) <= 31) {
+        appData.paydayDay = parseInt(v);
+        saveData();
+    }
 };
 
-// --- TRANSAZIONI CON ARROTONDAMENTO E PAYDAY ---
-window.addTransaction = function(type) {
-    const desc = document.getElementById('descInput').value.trim();
-    let amount = parseFloat(document.getElementById('amountInput').value);
-    const cat = document.getElementById('catSelect').value;
-    const date = document.getElementById('dateInput').value;
+window.openWalletModal = function() {
+    const list = document.getElementById('walletList');
+    if(!list) return;
+    list.innerHTML = '';
     
-    if (!desc || isNaN(amount) || amount <= 0 || !date) { alert("Compila tutti i campi richiesti per la transazione."); return; }
+    Object.keys(appData.wallets).forEach(w => {
+        list.innerHTML += `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+            <strong style="color:white; font-size:1.1rem;">${w}</strong>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:var(--text-secondary);">€</span>
+                <input type="number" value="${appData.wallets[w].toFixed(2)}" onchange="updateWalletBalance('${w}', this.value)" style="width:100px; padding:6px; background:var(--input-bg);">
+                ${w !== 'Principale' ? `<button onclick="deleteWallet('${w}')" class="btn-tool" style="color:var(--danger); border-color:var(--danger); padding:4px 8px;">✕</button>` : ''}
+            </div>
+        </div>`;
+    });
     
-    // Logica di Arrotondamento (Uscite)
-    if (type === 'expense' && document.getElementById('ruleRoundUp') && document.getElementById('ruleRoundUp').checked) {
-        const nextCeil = Math.ceil(amount);
-        const diff = nextCeil - amount;
-        if (diff > 0 && diff < 1) {
-            applySmartSavingsDeposit(diff, `Spiccioli Arrotondamento (${desc})`, date);
-            amount = nextCeil; // Detrae il valore arrotondato dal wallet
-        }
+    const fromSel = document.getElementById('giroFrom');
+    const toSel = document.getElementById('giroTo');
+    if(fromSel && toSel) {
+        fromSel.innerHTML = ''; toSel.innerHTML = '';
+        Object.keys(appData.wallets).forEach(w => {
+            fromSel.innerHTML += `<option value="${w}">${w}</option>`;
+            toSel.innerHTML += `<option value="${w}">${w}</option>`;
+        });
     }
     
-    // Logica Trattenuta Payday (Entrate - Stipendio)
-    if (type === 'income' && cat === 'Stipendio' && appData.smartRules.paydayPercent > 0) {
-        const quota = amount * (appData.smartRules.paydayPercent / 100);
-        if (quota > 0) {
-            appData.wallet -= quota; // Trattiene dalla somma
-            applySmartSavingsDeposit(quota, `Payday % (${appData.smartRules.paydayPercent}%)`, date);
+    document.getElementById('walletModal').style.display = 'flex';
+};
+
+window.closeWalletModal = function() { document.getElementById('walletModal').style.display = 'none'; };
+
+window.updateWalletBalance = function(name, val) {
+    const v = parseFloat(val);
+    if(!isNaN(v)) { appData.wallets[name] = v; saveData(); openWalletModal(); }
+};
+
+window.promptNewWallet = function() {
+    const n = prompt("Nome del nuovo Portafoglio (es. Contanti, PayPal):");
+    if(n && n.trim() && appData.wallets[n.trim()] === undefined) {
+        appData.wallets[n.trim()] = 0; saveData(); openWalletModal();
+    }
+};
+
+window.deleteWallet = function(name) {
+    if(name === 'Principale') return;
+    if(confirm(`Eliminare il portafoglio "${name}"? I fondi andranno persi se non li hai prima trasferiti.`)) {
+        delete appData.wallets[name]; saveData(); openWalletModal();
+    }
+};
+
+window.executeGiroconto = function() {
+    const from = document.getElementById('giroFrom').value;
+    const to = document.getElementById('giroTo').value;
+    const amount = parseFloat(document.getElementById('giroAmount').value);
+    
+    if(from && to && from !== to && !isNaN(amount) && amount > 0) {
+        if(appData.wallets[from] >= amount) {
+            appData.wallets[from] -= amount;
+            appData.wallets[to] += amount;
+            appData.transactions.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], cat: "Altro", desc: `Giroconto: ${from} ➡️ ${to}`, amount: 0, type: 'income', wallet: 'Principale' });
+            saveData();
+            document.getElementById('giroAmount').value = '';
+            openWalletModal();
+            alert("Trasferimento avvenuto con successo.");
+        } else { alert("Fondi insufficienti nel portafoglio di origine."); }
+    } else { alert("Controlla i dati del giroconto."); }
+};
+
+
+// =========================================================================
+// SIA WRAPPED (STATISTICHE FINALI)
+// =========================================================================
+window.showSiaWrapped = function() {
+    document.getElementById('wrappedModal').style.display = 'flex';
+    
+    let totalSpent = 0;
+    let cats = {};
+    const curYear = new Date().getFullYear().toString();
+    
+    appData.transactions.forEach(t => {
+        if(t.type === 'expense' && t.date && t.date.startsWith(curYear) && t.cat !== 'Risparmi') {
+            totalSpent += t.amount;
+            cats[t.cat] = (cats[t.cat] || 0) + t.amount;
         }
+    });
+    
+    let maxCat = "Nessuna";
+    let maxCatVal = 0;
+    for(let k in cats) {
+        if(cats[k] > maxCatVal) { maxCatVal = cats[k]; maxCat = k; }
     }
     
-    appData.transactions.push({ id: Date.now(), date, cat, desc, amount: parseFloat(amount.toFixed(2)), type });
-    if (type === 'income') appData.wallet += amount;
-    else appData.wallet -= amount;
+    document.getElementById('wrapTotal').innerText = `€${totalSpent.toFixed(2)}`;
+    document.getElementById('wrapCat').innerText = `${maxCat}\n(€${maxCatVal.toFixed(2)})`;
+    document.getElementById('wrapExp').innerText = `${appData.gamification.exp} EXP\n(Livello ${appData.gamification.level})`;
+};
+
+window.closeSiaWrapped = function() { document.getElementById('wrappedModal').style.display = 'none'; };
+
+
+// =========================================================================
+// GAMIFICATION E HABITS
+// =========================================================================
+function addExp(amt) {
+    appData.gamification.exp += amt;
+    const expNeeded = appData.gamification.level * 100;
     
-    appData.wallet = parseFloat(appData.wallet.toFixed(2));
-    
-    document.getElementById('descInput').value = '';
-    document.getElementById('amountInput').value = '';
+    if (appData.gamification.exp >= expNeeded) {
+        appData.gamification.exp -= expNeeded;
+        appData.gamification.level++;
+        alert(`🎉 COMPLIMENTI! Hai raggiunto il Livello ${appData.gamification.level}!`);
+    }
     saveData();
+}
+
+function renderGamification() {
+    const lv = document.getElementById('rpgLevel');
+    const ex = document.getElementById('rpgExp');
+    const tar = document.getElementById('rpgExpTarget');
+    const bar = document.getElementById('rpgExpBar');
+    
+    if(lv) lv.innerText = appData.gamification.level;
+    if(ex) ex.innerText = appData.gamification.exp;
+    const needed = appData.gamification.level * 100;
+    if(tar) tar.innerText = needed;
+    if(bar) bar.style.width = Math.min(100, (appData.gamification.exp / needed) * 100) + '%';
+    
+    const b = appData.gamification.badges;
+    const bs = document.getElementById('badgeSaver');
+    const bf = document.getElementById('badgeFocus');
+    const bh = document.getElementById('badgeHabit');
+    
+    if(bs) bs.className = b.saver ? "badge-icon unlocked" : "badge-icon";
+    if(bf) bf.className = b.pomodoro ? "badge-icon unlocked" : "badge-icon";
+    if(bh) bh.className = b.habit ? "badge-icon unlocked" : "badge-icon";
+}
+
+window.promptAddHabit = function() {
+    const name = prompt("Scrivi una nuova abitudine quotidiana (es. Leggere, Palestra):");
+    if(name && name.trim()) { appData.habits.push({ id: Date.now(), name: name.trim(), history: {} }); saveData(); }
 };
 
-function applySmartSavingsDeposit(amount, sourceName, date) {
-    const targetGoalId = appData.smartRules.selectedGoalId;
-    let goal = appData.goals.find(g => g.id == targetGoalId);
-    
-    if (!goal) {
-        goal = appData.goals.find(g => g.name === "Salvadanaio Arrotondamenti");
-        if (!goal) {
-            goal = { id: Date.now() + 1, name: "Salvadanaio Arrotondamenti", current: 0, target: 500 };
-            appData.goals.push(goal);
+window.executeToggleHabit = function(id) {
+    const today = new Date().toISOString().split('T')[0];
+    const h = appData.habits.find(x => x.id === id);
+    if(h) {
+        const wasCompleted = !!h.history[today];
+        h.history[today] = !wasCompleted;
+        if(!wasCompleted) {
+            addExp(5);
+            if(!appData.gamification.badges.habit) {
+                appData.gamification.badges.habit = true;
+                addExp(20); alert("🏆 Straordinario! Hai sbloccato il Badge 'Habit Pro'!");
+            }
         }
+        saveData();
     }
-    goal.current = parseFloat((goal.current + amount).toFixed(2));
+};
+
+window.promptDeleteHabit = function(id) {
+    if(confirm("Vuoi smettere di tracciare questa abitudine?")) {
+        appData.habits = appData.habits.filter(x => x.id !== id); saveData();
+    }
+};
+
+function renderHabits() {
+    const list = document.getElementById('habitsList'); 
+    if(!list) return;
+    list.innerHTML = '';
     
-    appData.transactions.push({
-        id: Date.now() + 5,
-        date: date,
-        cat: "Risparmi",
-        desc: `Trasferimento Smart: ${sourceName}`,
-        amount: parseFloat(amount.toFixed(2)),
-        type: 'expense'
+    const todayStr = new Date().toISOString().split('T')[0];
+    if(appData.habits.length === 0) {
+        list.innerHTML = `<div style="font-size:0.85rem; color:var(--text-secondary); text-align:center; padding: 20px;">Nessuna abitudine definita.</div>`; return;
+    }
+    
+    appData.habits.forEach(h => {
+        const isDone = !!h.history[todayStr];
+        const colorStyle = isDone ? 'color:var(--text-secondary); text-decoration:line-through;' : 'color:white; font-weight:bold;';
+        list.innerHTML += `
+        <div class="habit-row">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <input type="checkbox" class="habit-checkbox" ${isDone ? 'checked' : ''} onchange="executeToggleHabit(${h.id})">
+                <span style="${colorStyle}">${h.name}</span>
+            </div>
+            <button onclick="promptDeleteHabit(${h.id})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold; font-size:1.1rem;">✕</button>
+        </div>`;
     });
 }
 
-window.deleteTransaction = function(id) {
+
+// =========================================================================
+// GESTIONE FINANZE: TRANSAZIONI, REGOLE SMART E BUDGET
+// =========================================================================
+function renderSmartRulesConfig() {
+    const selectCat = document.getElementById('catSelect');
+    const selectRecCat = document.getElementById('newRecCat');
+    const selectGoal = document.getElementById('smartGoalSelect');
+    
+    if(selectCat) {
+        const c1 = selectCat.value;
+        selectCat.innerHTML = '';
+        appData.categories.forEach(c => selectCat.innerHTML += `<option value="${c}">${c}</option>`);
+        if(appData.categories.includes(c1)) selectCat.value = c1;
+    }
+    if(selectRecCat) {
+        const c2 = selectRecCat.value;
+        selectRecCat.innerHTML = '';
+        appData.categories.forEach(c => selectRecCat.innerHTML += `<option value="${c}">${c}</option>`);
+        if(appData.categories.includes(c2)) selectRecCat.value = c2;
+    }
+    if(selectGoal) {
+        selectGoal.innerHTML = '<option value="">-- Seleziona un Salvadanaio --</option>';
+        appData.goals.forEach(g => selectGoal.innerHTML += `<option value="${g.id}">${g.name}</option>`);
+        selectGoal.value = appData.smartRules.selectedGoalId || "";
+    }
+}
+
+window.promptManageCategories = function() {
+    const c = prompt("Nome della nuova Categoria di spesa:");
+    if(c && c.trim() && !appData.categories.includes(c.trim())) { appData.categories.push(c.trim()); saveData(); }
+};
+
+window.updateSmartRules = function() {
+    const cb = document.getElementById('ruleRoundUp');
+    const pIn = document.getElementById('rulePaydayPercent');
+    const sGoal = document.getElementById('smartGoalSelect');
+    
+    if(cb) appData.smartRules.roundUp = cb.checked;
+    if(pIn) {
+        let v = parseInt(pIn.value);
+        if(!isNaN(v)) appData.smartRules.paydayPercent = Math.min(100, Math.max(0, v));
+    }
+    if(sGoal) appData.smartRules.selectedGoalId = sGoal.value;
+    saveData();
+};
+
+window.executeTransaction = function(type) {
+    const descIn = document.getElementById('descInput');
+    const amountIn = document.getElementById('amountInput');
+    const dateIn = document.getElementById('dateInput');
+    const catIn = document.getElementById('catSelect');
+    const wIn = document.getElementById('walletSelect');
+    const ruToggle = document.getElementById('roundUpToggle');
+    
+    const desc = descIn ? descIn.value.trim() : "";
+    const date = dateIn ? dateIn.value : "";
+    const cat = catIn ? catIn.value : "Altro";
+    const walletKey = (wIn && wIn.value) ? wIn.value : "Principale";
+    let amount = amountIn ? parseFloat(amountIn.value) : NaN;
+    
+    if(!desc || isNaN(amount) || amount <= 0 || !date) {
+        alert("Errore: Compila la data, la descrizione e un importo maggiore di zero."); return;
+    }
+
+    if(type === 'expense' && ruToggle && ruToggle.checked) {
+        const ceil = Math.ceil(amount);
+        const diff = ceil - amount;
+        
+        if(diff > 0 && diff < 1) {
+            let targetGoal = appData.goals.find(g => g.id == appData.smartRules.selectedGoalId);
+            if(!targetGoal) {
+                targetGoal = appData.goals.find(g => g.name === "Salvadanaio Spiccioli");
+                if(!targetGoal) {
+                    targetGoal = { id: Date.now() + 1, name: "Salvadanaio Spiccioli", current: 0, target: 100 };
+                    appData.goals.push(targetGoal);
+                }
+            }
+            targetGoal.current = parseFloat((targetGoal.current + diff).toFixed(2));
+            appData.transactions.push({
+                id: Date.now() + 2, date: date, cat: "Risparmi", desc: `Storno Arrotondamento: ${desc}`, amount: parseFloat(diff.toFixed(2)), type: 'expense', wallet: walletKey
+            });
+            amount = ceil; 
+        }
+    }
+    
+    if(type === 'income' && cat === 'Stipendio' && appData.smartRules.paydayPercent > 0) {
+        const quota = amount * (appData.smartRules.paydayPercent / 100);
+        if(quota > 0) {
+            let pGoal = appData.goals.find(g => g.id == appData.smartRules.selectedGoalId);
+            if(!pGoal) {
+                pGoal = appData.goals.find(g => g.name === "Fondo Stipendio");
+                if(!pGoal) {
+                    pGoal = { id: Date.now() + 3, name: "Fondo Stipendio", current: 0, target: 1000 };
+                    appData.goals.push(pGoal);
+                }
+            }
+            pGoal.current = parseFloat((pGoal.current + quota).toFixed(2));
+            appData.transactions.push({
+                id: Date.now() + 4, date: date, cat: "Risparmi", desc: `Trattenuta Payday Automatica`, amount: parseFloat(quota.toFixed(2)), type: 'expense', wallet: walletKey
+            });
+            appData.wallets[walletKey] -= quota;
+        }
+    }
+
+    appData.transactions.push({ id: Date.now(), date, cat, desc, amount: parseFloat(amount.toFixed(2)), type, wallet: walletKey });
+    appData.wallets[walletKey] += (type === 'income' ? amount : -amount);
+    
+    if (type === 'income' || cat === 'Risparmi') addExp(2);
+
+    if(descIn) descIn.value = '';
+    if(amountIn) amountIn.value = '';
+    saveData();
+};
+
+window.executeDeleteTransaction = function(id) {
     const idx = appData.transactions.findIndex(t => t.id === id);
-    if (idx > -1) {
+    if(idx > -1) {
         const t = appData.transactions[idx];
-        if (t.type === 'income') appData.wallet -= t.amount; else appData.wallet += t.amount;
-        appData.transactions.splice(idx, 1); saveData();
+        const wk = t.wallet || "Principale";
+        if(appData.wallets[wk] !== undefined) {
+            appData.wallets[wk] += (t.type === 'income' ? -t.amount : t.amount);
+        }
+        appData.transactions.splice(idx, 1);
+        saveData();
     }
 };
 
 function renderTransactions() {
-    const tbody = document.getElementById('tableBody'); if (!tbody) return; tbody.innerHTML = '';
-    const sorted = [...appData.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-    sorted.forEach(t => {
-        const tagClass = t.type === 'income' ? 'tag-inc' : 'tag-exp';
-        const rowStyleClass = t.type === 'income' ? 'row-inc' : 'row-exp';
+    const tbody = document.getElementById('tableBody');
+    if(!tbody) return;
+    tbody.innerHTML = '';
+    
+    const searchEl = document.getElementById('searchTx');
+    const fFromEl = document.getElementById('filterFromDate');
+    const fToEl = document.getElementById('filterToDate');
+    
+    const sQuery = searchEl ? searchEl.value.toLowerCase() : "";
+    const fFrom = fFromEl ? fFromEl.value : "";
+    const fTo = fToEl ? fToEl.value : "";
+    
+    const filtered = appData.transactions.filter(t => {
+        if(sQuery && !t.desc.toLowerCase().includes(sQuery) && !t.cat.toLowerCase().includes(sQuery)) return false;
+        if(fFrom && t.date < fFrom) return false;
+        if(fTo && t.date > fTo) return false;
+        return true;
+    }).sort((a,b) => b.date.localeCompare(a.date));
+
+    if(filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-secondary); padding: 20px;">Nessuna transazione trovata.</td></tr>`;
+        return;
+    }
+
+    filtered.forEach(t => {
+        const tagC = t.type === 'income' ? 'tag-inc' : 'tag-exp';
+        const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+        const sign = t.type === 'income' ? '+' : '-';
+        const wTxt = t.wallet ? `<span style="font-size:0.7rem; color:var(--text-secondary);">${t.wallet}</span>` : '';
+        
         tbody.innerHTML += `
-        <tr class="${rowStyleClass}">
+        <tr style="border-left: 4px solid ${color};">
             <td>${new Date(t.date).toLocaleDateString('it-IT')}</td>
-            <td><span class="tag ${tagClass}">${t.cat}</span></td>
-            <td>${t.desc}</td>
-            <td style="font-weight:bold; color:${t.type==='income'?'var(--success)':'var(--danger)'}">${t.type==='income'?'+':'-'} €${t.amount.toFixed(2)}</td>
-            <td><button onclick="deleteTransaction(${t.id})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">🗑️</button></td>
+            <td>${wTxt}</td>
+            <td><span class="tag ${tagC}">${t.cat}</span></td>
+            <td style="font-weight:600;">${t.desc}</td>
+            <td style="color:${color}; font-weight:bold;">${sign}€${t.amount.toFixed(2)}</td>
+            <td><button onclick="executeDeleteTransaction(${t.id})" class="btn-tool" style="padding:4px 10px; color:var(--danger); border-color:var(--danger);">Elimina</button></td>
         </tr>`;
     });
 }
 
-// --- REGOLE SMART E BUDGETS ---
-window.updateSmartRules = function() {
-    appData.smartRules.roundUp = document.getElementById('ruleRoundUp').checked;
-    const percent = parseInt(document.getElementById('rulePaydayPercent').value);
-    appData.smartRules.paydayPercent = isNaN(percent) ? 0 : Math.min(90, Math.max(0, percent));
-    appData.smartRules.selectedGoalId = document.getElementById('smartGoalSelect').value || null;
-    saveData();
+
+// BUDGET
+window.openBudgetModal = function() {
+    const c = document.getElementById('budgetInputsContainer');
+    if(c) {
+        c.innerHTML = '';
+        appData.categories.forEach(cat => {
+            if(cat !== 'Stipendio' && cat !== 'Risparmi') {
+                const limit = appData.budgetLimits[cat] || "";
+                c.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                    <span style="font-weight:bold;">${cat}</span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:var(--text-secondary);">€ MAX</span>
+                        <input type="number" id="budget_input_${cat.replace(/\s+/g, '')}" value="${limit}" style="width:100px; padding:8px;">
+                    </div>
+                </div>`;
+            }
+        });
+    }
+    document.getElementById('budgetModal').style.display = 'flex';
+};
+
+window.closeBudgetModal = function() { document.getElementById('budgetModal').style.display = 'none'; };
+
+window.executeSaveBudgetLimits = function() {
+    appData.categories.forEach(cat => {
+        if(cat !== 'Stipendio' && cat !== 'Risparmi') {
+            const el = document.getElementById(`budget_input_${cat.replace(/\s+/g, '')}`);
+            if(el) {
+                const val = parseFloat(el.value);
+                if(!isNaN(val) && val > 0) appData.budgetLimits[cat] = val;
+                else delete appData.budgetLimits[cat];
+            }
+        }
+    });
+    saveData(); closeBudgetModal();
 };
 
 function renderBudgetBars() {
-    const container = document.getElementById('budgetSectionContainer'); if (!container) return; container.innerHTML = '';
-    const filter = document.getElementById('monthFilter').value;
-    let categoryExpenses = {};
+    const c = document.getElementById('budgetSectionContainer');
+    if(!c) return;
+    c.innerHTML = '';
+    
+    const fEl = document.getElementById('monthFilter');
+    const filter = fEl && fEl.value ? fEl.value : new Date().toISOString().substring(0,7);
+    
+    let expenses = {};
     appData.transactions.forEach(t => {
-        if (t.type === 'expense' && t.date && t.date.startsWith(filter)) {
-            categoryExpenses[t.cat] = (categoryExpenses[t.cat] || 0) + t.amount;
+        if(t.type === 'expense' && t.date.startsWith(filter)) {
+            expenses[t.cat] = (expenses[t.cat] || 0) + t.amount;
         }
     });
 
-    let activeBudgetsCount = 0;
+    let count = 0;
     appData.categories.forEach(cat => {
-        const limit = appData.budgetLimits[cat];
-        if (limit && limit > 0) {
-            activeBudgetsCount++;
-            const spent = categoryExpenses[cat] || 0;
+        if(appData.budgetLimits[cat]) {
+            count++;
+            const limit = appData.budgetLimits[cat];
+            const spent = expenses[cat] || 0;
             const perc = Math.min(100, (spent / limit) * 100);
-            let barColor = 'var(--success)';
-            if (perc >= 100) barColor = 'var(--danger)'; else if (perc >= 80) barColor = 'var(--warning)';
+            
+            let bColor = 'var(--success)';
+            if (perc >= 100) bColor = 'var(--danger)';
+            else if (perc >= 80) bColor = 'var(--warning)';
 
-            container.innerHTML += `
+            c.innerHTML += `
             <div class="budget-progress-container">
-                <div class="budget-meta"><strong style="color:white;">${cat}</strong><span style="color:var(--text-secondary);">€${spent.toFixed(2)} / €${limit.toFixed(2)}</span></div>
-                <div class="budget-bar-bg"><div class="budget-bar-fill" style="width: ${perc}%; background-color: ${barColor};"></div></div>
-            </div>`;
-        }
-    });
-    if (activeBudgetsCount === 0) { container.innerHTML = `<div style="font-size:0.8rem; color:var(--text-secondary); text-align:center; padding: 30px 0;">Nessun tetto massimo configurato. Clicca sotto per iniziare.</div>`; }
-}
-
-window.openBudgetModal = function() {
-    const container = document.getElementById('budgetInputsContainer'); container.innerHTML = '';
-    appData.categories.forEach(cat => {
-        if (cat !== 'Stipendio') {
-            const currentLimit = appData.budgetLimits[cat] || "";
-            container.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:8px; border-radius:6px;">
-                <span style="font-size:0.9rem; font-weight:bold; color:var(--text-secondary);">${cat}</span>
-                <div style="display:flex; align-items:center; gap:5px;">
-                    <span style="font-size:0.85rem; color:var(--text-secondary);">€</span>
-                    <input type="number" class="budget-input-field" data-cat="${cat}" value="${currentLimit}" placeholder="Nessuno" style="width:100px; padding:6px; font-size:0.85rem;">
+                <div class="budget-meta">
+                    <strong style="color:white; font-size:0.85rem;">${cat}</strong>
+                    <span style="color:var(--text-secondary); font-weight:bold;">€${spent.toFixed(2)} / €${limit.toFixed(2)}</span>
+                </div>
+                <div class="budget-bar-bg">
+                    <div class="budget-bar-fill" style="width: ${perc}%; background-color: ${bColor};"></div>
                 </div>
             </div>`;
         }
     });
-    document.getElementById('budgetModal').style.display = 'flex';
-};
-window.closeBudgetModal = function() { document.getElementById('budgetModal').style.display = 'none'; };
-window.saveBudgetLimits = function() {
-    const inputs = document.querySelectorAll('.budget-input-field');
-    appData.budgetLimits = {};
-    inputs.forEach(input => {
-        const cat = input.getAttribute('data-cat'); const val = parseFloat(input.value);
-        if (!isNaN(val) && val > 0) { appData.budgetLimits[cat] = val; }
-    });
-    closeBudgetModal(); saveData();
-};
 
-// --- CHARTS E STATISTICHE ---
-function renderCharts() {
-    const filter = document.getElementById('monthFilter').value; if (!filter) return;
-    const currentYear = filter.split('-')[0];
-    let catsData = {}; let incMese = 0, expMese = 0;
-    
-    appData.transactions.forEach(t => {
-        if (t.date && t.date.startsWith(filter)) {
-            if (t.type === 'expense') { catsData[t.cat] = (catsData[t.cat] || 0) + t.amount; expMese += t.amount; } 
-            else { incMese += t.amount; }
-        }
-    });
-    
-    document.getElementById('monthIncVal').innerText = '€' + incMese.toFixed(2);
-    document.getElementById('monthExpVal').innerText = '€' + expMese.toFixed(2);
-    const net = incMese - expMese;
-    const netEl = document.getElementById('monthNetVal'); const netCard = document.getElementById('netCard');
-    netEl.innerText = '€' + net.toFixed(2);
-    
-    if (net >= 0) { netEl.style.color = 'var(--success)'; netCard.style.borderTopColor = 'var(--success)'; } 
-    else { netEl.style.color = 'var(--danger)'; netCard.style.borderTopColor = 'var(--danger)'; }
-
-    let savingsRate = 0;
-    if (incMese > 0 && net > 0) savingsRate = (net / incMese) * 100;
-    document.getElementById('savingsRateVal').innerText = savingsRate.toFixed(0) + '%';
-    document.getElementById('savingsRateBar').style.width = Math.min(100, savingsRate) + '%';
-
-    const ctxPie = document.getElementById('monthlyChart').getContext('2d');
-    if (monthlyChartInstance) monthlyChartInstance.destroy();
-    const pieLabels = Object.keys(catsData); const pieValues = Object.values(catsData);
-    if(pieLabels.length === 0) { pieLabels.push("Nessun flusso"); pieValues.push(1); }
-    monthlyChartInstance = new Chart(ctxPie, {
-        type: 'doughnut', data: { labels: pieLabels, datasets: [{ data: pieValues, backgroundColor: ['#8e44ad', '#a29bfe', '#fdcb6e', '#00b894', '#d63031', '#00cec9', '#e17055'], borderWidth: 0 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
-
-    let annualInc = Array(12).fill(0); let annualExp = Array(12).fill(0);
-    appData.transactions.forEach(t => {
-        if (t.date && t.date.startsWith(currentYear)) {
-            const monthIdx = parseInt(t.date.split('-')[1]) - 1;
-            if (monthIdx >= 0 && monthIdx < 12) {
-                if (t.type === 'income') annualInc[monthIdx] += t.amount; else annualExp[monthIdx] += t.amount;
-            }
-        }
-    });
-    
-    const ctxBar = document.getElementById('annualChart').getContext('2d');
-    if (annualChartInstance) annualChartInstance.destroy();
-    annualChartInstance = new Chart(ctxBar, {
-        type: 'bar', data: { labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'], datasets: [{ label: 'Entrate', data: annualInc, backgroundColor: 'var(--success)' }, { label: 'Uscite', data: annualExp, backgroundColor: '#8e44ad' }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } }, x: { ticks: { color: '#888' } } }, plugins: { legend: { labels: { color: 'white' } } } }
-    });
-}
-
-// --- OBIETTIVI DI RISPARMIO E SCADENZE ---
-window.createGoal = function() {
-    const name = prompt("Nome del nuovo salvadanaio:");
-    const target = parseFloat(prompt("Cifra obiettivo target (€):"));
-    if (name && !isNaN(target) && target > 0) { appData.goals.push({ id: Date.now(), name: name.trim(), current: 0, target }); saveData(); }
-};
-window.updateGoal = function(id, val) { if (!isNaN(val) && val !== 0) { const g = appData.goals.find(x => x.id === id); if (g) { g.current = Math.max(0, g.current + val); saveData(); } } };
-window.deleteGoal = function(id) { if(confirm("Rimuovere questo salvadanaio?")) { appData.goals = appData.goals.filter(x => x.id !== id); if(appData.smartRules.selectedGoalId == id) appData.smartRules.selectedGoalId = null; saveData(); } };
-
-function renderGoals() {
-    const container = document.getElementById('goalsContainer'); if (!container) return; container.innerHTML = '';
-    appData.goals.forEach(g => {
-        const perc = Math.min(100, (g.current / g.target) * 100);
-        container.innerHTML += `
-        <div class="goal-row">
-            <div class="goal-info">${g.name}</div>
-            <div class="goal-bar-container"><div class="goal-fill" style="width:${perc}%"></div></div>
-            <div class="goal-nums">€${g.current.toFixed(2)} / ${g.target.toFixed(2)}</div>
-            <button class="goal-btn" onclick="updateGoal(${g.id}, parseFloat(prompt('Inserisci cifra da depositare (€):')))">+</button>
-            <button class="goal-btn" onclick="updateGoal(${g.id}, -parseFloat(prompt('Inserisci cifra da prelevare (€):')))">-</button>
-            <button class="goal-btn" style="color:var(--danger)" onclick="deleteGoal(${g.id})">✕</button>
-        </div>`;
-    });
-}
-
-window.addDeadline = function() {
-    const name = document.getElementById('deadlineNameInput').value.trim(); const date = document.getElementById('deadlineDateInput').value;
-    if (name && date) { appData.deadlines.push({ name, date }); document.getElementById('deadlineNameInput').value = ''; document.getElementById('deadlineDateInput').value = ''; saveData(); } else { alert("Inserire una descrizione e una data valida."); }
-};
-window.deleteDeadline = function(idx) { appData.deadlines.splice(idx, 1); saveData(); };
-
-function renderDeadlines() {
-    const list = document.getElementById('deadlinesList'); if (!list) return; list.innerHTML = '';
-    appData.deadlines.forEach((item, i) => {
-        const targetDate = new Date(item.date); const today = new Date(); today.setHours(0,0,0,0); targetDate.setHours(0,0,0,0);
-        const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
-        let color = '#a29bfe'; let text = diffDays + ' giorni rimasti'; let icon = '😎';
-        if (diffDays < 0) { color = '#636e72'; text = 'Completato/Scaduto'; icon = '🏁'; } else if (diffDays === 0) { color = '#ff7675'; text = 'OGGI SCADE!'; icon = '⚠️'; } else if (diffDays === 1) { color = '#e17055'; text = 'Domani!'; icon = '⏳'; } else if (diffDays <= 5) { color = '#fdcb6e'; text = diffDays + ' gg rimasti'; icon = '⏳'; }
-
-        list.innerHTML += `
-        <div style="background:var(--input-bg); padding:12px; border-radius:8px; border-left:4px solid ${color}; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <div><div style="font-weight:bold;">${item.name}</div><div style="font-size:0.8rem; color:var(--text-secondary);">Data: ${new Date(item.date).toLocaleDateString('it-IT')}</div></div>
-            <div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1rem; font-weight:bold; color:${color};">${text}</div><div style="font-size:1.2rem;">${icon}</div><button onclick="deleteDeadline(${i})" style="background:none; border:none; cursor:pointer; font-size:1rem; color:var(--text-secondary);">✕</button></div>
-        </div>`;
-    });
-}
-
-// --- FOCUS ROOM, SKILLS ---
-let focusInterval = null; let focusTimeLeft = 25 * 60;
-window.updateFocusDisplay = function() { const mins = Math.floor(focusTimeLeft / 60).toString().padStart(2, '0'); const secs = (focusTimeLeft % 60).toString().padStart(2, '0'); document.getElementById('focusDisplay').innerText = `${mins}:${secs}`; };
-window.startFocus = function() {
-    if (focusInterval) return; document.getElementById('timerStatus').innerText = "IN CORSO"; document.getElementById('btnStartFocus').style.display = "none"; document.getElementById('btnPauseFocus').style.display = "inline-block";
-    focusInterval = setInterval(() => {
-        if (focusTimeLeft > 0) { focusTimeLeft--; window.updateFocusDisplay(); } else { clearInterval(focusInterval); focusInterval = null; document.getElementById('timerStatus').innerText = "COMPLETATO!"; alert("Sessione Pomodoro conclusa!"); window.resetFocus(); }
-    }, 1000);
-};
-window.pauseFocus = function() { clearInterval(focusInterval); focusInterval = null; document.getElementById('timerStatus').innerText = "PAUSA"; document.getElementById('btnStartFocus').style.display = "inline-block"; document.getElementById('btnPauseFocus').style.display = "none"; };
-window.resetFocus = function() { window.pauseFocus(); const mins = parseInt(document.getElementById('focusDuration').value) || 25; focusTimeLeft = mins * 60; window.updateFocusDisplay(); document.getElementById('timerStatus').innerText = "PRONTO"; };
-window.adjustTime = function(amount) { let currentMins = parseInt(document.getElementById('focusDuration').value) || 25; currentMins = Math.max(1, currentMins + amount); document.getElementById('focusDuration').value = currentMins; window.resetFocus(); };
-window.manualTimeSet = function() { window.resetFocus(); };
-
-window.addFocusTask = function() { const input = document.getElementById('newFocusTask'); const text = input.value.trim(); if(text) { appData.focusTasks.push({ id: Date.now(), text, done: false }); input.value = ''; saveData(); } };
-window.toggleTask = function(id) { const task = appData.focusTasks.find(x => x.id === id); if(task) { task.done = !task.done; saveData(); } };
-window.delTask = function(id) { appData.focusTasks = appData.focusTasks.filter(x => x.id !== id); saveData(); };
-window.clearFocusList = function() { if(confirm("Vuoi rimuovere tutti gli obiettivi?")) { appData.focusTasks = []; saveData(); } };
-
-function renderFocusTasks() {
-    const list = document.getElementById('focusTodoList'); if(!list) return; list.innerHTML = '';
-    appData.focusTasks.forEach(t => { list.innerHTML += ` <div style="background:var(--bg-color); padding:8px 12px; border-radius:4px; display:flex; justify-content:space-between; align-items:center;"> <span onclick="toggleTask(${t.id})" style="cursor:pointer; ${t.done?'text-decoration:line-through; color:var(--text-secondary)':''}"> ${t.done ? '✅' : '⬜'} ${t.text} </span> <span onclick="delTask(${t.id})" style="cursor:pointer; color:var(--danger); font-weight:bold;">✕</span> </div>`; });
-    document.getElementById('tasksCount').innerText = `${appData.focusTasks.length} obiettivi`;
-}
-
-window.addSkill = function() { const name = document.getElementById('skillName').value.trim(); const target = parseFloat(document.getElementById('skillTarget').value); const unit = document.getElementById('skillUnit').value.trim() || "ore"; if(name && !isNaN(target) && target > 0) { appData.skills.push({ id: Date.now(), name, current: 0, target, unit }); document.getElementById('skillName').value = ''; document.getElementById('skillTarget').value = ''; document.getElementById('skillUnit').value = ''; saveData(); } };
-window.modSkill = function(id, val) { const s = appData.skills.find(x => x.id === id); if(s) { s.current = Math.max(0, s.current + val); saveData(); } };
-window.delSkill = function(id) { if(confirm("Rimuovere questa Skill?")) { appData.skills = appData.skills.filter(x => x.id !== id); saveData(); } };
-
-function renderSkills() {
-    const list = document.getElementById('skillsList'); if(!list) return; list.innerHTML = '';
-    appData.skills.forEach(s => {
-        const perc = Math.min(100, (s.current / s.target) * 100);
-        list.innerHTML += `
-        <div style="background:var(--input-bg); padding:15px; border-radius:8px; border:1px solid var(--border-color);">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;"> <span style="font-weight:bold;">${s.name}</span> <span style="font-family:monospace; color:var(--text-secondary);">${s.current}/${s.target} ${s.unit}</span> </div>
-            <div style="height:6px; background:var(--bg-color); border-radius:3px; overflow:hidden;"> <div style="width:${perc}%; height:100%; background:var(--accent-light); transition: width 0.3s;"></div> </div>
-            <div style="margin-top:8px; text-align:right;"> <button onclick="modSkill(${s.id}, 1)" style="background:var(--card-bg); color:white; border:1px solid var(--border-color); padding:4px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">+1</button> <button onclick="modSkill(${s.id}, 5)" style="background:var(--card-bg); color:white; border:1px solid var(--border-color); padding:4px 10px; border-radius:4px; cursor:pointer; margin-right:5px;">+5</button> <button onclick="delSkill(${s.id})" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight:bold; margin-left:10px;">✕ Rimuovi</button> </div>
-        </div>`;
-    });
-}
-
-// --- LIBRETTO UNIVERSITARIO (Senza variazioni per GitHub) ---
-window.addUniExam = function() {
-    const subInput = document.getElementById('uniSubjectInput'); const blockInput = document.getElementById('uniBlockInput'); const gradeInput = document.getElementById('uniGradeInput'); const cfuInput = document.getElementById('uniCfuInput'); const yearSelect = document.getElementById('uniYearSelect');
-    const subject = subInput ? subInput.value.trim() : ""; const block = blockInput ? blockInput.value.trim() : ""; const grade = gradeInput ? parseFloat(gradeInput.value) : 0; const cfu = cfuInput ? parseFloat(cfuInput.value) : 0; const year = yearSelect ? yearSelect.value : "1";
-    if (!subject || isNaN(grade) || grade < 18 || grade > 31 || isNaN(cfu) || cfu <= 0) { alert("Dati Esame non validi! Voto ammesso tra 18 e 31 (usa 31 per indicare 30 e Lode), CFU > 0."); return; }
-    if (!appData.uniExams) appData.uniExams = [];
-    appData.uniExams.push({ id: Date.now(), subject, block, grade, cfu, year });
-    if(subInput) subInput.value = ""; if(blockInput) blockInput.value = ""; if(gradeInput) gradeInput.value = ""; if(cfuInput) cfuInput.value = "";
-    saveData();
-};
-
-window.deleteUniExam = function(id) { appData.uniExams = appData.uniExams.filter(x => x.id !== id); saveData(); };
-
-function renderUni() {
-    const examList = document.getElementById('uniExamsList'); const blockList = document.getElementById('uniBlocksList');
-    if(!examList) return; examList.innerHTML = ''; if(blockList) blockList.innerHTML = '';
-    if (!appData.uniExams) appData.uniExams = [];
-    let totalWeighted = 0; let totalCfu = 0; let yearSums = { "1": 0, "2": 0, "3": 0, "4": 0 }; let yearCfu = { "1": 0, "2": 0, "3": 0, "4": 0 }; let blocks = {};
-    
-    appData.uniExams.forEach(e => {
-        const calcGrade = e.grade === 31 ? 30 : e.grade;
-        totalWeighted += calcGrade * e.cfu; totalCfu += e.cfu;
-        yearSums[e.year] += calcGrade * e.cfu; yearCfu[e.year] += e.cfu;
-        
-        if (e.block) { if (!blocks[e.block]) blocks[e.block] = { wSum: 0, cfu: 0 }; blocks[e.block].wSum += calcGrade * e.cfu; blocks[e.block].cfu += e.cfu; }
-        
-        examList.innerHTML += `
-        <div style="background:var(--input-bg); padding:10px 15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color); margin-bottom:5px;">
-            <div> <span style="font-weight:bold;">${e.subject}</span> ${e.block ? `<span style="font-size:0.75rem; background:var(--accent); color:white; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold;">${e.block}</span>` : ''} <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:10px;">${e.cfu} CFU (Anno ${e.year === '4' ? 'Fuori C.' : e.year + '°'})</span> </div>
-            <div style="display:flex; align-items:center; gap:15px;"> <span style="font-weight:bold; color:var(--accent-light);">${e.grade === 31 ? '30L' : e.grade}</span> <button onclick="deleteUniExam(${e.id})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">✕</button> </div>
-        </div>`;
-    });
-    
-    if (blockList && Object.keys(blocks).length > 0) {
-        Object.keys(blocks).forEach(name => {
-            const b = blocks[name]; const avg = b.cfu > 0 ? (b.wSum / b.cfu).toFixed(2) : "0.00";
-            blockList.innerHTML += `
-            <div style="background:var(--card-bg); color:white; padding:8px 12px; border-radius:8px; flex:1; min-width:140px; border:1px solid var(--border-color);">
-                <div style="font-size:0.65rem; font-weight:800; text-transform:uppercase; color:var(--text-secondary);">${name}</div>
-                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:2px;"> <span style="font-size:1.2rem; font-weight:800; color:var(--accent-light);">${avg}</span> <span style="font-size:0.7rem; font-weight:bold; opacity:0.8;">${b.cfu} CFU</span> </div>
-            </div>`;
-        });
+    if(count === 0) {
+        c.innerHTML = `<div style="font-size:0.85rem; color:var(--text-secondary); text-align:center; padding: 20px;">Nessun tetto massimo impostato.</div>`;
     }
-    
-    for(let i=1; i<=3; i++) { const el = document.getElementById(`gpaY${i}`); if(el) el.innerText = yearCfu[i] > 0 ? (yearSums[i] / yearCfu[i]).toFixed(2) : "0.00"; }
-   const globalUniGpa = document.getElementById('uniGlobalGpa');
-const graduationGrade = document.getElementById('uniGraduationGrade');
-
-if (totalCfu > 0) {
-    const media = totalWeighted / totalCfu;
-    if (globalUniGpa) globalUniGpa.innerText = media.toFixed(2);
-    
-    // Calcolo voto di laurea: (Media / 30) * 110
-    const votoBase = (media / 30) * 110;
-    if (graduationGrade) graduationGrade.innerText = votoBase.toFixed(2);
-} else {
-    if (globalUniGpa) globalUniGpa.innerText = "0.00";
-    if (graduationGrade) graduationGrade.innerText = "0.00";
-}
 }
 
-// --- MODELLI RAPIDI & WIDGET CALCOLATRICE ---
-window.openModal = function() { document.getElementById('recurringModal').style.display = 'flex'; renderRecList(); };
-window.closeModal = function() { document.getElementById('recurringModal').style.display = 'none'; };
-window.addRecModel = function() {
-    const name = document.getElementById('newRecName').value.trim(); const cat = document.getElementById('newRecCat').value; const amount = parseFloat(document.getElementById('newRecAmount').value); const type = document.querySelector('input[name="newRecType"]:checked').value;
-    if (name && !isNaN(amount) && amount > 0) { if(!appData.recurring) appData.recurring = []; appData.recurring.push({ id: Date.now(), name, cat, amount, type }); document.getElementById('newRecName').value = ''; document.getElementById('newRecAmount').value = ''; saveData(); renderRecList(); } else { alert("Inserire dati validi per salvare il modello fisso."); }
-};
-window.deleteRecModel = function(id) { appData.recurring = appData.recurring.filter(x => x.id !== id); saveData(); renderRecList(); };
-window.applyRecModel = function(id) {
-    const r = appData.recurring.find(x => x.id === id);
-    if(r) { const todayStr = new Date().toISOString().split('T')[0]; appData.transactions.push({ id: Date.now(), date: todayStr, cat: r.cat, desc: r.name + " (Fisso Automatico)", amount: r.amount, type: r.type }); if(r.type === 'income') appData.wallet += r.amount; else appData.wallet -= r.amount; saveData(); window.closeModal(); }
-};
-function renderRecList() {
-    const list = document.getElementById('recList'); if(!list) return; list.innerHTML = ''; if(!appData.recurring) appData.recurring = [];
-    if(appData.recurring.length === 0) { list.innerHTML = `<div style="font-size:0.85rem; color:var(--text-secondary); padding: 10px 0;">Nessun modello salvato. Crea un elemento fisso qui sotto.</div>`; return; }
-    appData.recurring.forEach(r => { list.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--input-bg); padding:10px; border-radius:6px; margin-bottom:5px; border:1px solid var(--border-color);"> <div> <strong style="font-size:0.9rem;">${r.name}</strong> <span style="font-size:0.75rem; color:var(--text-secondary);">(${r.cat})</span><br> <span style="color:${r.type==='income'?'var(--success)':'var(--danger)'}; font-weight:bold; font-size:0.85rem;">€${r.amount.toFixed(2)}</span> </div> <div> <button onclick="applyRecModel(${r.id})" style="background:var(--accent); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem; font-weight:bold; margin-right:5px;">Applica</button> <button onclick="deleteRecModel(${r.id})" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight:bold;">✕</button> </div> </div>`; });
-}
 
-let calcExpression = "";
-window.toggleCalc = function() { const body = document.getElementById('calcBody'); if(body) { body.style.display = (body.style.display === 'block') ? 'none' : 'block'; } };
-window.calcClear = function() { calcExpression = ""; document.getElementById('calcDisplay').value = "0"; };
-window.calcAppend = function(val) { calcExpression += val; document.getElementById('calcDisplay').value = calcExpression; };
-window.calcDelete = function() { calcExpression = calcExpression.slice(0, -1); document.getElementById('calcDisplay').value = calcExpression || "0"; };
-window.calcEqual = function() {
-    try {
-        if (/^[0-9\+\-\*\/\.\(\)]+$/.test(calcExpression)) { let res = eval(calcExpression); if(res === Infinity || isNaN(res)) { document.getElementById('calcDisplay').value = "Errore"; calcExpression = ""; } else { document.getElementById('calcDisplay').value = res; calcExpression = res.toString(); } } else { document.getElementById('calcDisplay').value = "Errore"; calcExpression = ""; }
-    } catch (e) { document.getElementById('calcDisplay').value = "Errore"; calcExpression = ""; }
+// =========================================================================
+// SALVADANAI E SPLIT THE BILL
+// =========================================================================
+window.promptCreateGoal = function() {
+    const name = prompt("Definisci il nome del nuovo Salvadanaio:");
+    const target = parseFloat(prompt("Cifra Obiettivo (€):"));
+    if(name && !isNaN(target) && target > 0) {
+        appData.goals.push({ id: Date.now(), name: name.trim(), target, current: 0 });
+        saveData();
+    }
 };
 
-    // --- SISTEMA DI TEMI VISIVI ---
-const appThemes = {
-    purple: { '--bg-color': '#0f0c1b', '--card-bg': '#1a162b', '--text-secondary': '#b3a9db', '--accent': '#8e44ad', '--accent-light': '#a29bfe', '--input-bg': '#251f3d', '--border-color': '#403366' },
-    blue:   { '--bg-color': '#080c14', '--card-bg': '#111827', '--text-secondary': '#93c5fd', '--accent': '#2563eb', '--accent-light': '#60a5fa', '--input-bg': '#1e293b', '--border-color': '#334155' },
-    green:  { '--bg-color': '#06120b', '--card-bg': '#0d2417', '--text-secondary': '#86efac', '--accent': '#16a34a', '--accent-light': '#4ade80', '--input-bg': '#143623', '--border-color': '#22543d' },
-    red:    { '--bg-color': '#170808', '--card-bg': '#271111', '--text-secondary': '#fca5a5', '--accent': '#dc2626', '--accent-light': '#f87171', '--input-bg': '#3b1818', '--border-color': '#572323' },
-    dark:   { '--bg-color': '#0f0f0f', '--card-bg': '#1a1a1a', '--text-secondary': '#a3a3a3', '--accent': '#525252', '--accent-light': '#a3a3a3', '--input-bg': '#262626', '--border-color': '#404040' }
-};
-
-window.changeTheme = function(preventSave = false) {
-    const selected = document.getElementById('themeSelector').value;
-    const theme = appThemes[selected];
-    if (theme) {
-        for (const [property, value] of Object.entries(theme)) {
-            document.documentElement.style.setProperty(property, value);
-        }
-        if (!preventSave) {
-            appData.theme = selected;
+window.executeGoalDeposit = function(id) {
+    const val = parseFloat(prompt("Inserisci cifra da depositare in questo salvadanaio (€):"));
+    if(!isNaN(val) && val > 0) {
+        const g = appData.goals.find(x => x.id === id);
+        if(g) {
+            g.current += val;
+            addExp(5);
+            if(!appData.gamification.badges.saver) {
+                appData.gamification.badges.saver = true;
+                addExp(20); alert("🏆 Straordinario! Hai sbloccato il Badge SAVER per il tuo primo risparmio!");
+            }
             saveData();
         }
     }
 };
-// --- AVVIO AUTOMATICO PER GITHUB ---
-setTimeout(() => {
-    console.log("Avvio automatico SIA Manager Module...");
-    loadData();
-}, 100);
-</script>
 
+window.executeGoalWithdraw = function(id) {
+    const val = parseFloat(prompt("Inserisci cifra da prelevare da questo salvadanaio (€):"));
+    if(!isNaN(val) && val > 0) {
+        const g = appData.goals.find(x => x.id === id);
+        if(g && g.current >= val) {
+            g.current -= val; saveData();
+        } else { alert("Fondi insufficienti nel salvadanaio."); }
+    }
+};
+
+window.executeDeleteGoal = function(id) {
+    if(confirm("Smantellare questo salvadanaio? (I fondi non verranno rimborsati nel wallet in automatico)")) {
+        appData.goals = appData.goals.filter(x => x.id !== id);
+        if(appData.smartRules.selectedGoalId == id) appData.smartRules.selectedGoalId = null;
+        saveData();
+    }
+};
+
+function renderGoals() {
+    const c = document.getElementById('goalsContainer');
+    if(!c) return;
+    c.innerHTML = '';
+    
+    if(appData.goals.length === 0) {
+        c.innerHTML = `<div style="font-size:0.85rem; color:var(--text-secondary); text-align:center;">Nessun salvadanaio attivo.</div>`;
+        return;
+    }
+    
+    appData.goals.forEach(g => {
+        const perc = Math.min(100, (g.current / g.target) * 100);
+        c.innerHTML += `
+        <div class="goal-row">
+            <div style="width:140px; font-weight:800; font-size:0.95rem; color:white;">${g.name}</div>
+            <div class="goal-bar-container"><div class="goal-fill" style="width:${perc}%"></div></div>
+            <div style="font-family:'Fira Code', monospace; font-size:0.85rem; color:var(--accent-light); width:120px; text-align:right;">€${g.current.toFixed(2)} / €${g.target.toFixed(2)}</div>
+            <div style="display:flex; gap:5px; margin-left:auto;">
+                <button onclick="executeGoalDeposit(${g.id})" class="btn-tool" style="font-weight:bold; color:var(--success); border-color:var(--success);">+</button>
+                <button onclick="executeGoalWithdraw(${g.id})" class="btn-tool" style="font-weight:bold; color:var(--warning); border-color:var(--warning);">-</button>
+                <button onclick="executeDeleteGoal(${g.id})" class="btn-tool" style="font-weight:bold; color:var(--danger); border-color:var(--danger);">✕</button>
+            </div>
+        </div>`;
+    });
+}
+
+// Split the bill
+window.executeAddSplit = function() {
+    const d = document.getElementById('splitDesc').value.trim();
+    const t = parseFloat(document.getElementById('splitTotal').value);
+    const p = document.getElementById('splitPayer').value;
+    const pe = parseInt(document.getElementById('splitPeople').value);
+    
+    if(d && !isNaN(t) && t > 0 && !isNaN(pe) && pe > 1) {
+        const myS = t / pe;
+        const oS = t - myS;
+        appData.splits.push({ id: Date.now(), desc: d, total: t, payer: p, myShare: myS, otherShare: oS });
+        document.getElementById('splitDesc').value = ''; document.getElementById('splitTotal').value = '';
+        saveData();
+    } else { alert("Compila tutti i campi correttamente."); }
+};
+
+window.executeResolveSplit = function(id) {
+    const s = appData.splits.find(x => x.id === id);
+    if(s) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        if(s.payer === 'me') {
+            appData.transactions.push({ id: Date.now(), date: todayStr, cat: "Altro", desc: `Risarcimento Spesa: ${s.desc}`, amount: parseFloat(s.otherShare.toFixed(2)), type: 'income', wallet: 'Principale' });
+            appData.wallets['Principale'] += s.otherShare;
+        } else {
+            appData.transactions.push({ id: Date.now(), date: todayStr, cat: "Altro", desc: `Pagamento Quota: ${s.desc}`, amount: parseFloat(s.myShare.toFixed(2)), type: 'expense', wallet: 'Principale' });
+            appData.wallets['Principale'] -= s.myShare;
+        }
+        appData.splits = appData.splits.filter(x => x.id !== id);
+        saveData();
+    }
+};
+
+window.executeDeleteSplit = function(id) {
+    appData.splits = appData.splits.filter(x => x.id !== id); saveData();
+};
+
+function renderSplits() {
+    const list = document.getElementById('splitList');
+    if(!list) return;
+    list.innerHTML = '';
+    
+    let credit = 0; let debt = 0;
+    
+    if(appData.splits.length === 0) {
+        list.innerHTML = `<div style="font-size:0.85rem; color:var(--text-secondary); text-align:center;">Nessuna spesa condivisa in sospeso.</div>`;
+    }
+    
+    appData.splits.forEach(s => {
+        const isMe = s.payer === 'me';
+        if(isMe) credit += s.otherShare; else debt += s.myShare;
+        
+        const borderColor = isMe ? 'var(--success)' : 'var(--danger)';
+        const textDebt = isMe ? 'Gli altri ti devono:' : 'Devi agli altri:';
+        const valDebt = isMe ? s.otherShare : s.myShare;
+        
+        list.innerHTML += `
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; border-left:5px solid ${borderColor}; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); border-right:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+            <div>
+                <strong style="color:white; font-size:1.1rem;">${s.desc}</strong> <span style="font-size:0.8rem; color:var(--text-secondary);">(Totale cassa: €${s.total.toFixed(2)})</span><br>
+                <span style="font-size:0.9rem; margin-top:5px; display:inline-block;">${textDebt} <b style="color:${borderColor}">€${valDebt.toFixed(2)}</b></span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="executeResolveSplit(${s.id})" class="btn-tool" style="color:${borderColor}; border-color:${borderColor};">Saldato</button>
+                <button onclick="executeDeleteSplit(${s.id})" class="btn-tool" style="color:var(--text-secondary);">✕</button>
+            </div>
+        </div>`;
+    });
+    
+    const crEl = document.getElementById('splitCredit');
+    const dbEl = document.getElementById('splitDebt');
+    if(crEl) crEl.innerText = `€${credit.toFixed(2)}`;
+    if(dbEl) dbEl.innerText = `€${debt.toFixed(2)}`;
+}
+
+
+// =========================================================================
+// GRAFICI E FORECASTING (FISSO CANVAS WRAPPER)
+// =========================================================================
+function renderChartsAndForecast() {
+    try {
+        const fInput = document.getElementById('monthFilter');
+        if(!fInput || !fInput.value) return;
+        
+        const filter = fInput.value;
+        const year = filter.split('-')[0];
+        
+        let cats = {};
+        let incM = 0; let expM = 0;
+        
+        appData.transactions.forEach(t => {
+            if(t.date && t.date.startsWith(filter)) {
+                if(t.type === 'expense') {
+                    cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+                    expM += t.amount;
+                } else {
+                    incM += t.amount;
+                }
+            }
+        });
+        
+        const elInc = document.getElementById('monthIncVal');
+        const elExp = document.getElementById('monthExpVal');
+        const elNet = document.getElementById('monthNetVal');
+        const cardNet = document.getElementById('netCard');
+        
+        if(elInc) elInc.innerText = '€' + incM.toFixed(2);
+        if(elExp) elExp.innerText = '€' + expM.toFixed(2);
+        
+        const net = incM - expM;
+        if(elNet) {
+            elNet.innerText = '€' + net.toFixed(2);
+            elNet.style.color = net >= 0 ? 'var(--success)' : 'var(--danger)';
+        }
+        if(cardNet) cardNet.style.borderTopColor = net >= 0 ? 'var(--success)' : 'var(--danger)';
+        
+        let rate = 0;
+        if(incM > 0 && net > 0) rate = (net / incM) * 100;
+        const elRate = document.getElementById('savingsRateVal');
+        const barRate = document.getElementById('savingsRateBar');
+        if(elRate) elRate.innerText = rate.toFixed(0) + '%';
+        if(barRate) barRate.style.width = Math.min(100, rate) + '%';
+        
+        // PIE CHART
+        const pieCanvas = document.getElementById('monthlyChart');
+        if(pieCanvas) {
+            if(monthlyChartInstance) monthlyChartInstance.destroy();
+            let labels = Object.keys(cats);
+            let data = Object.values(cats);
+            if(labels.length === 0) { labels = ["Nessun DATO"]; data = [1]; }
+            
+            monthlyChartInstance = new Chart(pieCanvas.getContext('2d'), {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data, backgroundColor: ['#8e44ad', '#a29bfe', '#fdcb6e', '#00b894', '#d63031', '#00cec9', '#e17055'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+        
+        // BAR CHART
+        const barCanvas = document.getElementById('annualChart');
+        if(barCanvas) {
+            if(annualChartInstance) annualChartInstance.destroy();
+            let aInc = Array(12).fill(0);
+            let aExp = Array(12).fill(0);
+            appData.transactions.forEach(t => {
+                if(t.date && t.date.startsWith(year)) {
+                    let m = parseInt(t.date.split('-')[1]) - 1;
+                    if(m >= 0 && m < 12) {
+                        if(t.type === 'income') aInc[m] += t.amount; else aExp[m] += t.amount;
+                    }
+                }
+            });
+            annualChartInstance = new Chart(barCanvas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
+                    datasets: [
+                        { label: 'Entrate', data: aInc, backgroundColor: '#00b894' },
+                        { label: 'Uscite', data: aExp, backgroundColor: '#d63031' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { 
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#aaa' } },
+                        x: { grid: { display: false }, ticks: { color: '#aaa' } }
+                    },
+                    plugins: { legend: { labels: { color: 'white' } } }
+                }
+            });
+        }
+        
+        // FORECAST
+        const fVal = document.getElementById('forecastVal');
+        const fMsg = document.getElementById('forecastMsg');
+        if(fVal && fMsg) {
+            const today = new Date();
+            const thisMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            if(filter !== thisMonth) {
+                fVal.innerText = "-";
+                fMsg.innerText = "Previsione attiva solo sul mese corrente.";
+                fVal.style.color = 'var(--text-secondary)';
+                return;
+            }
+            
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const cDay = today.getDate();
+            const rDays = daysInMonth - cDay;
+            
+            let monthExp = 0;
+            appData.transactions.forEach(t => {
+                if(t.type === 'expense' && t.date && t.date.startsWith(thisMonth)) monthExp += t.amount;
+            });
+            
+            const dailyAvg = cDay > 0 ? (monthExp / cDay) : 0;
+            const forecastedEndBal = appData.wallet - (dailyAvg * rDays);
+            
+            fVal.innerText = '€' + forecastedEndBal.toFixed(2);
+            if(forecastedEndBal < 0) {
+                fVal.style.color = 'var(--danger)'; fMsg.innerText = "Allarme! Finirai il mese in negativo.";
+            } else if(forecastedEndBal < (appData.liquidityTarget || 100)) {
+                fVal.style.color = 'var(--warning)'; fMsg.innerText = "Attenzione, finirai sotto il target.";
+            } else {
+                fVal.style.color = 'var(--success)'; fMsg.innerText = "Proiezione positiva e sicura.";
+            }
+        }
+    } catch(e) { console.error("Error rendering charts", e); }
+}
+
+
+// =========================================================================
+// STUDIO: FOCUS ROOM ZEN & AUDIO
+// =========================================================================
+let focusInterval = null; 
+let focusTimeLeft = 25 * 60;
+
+window.executeAdjustTime = function(amount) {
+    const inEl = document.getElementById('focusDuration');
+    if(inEl) {
+        let v = parseInt(inEl.value);
+        if(isNaN(v)) v = 25;
+        v = Math.max(1, v + amount);
+        inEl.value = v;
+        executeResetFocus();
+    }
+};
+
+window.executeManualTimeSet = function() { executeResetFocus(); };
+
+function _updateTimerDisplay() {
+    const m = Math.floor(focusTimeLeft / 60).toString().padStart(2, '0');
+    const s = (focusTimeLeft % 60).toString().padStart(2, '0');
+    const txt = `${m}:${s}`;
+    
+    const el1 = document.getElementById('focusDisplay');
+    const el2 = document.getElementById('zenFocusDisplay');
+    if(el1) el1.innerText = txt;
+    if(el2) el2.innerText = txt;
+}
+
+window.executeStartFocus = function() {
+    if(focusInterval) return;
+    document.getElementById('timerStatus').innerText = "STUDIO IN CORSO...";
+    document.getElementById('btnStartFocus').style.display = "none";
+    document.getElementById('btnPauseFocus').style.display = "inline-block";
+    
+    focusInterval = setInterval(() => {
+        if(focusTimeLeft > 0) {
+            focusTimeLeft--;
+            _updateTimerDisplay();
+        } else {
+            clearInterval(focusInterval);
+            focusInterval = null;
+            document.getElementById('timerStatus').innerText = "COMPLETATO!";
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (appData.gamification.lastDate !== todayStr) {
+                appData.gamification.pomodorosToday = 0;
+                appData.gamification.lastDate = todayStr;
+            }
+            appData.gamification.pomodorosToday++;
+            addExp(10);
+            
+            if (appData.gamification.pomodorosToday >= 5 && !appData.gamification.badges.pomodoro) {
+                appData.gamification.badges.pomodoro = true;
+                addExp(50);
+                alert("🏆 Straordinario! Hai sbloccato il Badge 'Focus Master' (5 Pomodori) e +50 EXP!");
+            } else {
+                alert("Sessione Completata! Hai ottenuto +10 EXP.");
+            }
+            executeResetFocus();
+        }
+    }, 1000);
+};
+
+window.executePauseFocus = function() {
+    if(focusInterval) {
+        clearInterval(focusInterval);
+        focusInterval = null;
+    }
+    document.getElementById('timerStatus').innerText = "PAUSA";
+    document.getElementById('btnStartFocus').style.display = "inline-block";
+    document.getElementById('btnPauseFocus').style.display = "none";
+};
+
+window.executeResetFocus = function() {
+    executePauseFocus();
+    const inEl = document.getElementById('focusDuration');
+    const v = inEl ? parseInt(inEl.value) : 25;
+    focusTimeLeft = (isNaN(v) ? 25 : v) * 60;
+    _updateTimerDisplay();
+    document.getElementById('timerStatus').innerText = "SISTEMA PRONTO";
+};
+
+window.executeAddFocusTask = function() {
+    const el = document.getElementById('newFocusTask');
+    if(el && el.value.trim()) {
+        appData.focusTasks.push({ id: Date.now(), text: el.value.trim(), done: false });
+        el.value = '';
+        saveData();
+    }
+};
+
+window.executeToggleFocusTask = function(id) {
+    const t = appData.focusTasks.find(x => x.id === id);
+    if(t) { t.done = !t.done; saveData(); }
+};
+
+window.executeDeleteFocusTask = function(id) {
+    appData.focusTasks = appData.focusTasks.filter(x => x.id !== id);
+    saveData();
+};
+
+window.executeClearFocusList = function() {
+    if(confirm("Rimuovere tutti i task dalla lista?")) {
+        appData.focusTasks = [];
+        saveData();
+    }
+};
+
+function renderFocusTasks() {
+    const l = document.getElementById('focusTodoList');
+    if(!l) return; l.innerHTML = '';
+    
+    appData.focusTasks.forEach(t => {
+        const textStyle = t.done ? 'text-decoration:line-through; color:var(--text-secondary);' : 'color:white; font-weight:bold;';
+        l.innerHTML += `
+        <div style="background:var(--bg-color); padding:10px 15px; border-radius:8px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <div onclick="executeToggleFocusTask(${t.id})" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:1.2rem;">${t.done ? '✅' : '⬜'}</span>
+                <span style="${textStyle}">${t.text}</span>
+            </div>
+            <button onclick="executeDeleteFocusTask(${t.id})" class="btn-tool" style="color:var(--danger); border-color:var(--danger); padding:4px 8px;">✕</button>
+        </div>`;
+    });
+    
+    const countEl = document.getElementById('tasksCount');
+    if(countEl) countEl.innerText = `${appData.focusTasks.length} task pendenti`;
+}
+
+window.toggleZenMode = function() {
+    const zen = document.getElementById('zenOverlay');
+    if(zen.style.display === 'flex') {
+        zen.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    } else {
+        zen.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        _updateTimerDisplay();
+    }
+};
+
+window.executeChangeAudio = function() {
+    const a = document.getElementById('focusAudio');
+    const s = document.getElementById('lofiAudio').value;
+    
+    if(s === 'rain') a.src = 'https://actions.google.com/sounds/v1/weather/rain_heavy_loud.ogg';
+    else if(s === 'fire') a.src = 'https://actions.google.com/sounds/v1/ambiences/fire.ogg';
+    else if(s === 'lofi') a.src = 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3';
+    else { a.pause(); a.src = ''; return; }
+    
+    a.play();
+};
+
+
+// =========================================================================
+// STUDIO: SKILLS, LIBRETTO E SCADENZE
+// =========================================================================
+window.executeAddSkill = function() {
+    const n = document.getElementById('skillName');
+    const t = document.getElementById('skillTarget');
+    const u = document.getElementById('skillUnit');
+    if(n && t && u && n.value.trim() && !isNaN(parseFloat(t.value)) && parseFloat(t.value) > 0) {
+        appData.skills.push({ id: Date.now(), name: n.value.trim(), target: parseFloat(t.value), current: 0, unit: u.value.trim() });
+        n.value = ''; t.value = ''; u.value = '';
+        saveData();
+    }
+};
+
+window.executeModSkill = function(id, val) {
+    const s = appData.skills.find(x => x.id === id);
+    if(s) { s.current = Math.max(0, s.current + val); saveData(); }
+};
+
+window.executeDelSkill = function(id) {
+    if(confirm("Vuoi rimuovere questo obiettivo formativo?")) {
+        appData.skills = appData.skills.filter(x => x.id !== id);
+        saveData();
+    }
+};
+
+function renderSkills() {
+    const l = document.getElementById('skillsList');
+    if(!l) return; l.innerHTML = '';
+    
+    appData.skills.forEach(s => {
+        const p = Math.min(100, (s.current / s.target) * 100);
+        l.innerHTML += `
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; border:1px solid var(--border-color);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong style="font-size:1.1rem; color:white;">${s.name}</strong>
+                <span style="font-family:'Fira Code', monospace; color:var(--accent-light); font-weight:bold;">${s.current}/${s.target} ${s.unit}</span>
+            </div>
+            <div style="height:10px; background:var(--bg-color); border-radius:5px; overflow:hidden; margin-bottom:12px;">
+                <div style="width:${p}%; height:100%; background:var(--success);"></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button onclick="executeModSkill(${s.id}, 1)" class="btn-tool">+1</button>
+                <button onclick="executeModSkill(${s.id}, 5)" class="btn-tool">+5</button>
+                <button onclick="executeDelSkill(${s.id})" class="btn-tool" style="color:var(--danger); border-color:var(--danger);">Rimuovi</button>
+            </div>
+        </div>`;
+    });
+}
+
+window.executeAddUniExam = function() {
+    const sIn = document.getElementById('uniSubjectInput');
+    const bIn = document.getElementById('uniBlockInput');
+    const gIn = document.getElementById('uniGradeInput');
+    const cIn = document.getElementById('uniCfuInput');
+    const yIn = document.getElementById('uniYearSelect');
+    
+    if(!sIn || !gIn || !cIn) return;
+    
+    const subject = sIn.value.trim();
+    const block = bIn ? bIn.value.trim() : "";
+    const grade = parseFloat(gIn.value);
+    const cfu = parseFloat(cIn.value);
+    const year = yIn ? yIn.value : "1";
+    
+    if(!subject || isNaN(grade) || grade < 18 || grade > 31 || isNaN(cfu) || cfu <= 0) {
+        alert("Dati Esame non validi! Voto ammesso: 18-31 (usa 31 per 30Lode). CFU > 0.");
+        return;
+    }
+    
+    appData.uniExams.push({ id: Date.now(), subject, block, grade, cfu, year });
+    sIn.value = ''; gIn.value = ''; cIn.value = ''; if(bIn) bIn.value = '';
+    saveData();
+};
+
+window.executeDeleteUniExam = function(id) {
+    if(confirm("Sei sicuro di voler eliminare questo esame dal libretto?")) {
+        appData.uniExams = appData.uniExams.filter(x => x.id !== id);
+        saveData();
+    }
+};
+
+function renderUni() {
+    const exL = document.getElementById('uniExamsList');
+    const blL = document.getElementById('uniBlocksList');
+    if(!exL || !blL) return;
+    exL.innerHTML = ''; blL.innerHTML = '';
+    
+    let tw = 0, tc = 0;
+    let ys = { "1": 0, "2": 0, "3": 0, "4": 0 };
+    let yc = { "1": 0, "2": 0, "3": 0, "4": 0 };
+    let bk = {};
+    
+    appData.uniExams.forEach(e => {
+        const val = e.grade === 31 ? 30 : e.grade;
+        tw += val * e.cfu;
+        tc += e.cfu;
+        
+        if(ys[e.year] !== undefined) {
+            ys[e.year] += val * e.cfu;
+            yc[e.year] += e.cfu;
+        }
+        
+        if(e.block) {
+            if(!bk[e.block]) bk[e.block] = { s:0, c:0 };
+            bk[e.block].s += val * e.cfu;
+            bk[e.block].c += e.cfu;
+        }
+        
+        const bHtml = e.block ? `<span style="background:var(--accent); color:white; padding:2px 8px; border-radius:6px; font-size:0.7rem; font-weight:bold; margin-left:10px;">${e.block}</span>` : '';
+        const gHtml = e.grade === 31 ? '30L' : e.grade;
+        
+        exL.innerHTML += `
+        <div style="background:var(--input-bg); padding:15px; border-radius:10px; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <strong style="font-size:1.1rem; color:white;">${e.subject}</strong> ${bHtml}<br>
+                <span style="font-size:0.8rem; color:var(--text-secondary);">Anno ${e.year} • ${e.cfu} CFU</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span style="font-size:1.4rem; font-weight:900; color:var(--accent-light);">${gHtml}</span>
+                <button onclick="executeDeleteUniExam(${e.id})" class="btn-tool" style="color:var(--danger); border-color:var(--danger); padding:6px;">✕</button>
+            </div>
+        </div>`;
+    });
+    
+    Object.keys(bk).forEach(n => {
+        const b = bk[n];
+        const avg = b.c > 0 ? (b.s / b.c).toFixed(2) : "0.00";
+        blL.innerHTML += `
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:12px; border-radius:8px; flex:1; min-width:140px; text-align:center;">
+            <div style="font-size:0.7rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase;">${n}</div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:5px;">
+                <span style="font-size:1.4rem; font-weight:800; color:var(--accent-light);">${avg}</span>
+                <span style="font-size:0.8rem; font-weight:bold; color:white; opacity:0.8;">${b.c} CFU</span>
+            </div>
+        </div>`;
+    });
+    
+    for(let i=1; i<=3; i++) {
+        let el = document.getElementById(`gpaY${i}`);
+        if(el) el.innerText = yc[i] > 0 ? (ys[i] / yc[i]).toFixed(2) : "0.00";
+    }
+    
+    let elGlob = document.getElementById('uniGlobalGpa');
+    let elGrad = document.getElementById('uniGraduationGrade');
+    if(tc > 0) {
+        const m = tw / tc;
+        if(elGlob) elGlob.innerText = m.toFixed(2);
+        if(elGrad) elGrad.innerText = ((m / 30) * 110).toFixed(2);
+    } else {
+        if(elGlob) elGlob.innerText = "0.00";
+        if(elGrad) elGrad.innerText = "0.00";
+    }
+}
+
+window.executeAddDeadline = function() {
+    const n = document.getElementById('deadlineNameInput');
+    const d = document.getElementById('deadlineDateInput');
+    if(n && d && n.value.trim() && d.value) {
+        appData.deadlines.push({ name: n.value.trim(), date: d.value });
+        n.value = ''; d.value = '';
+        saveData();
+    } else {
+        alert("Inserisci una descrizione e una data per la scadenza.");
+    }
+};
+
+window.executeAddUniDeadline = function() {
+    const n = document.getElementById('uniDeadlineName');
+    const d = document.getElementById('uniDeadlineDate');
+    if(n && d && n.value.trim() && d.value) {
+        if(!appData.uniDeadlines) appData.uniDeadlines = [];
+        appData.uniDeadlines.push({ name: n.value.trim(), date: d.value });
+        n.value = ''; d.value = '';
+        saveData();
+    }
+};
+
+window.executeDeleteDeadline = function(idx, isUni) {
+    if(isUni) {
+        appData.uniDeadlines.splice(idx, 1);
+    } else {
+        appData.deadlines.splice(idx, 1);
+    }
+    saveData();
+};
+
+function renderDeadlinesArray(arr, elId, isUni) {
+    const l = document.getElementById(elId);
+    if(!l) return;
+    l.innerHTML = '';
+    
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
+    arr.forEach((x, i) => {
+        const dx = new Date(x.date);
+        dx.setHours(0,0,0,0);
+        
+        const diff = Math.ceil((dx - today) / (1000 * 60 * 60 * 24));
+        let c = 'var(--accent-light)'; let txt = diff + ' gg';
+        
+        if(diff < 0) { c = 'gray'; txt = 'Scaduto'; }
+        else if(diff === 0) { c = 'var(--danger)'; txt = 'OGGI'; }
+        else if(diff <= 3) { c = 'var(--warning)'; }
+        
+        l.innerHTML += `
+        <div style="background:var(--input-bg); border-left:5px solid ${c}; border-top:1px solid var(--border-color); border-right:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:12px 15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <div>
+                <strong style="color:white; font-size:1.05rem;">${x.name}</strong><br>
+                <span style="color:var(--text-secondary); font-size:0.8rem;">Data: ${dx.toLocaleDateString('it-IT')}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span style="font-weight:900; color:${c}; font-size:1.1rem;">${txt}</span>
+                <button onclick="executeDeleteDeadline(${i}, ${isUni})" class="btn-tool" style="padding:5px 10px; border:none; color:var(--text-secondary);">✕</button>
+            </div>
+        </div>`;
+    });
+}
+
+function renderDeadlines() {
+    renderDeadlinesArray(appData.deadlines, 'deadlinesList', false);
+    if(appData.uniDeadlines) renderDeadlinesArray(appData.uniDeadlines, 'uniDeadlinesList', true);
+}
+
+
+// =========================================================================
+// MODELLI RICORRENTI, CALCOLATRICE & TEMI
+// =========================================================================
+window.openModal = function() {
+    document.getElementById('recurringModal').style.display = 'flex';
+    renderRecList();
+};
+
+window.closeModal = function() {
+    document.getElementById('recurringModal').style.display = 'none';
+};
+
+window.executeAddRecModel = function() {
+    const n = document.getElementById('newRecName');
+    const c = document.getElementById('newRecCat');
+    const a = document.getElementById('newRecAmount');
+    const typeEls = document.getElementsByName('newRecType');
+    
+    if(!n || !c || !a || !n.value.trim() || isNaN(parseFloat(a.value)) || parseFloat(a.value) <= 0) {
+        alert("Compila tutti i campi correttamente per creare il modello.");
+        return;
+    }
+    
+    let t = 'expense';
+    for(let i=0; i<typeEls.length; i++) { if(typeEls[i].checked) t = typeEls[i].value; }
+    
+    appData.recurring.push({ id: Date.now(), name: n.value.trim(), cat: c.value, amount: parseFloat(a.value), type: t });
+    n.value = ''; a.value = '';
+    saveData();
+    renderRecList();
+};
+
+window.executeDeleteRecModel = function(id) {
+    appData.recurring = appData.recurring.filter(x => x.id !== id);
+    saveData();
+    renderRecList();
+};
+
+window.executeApplyRecModel = function(id) {
+    const r = appData.recurring.find(x => x.id === id);
+    if(r) {
+        appData.transactions.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], cat: r.cat, desc: r.name + " (Modello)", amount: r.amount, type: r.type, wallet: 'Principale' });
+        appData.wallets['Principale'] += (r.type === 'income' ? r.amount : -r.amount);
+        saveData();
+        closeModal();
+    }
+};
+
+function renderRecList() {
+    const l = document.getElementById('recList');
+    if(!l) return;
+    l.innerHTML = '';
+    
+    if(appData.recurring.length === 0) {
+        l.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:0.85rem; padding:15px;">Nessun modello salvato.</div>`;
+        return;
+    }
+    
+    appData.recurring.forEach(r => {
+        const cColor = r.type === 'income' ? 'var(--success)' : 'var(--danger)';
+        l.innerHTML += `
+        <div style="background:var(--bg-color); border:1px solid var(--border-color); padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <div>
+                <strong style="color:white; font-size:1rem;">${r.name}</strong> <span style="font-size:0.75rem; color:var(--text-secondary);">(${r.cat})</span><br>
+                <span style="color:${cColor}; font-weight:bold;">€${r.amount.toFixed(2)}</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="executeApplyRecModel(${r.id})" class="btn-action bg-inc" style="padding:6px 12px; font-size:0.8rem;">Applica</button>
+                <button onclick="executeDeleteRecModel(${r.id})" class="btn-tool" style="color:var(--danger); border-color:var(--danger); padding:6px 10px;">✕</button>
+            </div>
+        </div>`;
+    });
+}
+
+// Widget Calcolatrice
+let calcExpr = "";
+window.toggleCalc = function() {
+    const b = document.getElementById('calcBody');
+    if(b) b.style.display = b.style.display === 'block' ? 'none' : 'block';
+};
+
+window.calcAction = function(action) {
+    const d = document.getElementById('calcDisplay');
+    if(!d) return;
+    
+    if(action === 'clear') { calcExpr = ""; d.value = "0"; }
+    else if(action === 'del') { calcExpr = calcExpr.slice(0, -1); d.value = calcExpr || "0"; }
+    else if(action === '=') {
+        try {
+            if(/^[0-9\+\-\*\/\.\(\)]+$/.test(calcExpr)) {
+                let res = eval(calcExpr);
+                if(res === Infinity || isNaN(res)) { d.value = "Err"; calcExpr = ""; }
+                else { d.value = res; calcExpr = res.toString(); }
+            } else { d.value = "Err"; calcExpr = ""; }
+        } catch(e) { d.value = "Err"; calcExpr = ""; }
+    } else {
+        if(d.value === "0" || d.value === "Err") calcExpr = "";
+        calcExpr += action;
+        d.value = calcExpr;
+    }
+};
+
+// Selettore Tema
+const appThemes = {
+    purple: { '--bg-color': '#0f0c1b', '--card-bg': '#1a162b', '--accent': '#8e44ad', '--accent-light': '#a29bfe', '--input-bg': '#251f3d', '--border-color': '#403366' },
+    blue:   { '--bg-color': '#080c14', '--card-bg': '#111827', '--accent': '#2563eb', '--accent-light': '#60a5fa', '--input-bg': '#1e293b', '--border-color': '#334155' },
+    green:  { '--bg-color': '#06120b', '--card-bg': '#0d2417', '--accent': '#16a34a', '--accent-light': '#4ade80', '--input-bg': '#143623', '--border-color': '#22543d' },
+    dark:   { '--bg-color': '#0f0f0f', '--card-bg': '#1a1a1a', '--accent': '#525252', '--accent-light': '#a3a3a3', '--input-bg': '#262626', '--border-color': '#404040' }
+};
+
+window.changeTheme = function(preventSave = false) {
+    const sel = document.getElementById('themeSelector');
+    if(sel && appThemes[sel.value]) {
+        const t = appThemes[sel.value];
+        for (const [prop, val] of Object.entries(t)) {
+            document.documentElement.style.setProperty(prop, val);
+        }
+        if(!preventSave) {
+            appData.theme = sel.value;
+            saveData();
+        }
+    }
+};
+
+// AUTOSTART
+window.addEventListener('DOMContentLoaded', () => {
+    console.log("Bootstrap SIA Manager Pro (Safe Mode)...");
+    loadData();
+});
+</script>
 </body>
 </html>
